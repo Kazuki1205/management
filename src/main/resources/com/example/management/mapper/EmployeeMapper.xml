@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.management.mapper.EmployeeMapper">
+	<select id="findAll" resultType="Employee">
+		SELECT
+			emp.id              AS id,  
+			emp.username        AS username,  
+			emp.password        AS password, 
+			emp.name            AS name,  
+			emp.department_id   AS department_id,  
+			emp.authority       AS authority,  
+			emp.created_at      AS createdAt,  
+			emp.updated_at      AS updatedAt,  
+			emp.deleted_at      AS deletedAt,       
+			dep.name            AS departmentName
+		FROM 
+			employee emp 
+		INNER JOIN 
+			department dep 
+		ON 
+			emp.department_id = dep.id
+	</select>
+	
+	<select id="findByUsername" parameterType="string" resultType="Employee">
+		SELECT
+			emp.id              AS id,  
+			emp.username        AS username,  
+			emp.password        AS password, 
+			emp.name            AS name,  
+			emp.department_id   AS department_id,  
+			emp.authority       AS authority,  
+			emp.created_at      AS createdAt,  
+			emp.updated_at      AS updatedAt,  
+			emp.deleted_at      AS deletedAt,       
+			dep.name            AS departmentName
+		FROM
+			employee emp
+		INNER JOIN 
+			department dep 
+		ON 
+			emp.department_id = dep.id
+		WHERE
+			emp.username = #{username}
+	</select>
+	
+	<insert id="insert" parameterType="Employee">
+		INSERT INTO
+			employee (
+				username, 
+				password, 
+				name, 
+				department_id
+				)
+		VALUES (
+				#{username}, 
+				#{password}, 
+				#{name}, 
+				#{departmentId}
+			)
+	</insert>
+</mapper>

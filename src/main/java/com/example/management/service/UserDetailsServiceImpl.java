@@ -8,14 +8,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.management.entity.Employee;
-import com.example.management.repository.EmployeeRepository;
+import com.example.management.model.Employee;
+import com.example.management.mapper.EmployeeMapper;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private EmployeeMapper employeeMapper;
     
     protected static Logger log = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
@@ -27,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (username == null || "".equals(username)) {
             throw new UsernameNotFoundException("Username is empty");
         }
-        Employee entity = employeeRepository.findByUsername(username);
+        Employee entity = employeeMapper.findByUsername(username);
 
         return entity;
     }

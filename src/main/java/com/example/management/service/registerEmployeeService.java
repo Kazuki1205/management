@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.management.entity.Department;
-import com.example.management.entity.Employee;
+import com.example.management.model.Department;
+import com.example.management.model.Employee;
 import com.example.management.form.DepartmentForm;
 import com.example.management.form.EmployeeForm;
-import com.example.management.repository.DepartmentRepository;
-import com.example.management.repository.EmployeeRepository;
+import com.example.management.mapper.DepartmentMapper;
+import com.example.management.mapper.EmployeeMapper;
 
 @Service
 public class registerEmployeeService {
@@ -25,10 +25,10 @@ public class registerEmployeeService {
 	private ModelMapper modelMapper;
 
 	@Autowired
-	private DepartmentRepository departmentRepository;
+	private DepartmentMapper departmentMapper;
 
 	@Autowired
-	private EmployeeRepository employeeRepository;
+	private EmployeeMapper employeeMapper;
 
 	/**
 	 * 社員フォームオブジェクトを返すメソッド
@@ -36,12 +36,15 @@ public class registerEmployeeService {
 	 * @return 社員フォームオブジェクト
 	 */
 	public EmployeeForm getEmployeeForm() {
+		
 		EmployeeForm employeeForm = new EmployeeForm();
-		List<Department> departments = departmentRepository.findAll();
+		List<Department> departments = departmentMapper.findAll();
 		List<DepartmentForm> departmentForms = new ArrayList<DepartmentForm>();
+		
 		for (Department department : departments) {
 			departmentForms.add(modelMapper.map(department, DepartmentForm.class));
 		}
+		
 		employeeForm.setDepartments(departmentForms);
 
 		return employeeForm;
@@ -53,15 +56,13 @@ public class registerEmployeeService {
 	 * @param employeeForm 社員フォーム
 	 */
 	public void createEmployee(EmployeeForm employeeForm) {
-
-		String username = employeeForm.getUsername();
-		String password = employeeForm.getPassword();
-		String name = employeeForm.getName();
-		Long departmentId = Long.parseLong(employeeForm.getDepartmentId());
-
-		Employee employee = new Employee(username, passwordEncoder.encode(password), name, departmentId);
-
-		employeeRepository.saveAndFlush(employee);
-
+		
+		Employee employee = new Employee();
+		employee.setPassword(passwordEncoder.encode(employeeForm.getPassword()));
+		employee.setDepartmentId(Long.parseLong(employeeForm.getDepartmentId()));
+		employee.setUsername(employeeForm.getUsername());
+		employee.setName(employeeForm.getName());
+		
+		employeeMapper.insert(employee);
 	}
 }

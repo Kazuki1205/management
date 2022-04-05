@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.EmployeeForm;
-import com.example.management.repository.EmployeeRepository;
+import com.example.management.mapper.EmployeeMapper;
 import com.example.management.service.registerEmployeeService;
 
 /**
@@ -24,7 +24,7 @@ public class registerEmployeeController {
 	private registerEmployeeService registerEmployeeService;
 	
 	@Autowired
-	private EmployeeRepository employeeRepository;
+	private EmployeeMapper employeeMapper;
 
 	/**
 	 * 社員マスタ登録画面を表示
@@ -60,7 +60,7 @@ public class registerEmployeeController {
 
 			return "redirect:/register/employee";
 		}
-		if (employeeRepository.findByUsername(employeeForm.getUsername()) == null) {
+		if (employeeMapper.findByUsername(employeeForm.getUsername()) == null) {
 			registerEmployeeService.createEmployee(employeeForm);
 		} else {
 			redirectAttributes.addFlashAttribute("hasMessage", true);

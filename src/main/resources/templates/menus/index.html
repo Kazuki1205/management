@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layouts/layout}">
+<body>
+	<div layout:fragment="contents">
+	<div th:text="|部署: ${#authentication.principal.department.name}|"></div>
+	<div th:text="|社員: ${#authentication.principal.name}|"></div>
+		<h1>メニュー画面予定</h1>
+		<form method="post" th:action=@{/logout}>
+			<input type="submit" value="ログアウト	">
+		</form>
+	</div>
+</body>
+</html>

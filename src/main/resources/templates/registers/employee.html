@@ -10,25 +10,41 @@
 			<table>
 				<tr>
 					<th><label for="username">社員ID</label></th>
-					<td><input type="text" th:field="*{username}" /></td>
+					<td>
+						<input type="text" th:field="*{username}" class="bg-secondary" readonly/>
+						<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+					</td>
 				</tr>
 				<tr>
 					<th><label for="name">社員名</label></th>
-					<td><input type="text" th:field="*{name}" /></td>
+					<td>
+						<input type="text" th:field="*{name}" />
+						<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+					</td>
 				</tr>
 				<tr>
-					<th><label for="departmentId">部署</label></th>
-					<td><select th:field="*{departmentId}">
-							<option th:each="department : *{departments}" th:value="${department.id}" th:text="${department.name}"></option>
-					</select></td>
+					<th><label for="id">部署</label></th>
+					<td>
+						<select th:field="*{departmentId}">
+							<option value="" selected>選択して下さい</option>
+							<option th:each="department : ${departmentList}" th:value="${department.id}" th:text="${department.name}"></option>			
+						</select>
+						<span th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}"></span>
+					</td>
 				</tr>
 				<tr>
-					<th><label for="password">パスワード</label></th>
-					<td><input type="password" th:field="*{password}" /></td>
+					<th><label for="password">パスワード(5文字以上32文字以内)</label></th>
+					<td>
+						<input type="password" th:field="*{password}" />
+						<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+					</td>
 				</tr>
 				<tr>
 					<th><label for="passwordConfirmation">パスワード確認用</label></th>
-					<td><input type="password" th:field="*{passwordConfirmation}" /></td>
+					<td>
+						<input type="password" th:field="*{passwordConfirmation}" />
+						<span th:if="${#fields.hasErrors('passwordValid')}" th:errors="*{passwordValid}"></span>
+					</td>
 				</tr>
 			</table>
 			<input type="submit" value="新規登録" />

@@ -4,12 +4,46 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
-	<div th:text="|部署: ${#authentication.principal.departmentName}|"></div>
+	<div th:text="|部署: ${#authentication.principal.department.name}|"></div>
 	<div th:text="|社員: ${#authentication.principal.name}|"></div>
-		<h1>メニュー画面予定</h1>
-		<a th:href="@{/register/employee}">社員マスタ</a>
-		<form method="post" th:action=@{/logout}>
-			<input type="submit" value="ログアウト	">
+		<h1>生産管理システム</h1>
+		<table>
+			<thead>
+				<tr>
+					<th>マスタ関係</th>
+					<th>登録関係</th>
+					<th>その他</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<ul>
+							<li>商品マスタ</li>
+							<li>売上先マスタ</li>
+							<li><a th:href="@{/register/employee}">社員マスタ</a></li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>製作手配</li>
+							<li>売上入力</li>
+							<li>日報入力</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>進捗一覧</li>
+							<li>在庫一覧</li>
+							<li>　</li>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a th:href="@{/menu}">HOME</a>
+		<form th:action="@{/logout}" method="post">
+			<input type="submit" value="LOGOUT" />
 		</form>
 	</div>
 </body>

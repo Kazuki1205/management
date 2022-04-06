@@ -1,7 +1,5 @@
 package com.example.management;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,10 +14,11 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import com.example.management.SecurityConfig;
 import com.example.management.service.UserDetailsServiceImpl;
 
+/**
+ * セキュリティ設定クラス
+ */
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-	protected static Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
 	@Autowired
 	private UserDetailsServiceImpl userDetailsServiceImpl;
@@ -27,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	/**
 	 * パスワードをハッシュ化
 	 * 
-	 * @return BCryptPasswordEncoder
+	 * @return BCryptPasswordEncoder パスワードエンコーダ
 	 */
 	@Bean
 	public PasswordEncoder passwordEncoder() {

@@ -4,46 +4,67 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	
 <mapper namespace="com.example.management.mapper.EmployeeMapper">
-	<select id="findAll" resultType="Employee">
+
+	<resultMap id="employeeResult" type="Employee">
+		<id property="id" column="employee_id" />
+		<result property="username" column="employee_username" />
+		<result property="password" column="employee_password" />
+		<result property="name" column="employee_name" />
+		<result property="authority" column="employee_authority" />
+		<result property="createdAt" column="employee_created_at" />
+		<result property="updatedAt" column="employee_updated_at" />
+		<result property="invalid" column="employee_invalid" />
+		<association property="department" javaType="Department">
+			<id property="id" column="department_id" />
+			<result property="name" column="department_name" />
+		</association>
+	</resultMap>
+	
+	<select id="findAll" resultMap="employeeResult">
 		SELECT
-			emp.id              AS id,  
-			emp.username        AS username,  
-			emp.password        AS password, 
-			emp.name            AS name,  
-			emp.department_id   AS department_id,  
-			emp.authority       AS authority,  
-			emp.created_at      AS createdAt,  
-			emp.updated_at      AS updatedAt,  
-			emp.deleted_at      AS deletedAt,       
-			dep.name            AS departmentName
+			emp.id               AS employee_id, 
+			emp.username         AS employee_username,  
+			emp.password         AS employee_password,  
+			emp.name             AS employee_name,    
+			emp.authority        AS employee_authority,  
+			emp.created_at       AS employee_created_at,  
+			emp.updated_at       AS employee_updated_at,  
+			emp.invalid          AS employee_invalid,  
+			dep.id               AS department_id,  
+			dep.name             AS department_name      
 		FROM 
 			employee emp 
 		INNER JOIN 
 			department dep 
 		ON 
 			emp.department_id = dep.id
+		WHERE 
+			emp.invalid = 0
 	</select>
 	
-	<select id="findByUsername" parameterType="string" resultType="Employee">
+	<select id="findByUsername" parameterType="String" resultMap="employeeResult">
 		SELECT
-			emp.id              AS id,  
-			emp.username        AS username,  
-			emp.password        AS password, 
-			emp.name            AS name,  
-			emp.department_id   AS department_id,  
-			emp.authority       AS authority,  
-			emp.created_at      AS createdAt,  
-			emp.updated_at      AS updatedAt,  
-			emp.deleted_at      AS deletedAt,       
-			dep.name            AS departmentName
-		FROM
-			employee emp
+			emp.id               AS employee_id, 
+			emp.username         AS employee_username,  
+			emp.password         AS employee_password,  
+			emp.name             AS employee_name,  
+			emp.department_id    AS employee_department_id,  
+			emp.authority        AS employee_authority,  
+			emp.created_at       AS employee_created_at,  
+			emp.updated_at       AS employee_updated_at,  
+			emp.invalid          AS employee_invalid,  
+			dep.id               AS department_id,  
+			dep.name             AS department_name      
+		FROM 
+			employee emp 
 		INNER JOIN 
 			department dep 
 		ON 
 			emp.department_id = dep.id
 		WHERE
 			emp.username = #{username}
+		AND 
+			emp.invalid = 0
 	</select>
 	
 	<insert id="insert" parameterType="Employee">
@@ -58,7 +79,15 @@
 				#{username}, 
 				#{password}, 
 				#{name}, 
-				#{departmentId}
+				#{department.id}
 			)
 	</insert>
+	
+	<select id="countAll" resultType="int">
+		SELECT COUNT
+			(*)
+		FROM
+			employee
+	</select>
+	
 </mapper>

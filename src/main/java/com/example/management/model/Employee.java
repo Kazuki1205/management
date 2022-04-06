@@ -11,33 +11,40 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Data;
 
+/**
+ * UserDetailsを実装した社員クラス。
+ * ユーザー認証はこのクラスで行う。
+ */
 @Data
 public class Employee implements UserDetails {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L; // シリアルID
 	
-	public Employee () {}
+	public Employee () {} // コンストラクタ(MyBatisで使用)
 	
-	private Long id;
+	private Long id; // ID
 	
-	private String username;
+	private String username; // 社員ID
 	
-	private String password;
+	private String password; // パスワード
 	
-	private String name;
+	private String name; // 社員名
 	
-	private Long departmentId;
+	private Department department; // 部署クラス
 	
-	private String departmentName;
+	private String authority; // 権限
 	
-	private String authority;
+	private Date createdAt; // 作成日時
 	
-	private Date createdAt;
+	private Date updatedAt; // 更新日時
 	
-	private Date updatedAt;
-	
-	private Date deletedAt;
+	private Integer invalid; // 削除フラグ
 
+	/**
+	 * 社員の所持する権限を返すメソッド
+	 * 
+	 * @return Collection<GrantedAuthority> コレクション型の権限
+	 */
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<>();
@@ -45,21 +52,25 @@ public class Employee implements UserDetails {
 		return authorities;
 	}
 
+	// UserDetails実装のオーバーライド
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
 	}
 
+	// UserDetails実装のオーバーライド
 	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
 
+	// UserDetails実装のオーバーライド
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
+	// UserDetails実装のオーバーライド
 	@Override
 	public boolean isEnabled() {
 		return true;

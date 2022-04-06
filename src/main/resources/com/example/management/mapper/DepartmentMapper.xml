@@ -11,4 +11,13 @@
 		FROM 
 			department
 	</select>
+	<select id="findById" parameterType="Long" resultType="Department">
+		SELECT
+			id     AS id, 
+			name   AS name 
+		FROM 
+			department 
+		WHERE 
+			id = #{id}
+	</select>
 </mapper>

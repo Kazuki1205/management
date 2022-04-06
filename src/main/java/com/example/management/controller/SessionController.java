@@ -1,23 +1,34 @@
 package com.example.management.controller;
 
-import java.util.Locale;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * セッションコントローラー
+ */
 @Controller
 public class SessionController {
 
+	/**
+	 * ログイン画面を表示する。
+	 * 
+	 * @return セッションテンプレート
+	 */
 	@GetMapping("/login")
 	public String index () {
 		return "sessions/new";
 	}
+	
+	/**
+	 * ログインが失敗した際のメソッド
+	 * 
+	 * @param model　テンプレートから受け取る情報
+	 * 
+	 * @return　セッションテンプレート
+	 */
 	@GetMapping("/login-failure")
-	public String loginFailure(Model model, Locale locale) {
+	public String loginFailure(Model model) {
 		model.addAttribute("hasMessage", true);
 		model.addAttribute("class", "alert-danger");
 		model.addAttribute("message", "Eメールまたはパスワードが正しくありません。");
@@ -25,8 +36,15 @@ public class SessionController {
 		return "sessions/new";
 	}
 
+	/**
+	 * ログアウトが完了した際のメソッド
+	 * 
+	 * @param model　テンプレートから受け取る情報
+	 * 
+	 * @return　セッションテンプレート
+	 */
 	@GetMapping("/logout-complete")
-	public String logoutComplete(Model model, Locale locale) {
+	public String logoutComplete(Model model) {
 		model.addAttribute("hasMessage", true);
 		model.addAttribute("class", "alert-info");
 		model.addAttribute("message", "ログアウトしました。");

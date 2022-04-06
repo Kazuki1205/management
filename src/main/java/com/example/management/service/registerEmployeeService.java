@@ -1,20 +1,17 @@
 package com.example.management.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.management.model.Department;
 import com.example.management.model.Employee;
-import com.example.management.form.DepartmentForm;
 import com.example.management.form.EmployeeForm;
 import com.example.management.mapper.DepartmentMapper;
 import com.example.management.mapper.EmployeeMapper;
 
+/**
+ * 社員マスタのロジッククラス
+ */
 @Service
 public class registerEmployeeService {
 
@@ -22,36 +19,15 @@ public class registerEmployeeService {
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	private ModelMapper modelMapper;
-
-	@Autowired
 	private DepartmentMapper departmentMapper;
-
+	
 	@Autowired
 	private EmployeeMapper employeeMapper;
 
 	/**
-	 * 社員フォームオブジェクトを返すメソッド
-	 * 
-	 * @return 社員フォームオブジェクト
-	 */
-	public EmployeeForm getEmployeeForm() {
-		
-		EmployeeForm employeeForm = new EmployeeForm();
-		List<Department> departments = departmentMapper.findAll();
-		List<DepartmentForm> departmentForms = new ArrayList<DepartmentForm>();
-		
-		for (Department department : departments) {
-			departmentForms.add(modelMapper.map(department, DepartmentForm.class));
-		}
-		
-		employeeForm.setDepartments(departmentForms);
-
-		return employeeForm;
-	}
-
-	/**
 	 * 社員の新規登録メソッド
+	 * newした社員クラスに、社員フォームの情報をセットする。
+	 * パスワードはエンコードを掛ける。
 	 * 
 	 * @param employeeForm 社員フォーム
 	 */
@@ -59,10 +35,24 @@ public class registerEmployeeService {
 		
 		Employee employee = new Employee();
 		employee.setPassword(passwordEncoder.encode(employeeForm.getPassword()));
-		employee.setDepartmentId(Long.parseLong(employeeForm.getDepartmentId()));
+		employee.setDepartment(departmentMapper.findById(employeeForm.getDepartmentId()));
 		employee.setUsername(employeeForm.getUsername());
 		employee.setName(employeeForm.getName());
 		
 		employeeMapper.insert(employee);
 	}
-}
+	
+	/**
+	 * 社員テーブルの全レコード数をInteger型で取得し、
+	 * その値に+1をした上で[0001」の形に整形する。
+	 * 
+	 * @return username 社員ID
+	 */
+	public String getEmployeeUsername() {
+		Integer tempUsername = employeeMapper.countAll() + 1;
+		
+		String username = String.format("%04d", tempUsername);
+
+		return username;
+	}
+}	

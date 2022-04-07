@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="table">
+	<table>
+		<tr>
+			<th><label for="username">社員ID</label></th>
+			<td>
+				<input type="text" th:field="*{username}" class="bg-secondary" readonly/>
+			</td>
+		</tr>
+		<tr>
+			<th><label for="name">社員名</label></th>
+			<td>
+				<input type="text" th:field="*{name}" />
+				<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th><label for="id">部署名</label></th>
+			<td>
+				<select th:field="*{departmentId}">
+					<option value="" selected>選択して下さい</option>
+					<option th:each="department : ${departmentList}" th:value="${department.id}" th:text="${department.name}"></option>			
+				</select>
+				<span th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}" class="text-danger"></span>
+			</td>
+		</tr>
+		<th:block th:if="${editFlag} == null">
+			<tr>
+				<th><label for="password">パスワード(5文字以上32文字以下)</label></th>
+				<td>
+					<input type="password" th:field="*{password}" />
+					<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></span>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="passwordConfirmation">パスワード確認用</label></th>
+				<td>
+					<input type="password" th:field="*{passwordConfirmation}" />
+					<span th:if="${#fields.hasErrors('passwordValid')}" th:errors="*{passwordValid}" class="text-danger"></span>
+				</td>
+			</tr>
+		</th:block>
+	</table>
+</div>
+</html>

@@ -15,12 +15,14 @@ import org.springframework.core.io.ClassPathResource;
 public class ManagementApplication {
 
 	public static void main(String[] args) {
+		
 		SpringApplication.run(ManagementApplication.class, args);
 	}
 
 	// MyBatisの設定
 	@Bean
 	public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+		
 		final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		sqlSessionFactoryBean.setConfigLocation(new ClassPathResource("/mybatis-config.xml"));

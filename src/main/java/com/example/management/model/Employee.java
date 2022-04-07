@@ -1,8 +1,8 @@
 package com.example.management.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -34,9 +34,9 @@ public class Employee implements UserDetails {
 	
 	private String authority; // 権限
 	
-	private Date createdAt; // 作成日時
+	private LocalDateTime createdAt; // 作成日時
 	
-	private Date updatedAt; // 更新日時
+	private LocalDateTime updatedAt; // 更新日時
 	
 	private Integer invalid; // 削除フラグ
 

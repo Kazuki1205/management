@@ -4,7 +4,23 @@
   	width: 100%;
   	z-index: 10000; 
   	}
+  	
+nav {
+	height: 50px;
+}
+  	
+main {
+	padding-top: 70px;
+}
 
 ul {
 	list-style: none;
+}
+
+.master-list thead tr th {
+	padding: 0 50px;
+}
+
+.form-table tr td {
+	text-align: left;
 }

@@ -20,29 +20,7 @@
 		</association>
 	</resultMap>
 	
-	<select id="findAll" resultMap="employeeResult">
-		SELECT
-			emp.id               AS employee_id, 
-			emp.username         AS employee_username,  
-			emp.password         AS employee_password,  
-			emp.name             AS employee_name,    
-			emp.authority        AS employee_authority,  
-			emp.created_at       AS employee_created_at,  
-			emp.updated_at       AS employee_updated_at,  
-			emp.invalid          AS employee_invalid,  
-			dep.id               AS department_id,  
-			dep.name             AS department_name      
-		FROM 
-			employee emp 
-		INNER JOIN 
-			department dep 
-		ON 
-			emp.department_id = dep.id
-		WHERE 
-			emp.invalid = 0
-	</select>
-	
-	<select id="findByUsername" parameterType="String" resultMap="employeeResult">
+		<select id="findByUsername" parameterType="String" resultMap="employeeResult">
 		SELECT
 			emp.id               AS employee_id, 
 			emp.username         AS employee_username,  
@@ -67,6 +45,91 @@
 			emp.invalid = 0
 	</select>
 	
+			<select id="findById" parameterType="Long" resultMap="employeeResult">
+		SELECT
+			emp.id               AS employee_id, 
+			emp.username         AS employee_username,  
+			emp.password         AS employee_password,  
+			emp.name             AS employee_name,  
+			emp.department_id    AS employee_department_id,  
+			emp.authority        AS employee_authority,  
+			emp.created_at       AS employee_created_at,  
+			emp.updated_at       AS employee_updated_at,  
+			emp.invalid          AS employee_invalid,  
+			dep.id               AS department_id,  
+			dep.name             AS department_name      
+		FROM 
+			employee emp 
+		INNER JOIN 
+			department dep 
+		ON 
+			emp.department_id = dep.id
+		WHERE
+			emp.id = #{id}
+		AND 
+			emp.invalid = 0
+	</select>
+	
+	<select id="findAll" resultMap="employeeResult">
+		SELECT
+			emp.id               AS employee_id, 
+			emp.username         AS employee_username,  
+			emp.password         AS employee_password,  
+			emp.name             AS employee_name,    
+			emp.authority        AS employee_authority,  
+			emp.created_at       AS employee_created_at,  
+			emp.updated_at       AS employee_updated_at,  
+			emp.invalid          AS employee_invalid,  
+			dep.id               AS department_id,  
+			dep.name             AS department_name      
+		FROM 
+			employee emp 
+		INNER JOIN 
+			department dep 
+		ON 
+			emp.department_id = dep.id
+	</select>
+		
+	<select id="findByConditions" resultMap="employeeResult">
+		SELECT
+			emp.id               AS employee_id, 
+			emp.username         AS employee_username,  
+			emp.password         AS employee_password,  
+			emp.name             AS employee_name,    
+			emp.authority        AS employee_authority,  
+			emp.created_at       AS employee_created_at,  
+			emp.updated_at       AS employee_updated_at,  
+			emp.invalid          AS employee_invalid,  
+			dep.id               AS department_id,  
+			dep.name             AS department_name      
+		FROM 
+			employee emp 
+		INNER JOIN 
+			department dep 
+		ON 
+			emp.department_id = dep.id
+		<where>
+			<if test="username != null">
+				emp.username LIKE '%${username}%'
+			</if>
+			<if test="name != null">
+				AND emp.name LIKE '%${name}%'
+			</if>
+			<if test="departmentId != null">
+				AND emp.department_id = #{departmentId}
+			</if>
+		</where>
+		ORDER BY
+			emp.id
+	</select>
+	
+	<select id="countAll" resultType="int">
+		SELECT COUNT
+			(*)
+		FROM
+			employee
+	</select>
+	
 	<insert id="insert" parameterType="Employee">
 		INSERT INTO
 			employee (
@@ -83,11 +146,24 @@
 			)
 	</insert>
 	
-	<select id="countAll" resultType="int">
-		SELECT COUNT
-			(*)
-		FROM
-			employee
-	</select>
+	<update id="update" parameterType="Employee">
+		UPDATE 
+			employee 
+		SET 
+			username = #{username}, 
+			name = #{name}, 
+			department_id = #{department.id} 
+		WHERE 
+			id = #{id}
+	</update>
+	
+	<update id="delete" parameterType="Employee">
+		UPDATE 
+			employee 
+		SET 
+			invalid = 1
+		WHERE 
+			id = #{id}
+	</update>
 	
 </mapper>

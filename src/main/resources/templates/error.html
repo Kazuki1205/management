@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layouts/layout}">
+<body>
+	<div layout:fragment="contents">
+		<h1>エラーページ</h1>
+		<p>例外が発生しました。</p>
+		<p>ログイン画面に戻って下さい。</p>
+		<form method="post" th:action="@{/logout}">
+			<input type="submit" value="ログイン画面に戻る">
+		</form>
+	</div>
+</body>
+</html>

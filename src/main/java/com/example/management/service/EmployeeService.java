@@ -51,7 +51,7 @@ public class EmployeeService {
 		employee.setPassword(passwordEncoder.encode(employeeForm.getPassword()));
 		employee.setDepartment(departmentMapper.findById(employeeForm.getDepartmentId()));
 		
-		employeeMapper.insert(employee);
+		employeeMapper.create(employee);
 	}
 	
 	/**

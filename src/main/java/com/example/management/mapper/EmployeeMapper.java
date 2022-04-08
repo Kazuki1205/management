@@ -54,7 +54,7 @@ public interface EmployeeMapper {
 	 * 
 	 * @param employee 社員クラス
 	 */
-	public void insert(Employee employee);
+	public void create(Employee employee);
 	
 	/**
 	 * 社員テーブルを1件更新する。

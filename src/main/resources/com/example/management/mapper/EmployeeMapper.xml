@@ -130,7 +130,7 @@
 			employee
 	</select>
 	
-	<insert id="insert" parameterType="Employee">
+	<insert id="create" parameterType="Employee">
 		INSERT INTO
 			employee (
 				username, 
@@ -152,7 +152,8 @@
 		SET 
 			username = #{username}, 
 			name = #{name}, 
-			department_id = #{department.id} 
+			department_id = #{department.id},  
+			updated_at = #{updatedAt}
 		WHERE 
 			id = #{id}
 	</update>
@@ -161,7 +162,8 @@
 		UPDATE 
 			employee 
 		SET 
-			invalid = 1
+			invalid = 1, 
+			updated_at = #{updatedAt}
 		WHERE 
 			id = #{id}
 	</update>

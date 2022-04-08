@@ -23,16 +23,16 @@ public class EmployeeForm {
 	
 	private String username; // 社員ID
 	
+	@Size(min = 1, max = 32)
 	@NotBlank(groups = ValidGroup1.class)
 	@Pattern(groups = ValidGroup2.class, regexp = "^[^\\p{javaWhitespace}]+", message = "空白文字は使用できません。")
-	@Size(groups = ValidGroup3.class, min = 1, max = 32)
 	private String name; // 社員名
 	
 	@NotNull(groups = ValidGroup1.class, message = "部署を選択して下さい。")
 	private Long departmentId; // 部署ID
 	
+	@Size(min = 5, max = 32)
 	@NotBlank(groups = ValidGroup1.class)
-	@Size(groups = ValidGroup2.class, min = 5, max = 32)
 	private String password; // パスワード
 	
 	private String passwordConfirmation; // パスワード確認用
@@ -43,7 +43,7 @@ public class EmployeeForm {
 	 * 
 	 * @return バリデーションチェックの真偽値
 	 */
-	@AssertTrue(groups = ValidGroup2.class, message = "パスワードと確認用パスワードが一致しません。")
+	@AssertTrue(groups = ValidGroup1.class, message = "パスワードと確認用パスワードが一致しません。")
 	public boolean isPasswordValid () {
 		if (password == null || password.isEmpty()) {
 			return true;

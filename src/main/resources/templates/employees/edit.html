@@ -16,9 +16,11 @@
 			<input type="hidden" th:field="*{id}" />
 			<input type="submit" value="削除" id="form-delete" />
 		</form>
+		<form method="post" th:action="@{/employee/edit/password}" th:object="${employeeForm}">
+			<input type="hidden" th:field="*{id}" />
+			<input type="submit" value="パスワードを変更" />
+		</form>
 		<a th:href="@{/employee/list}">社員マスタに戻る</a>
-		<a th:href="@{/employee/edit/changePassword/{id}(id=${employeeForm.id})}">パスワードを変更</a>
-
 	</div>
 </body>
 </html>

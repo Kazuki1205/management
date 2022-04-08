@@ -23,8 +23,8 @@ public class MapperAspect {
 	 * 
 	 * @throws Throwable 例外のスーパークラス 
 	 */
-	@Before("execution(* com.example.management.mapper.*Mapper.update(..)) || " + 
-			"execution(* com.example.management.mapper.*Mapper.delete(..))") 
+	@Before("execution(* com.example.management.mapper.*Mapper.update*(..)) || " + 
+			"execution(* com.example.management.mapper.*Mapper.delete*(..))") 
 	public void setUpdateAt(JoinPoint joinPoint) throws Throwable {
 		
 		// 現在日時を取得

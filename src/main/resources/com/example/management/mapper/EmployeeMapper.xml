@@ -158,6 +158,16 @@
 			id = #{id}
 	</update>
 	
+	<update id="updatePassword" parameterType="Employee">
+		UPDATE 
+			employee 
+		SET 
+			password = #{password}, 
+			updated_at = #{updatedAt}
+		WHERE 
+			id = #{id}
+	</update>
+	
 	<update id="delete" parameterType="Employee">
 		UPDATE 
 			employee 

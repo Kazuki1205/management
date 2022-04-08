@@ -16,11 +16,3 @@ main {
 ul {
 	list-style: none;
 }
-
-.master-list thead tr th {
-	padding: 0 50px;
-}
-
-.form-table tr td {
-	text-align: left;
-}

@@ -10,7 +10,7 @@
 					<h3>検索条件</h3>
 					<hr>
 					<form th:action="@{/employee/list}" method="get" th:object="${employeeForm}">
-						<table  class="form-table">
+						<table class="form-table table table-bordered">
 							<tr>
 								<th><label for="username">社員ID</label></th>
 								<td><input type="text" th:field="*{username}"></td>
@@ -34,7 +34,7 @@
 				</div>
 				<div class="col-md-9">
 					<a th:href="@{/employee/register}" class="h4">新規登録</a>
-					<table class="text-center master-list border">
+					<table id="DataTables" class="text-center master-list table table-bordered">
 						<thead>
 							<tr class="border-3">
 								<th>ID</th>
@@ -46,9 +46,9 @@
 								<th>更新日時</th>
 							</tr>
 						</thead>
-						<tbody class="border-3">
-							<tr th:each="employee : ${employees}" th:object="${employee}" class="border-2"
-								th:classappend="*{invalid} == 1 ? 'bg-secondary' : '' ">
+						<tbody>
+							<tr th:each="employee : ${employees}" th:object="${employee}" 
+								th:class="*{invalid} == 1 ? 'bg-secondary' : '' ">
 								<td>
 									<th:block th:if="*{invalid} == 0">
 										<a th:text="*{id}" th:href="@{/employee/edit/{id}(id=*{id})}"></a>

@@ -3,7 +3,7 @@
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
 	  layout:decorate="~{layouts/layout}">
 <body>
-	<div layout:fragment="contents">>
+	<div layout:fragment="contents">
 		<form method="post" th:action="@{/employee/register/new}" th:object="${employeeForm}">
 			<div layout:replace="~{employees/common :: table}"></div>
 			<input type="submit" value="新規登録" id="form" />

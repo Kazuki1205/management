@@ -64,6 +64,13 @@ public interface EmployeeMapper {
 	public void update(Employee employee);
 	
 	/**
+	 * 社員テーブルを1件更新する。(パスワードのみ)
+	 * 
+	 * @param employee 社員クラス
+	 */
+	public void updatePassword(Employee employee);
+	
+	/**
 	 * 社員テーブルから1件削除する。
 	 * 
 	 * @param employee　社員クラス

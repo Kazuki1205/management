@@ -6,7 +6,7 @@
 	<div layout:fragment="contents">
 		<div class="container-fulid">
 			<div class="row">
-				<div class="col-md-3 text-center">
+				<div class="col-md-3 border-end text-center">
 					<h3>検索条件</h3>
 					<hr>
 					<form th:action="@{/employee/list}" method="get" th:object="${employeeForm}">
@@ -33,10 +33,10 @@
 					</form>	
 				</div>
 				<div class="col-md-9">
-					<a th:href="@{/employee/register}">新規登録</a>
-					<table class="text-center master-list">
+					<a th:href="@{/employee/register}" class="h4">新規登録</a>
+					<table class="text-center master-list border">
 						<thead>
-							<tr>
+							<tr class="border-3">
 								<th>ID</th>
 								<th>社員ID</th>
 								<th>社員名</th>
@@ -46,9 +46,9 @@
 								<th>更新日時</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr th:each="employee : ${employees}" th:object="${employee}" 
-								th:class="*{invalid} == 1 ? 'bg-secondary' : '' ">
+						<tbody class="border-3">
+							<tr th:each="employee : ${employees}" th:object="${employee}" class="border-2"
+								th:classappend="*{invalid} == 1 ? 'bg-secondary' : '' ">
 								<td>
 									<th:block th:if="*{invalid} == 0">
 										<a th:text="*{id}" th:href="@{/employee/edit/{id}(id=*{id})}"></a>

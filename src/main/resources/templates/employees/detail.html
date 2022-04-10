@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	  layout:decorate="~{layouts/layout}">
+<body>
+	<div layout:fragment="contents">
+		<table class="table table-borderd" th:object="${employee}">
+			<tr>
+				<th>ID</th>
+				<td th:text="*{id}">
+			</tr>
+			<tr>
+				<th>社員ID</th>
+				<td th:text="*{username}">
+			</tr>
+			<tr>
+				<th>社員名</th>
+				<td th:text="*{name}">
+			</tr>
+			<tr>
+				<th>部署名</th>
+				<td th:text="*{department.name}">
+			</tr>
+			<tr>
+				<th>作成日時</th>
+				<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}">
+			</tr>
+			<tr>
+				<th>更新日時</th>
+				<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}">
+			</tr>
+			<tr>
+				<th>区分</th>
+				<td th:text="*{invalid} == 0 ? '有効' : '削除済'"></td>
+			</tr>
+		</table>
+		<a th:href="@{/employee/list}">社員マスタに戻る</a>
+	</div>
+</body>
+</html>

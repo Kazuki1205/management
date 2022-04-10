@@ -46,7 +46,7 @@ public class EmployeeService {
 	
 	/**
 	 * 社員情報の更新メソッド
-	 * newした社員クラスに、社員フォームの情報をセットする。
+	 * 社員クラスに、社員フォームの情報をセットする。
 	 * DBの更新
 	 * 
 	 * @param employeeForm　社員フォーム	

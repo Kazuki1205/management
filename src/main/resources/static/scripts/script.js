@@ -20,19 +20,18 @@ jQuery(function($){
         // ページング機能 有効
         paging: true, 
         
-        // 件数切替の値を15～75の15刻みにする
-	    lengthMenu: [ 15, 30, 45, 60, 75 ],
+        // 件数切替の値を10～50の10刻みにする
+	    lengthMenu: [ 10, 20, 30, 40, 50 ],
 	    
-	    // 件数のデフォルトの値を15にする
-	    displayLength: 15,  
+	    // 件数のデフォルトの値を20にする
+	    displayLength: 20,  
         
         // スクロールバー
         scrollX: true,
         scrollY: 700, 
         
         // 状態を保存する機能をつける
-    	stateSave: true,
-        
+    	stateSave: true
     });
 });
 
@@ -53,7 +52,7 @@ $(function(){
 
 $(function(){
     $("#form-delete").on("click", function(){
-        if(window.confirm('この社員情報を削除しますか？')) {
+        if(window.confirm('この情報を削除しますか？')) {
             return true;
         } else {
             return false;

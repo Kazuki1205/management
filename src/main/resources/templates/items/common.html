@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="table">
+	<table class="table table-bordered">
+		<tr>
+			<th>
+				<label for="itemCode">商品コード</label>
+			</th>
+			<td>
+				<input type="text" th:field="*{itemCode}" class="bg-secondary" readonly />
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="name">商品名</label>
+			</th>
+			<td>
+				<input type="text" th:field="*{name}" />
+				<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="unitPrice">単価</label>
+			</th>
+			<td>
+				<input type="number" th:field="*{unitPrice}" min="0" />
+				<span th:if="${#fields.hasErrors('unitPrice')}" th:errors="*{unitPrice}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="carryOverStock">繰越在庫</label>
+			</th>
+			<td>
+				<input type="number" th:field="*{carryOverStock}" min="0" />
+				<span th:if="${#fields.hasErrors('carryOverStock')}" th:errors="*{carryOverStock}" class="text-danger"></span>
+			</td>
+		</tr>
+	</table>
+</div>
+</html>

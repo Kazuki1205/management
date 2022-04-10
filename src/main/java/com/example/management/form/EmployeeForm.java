@@ -8,13 +8,11 @@ import javax.validation.constraints.Size;
 
 import com.example.management.form.EmployeeForm;
 import com.example.management.validation.ValidGroup1;
-import com.example.management.validation.ValidGroup2;
-import com.example.management.validation.ValidGroup3;
 
 import lombok.Data;
 
 /**
- * 社員マスタ登録画面の入力フォームバリデーション用クラス
+ * 社員マスタ登録画面の入力フォーム用クラス
  */
 @Data
 public class EmployeeForm {
@@ -23,9 +21,8 @@ public class EmployeeForm {
 	
 	private String username; // 社員ID
 	
+	@Pattern(regexp = "^[^\\p{javaWhitespace}]+", message = "空白文字は使用できません。")
 	@Size(min = 1, max = 32)
-	@NotBlank(groups = ValidGroup1.class)
-	@Pattern(groups = ValidGroup2.class, regexp = "^[^\\p{javaWhitespace}]+", message = "空白文字は使用できません。")
 	private String name; // 社員名
 	
 	@NotNull(groups = ValidGroup1.class, message = "部署を選択して下さい。")
@@ -45,10 +42,12 @@ public class EmployeeForm {
 	 */
 	@AssertTrue(groups = ValidGroup1.class, message = "パスワードと確認用パスワードが一致しません。")
 	public boolean isPasswordValid () {
+		
+		// そもそもパスワードの入力が無い場合は一致するかどうかの判別ができない為、このバリデーションはtrueとして返す。
 		if (password == null || password.isEmpty()) {
 			return true;
 		}
+		
 		return password.equals(passwordConfirmation);
 	}
-	
 }

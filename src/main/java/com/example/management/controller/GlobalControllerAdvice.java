@@ -22,7 +22,8 @@ public class GlobalControllerAdvice {
 	 * 
 	 * @param e　例外
 	 * @param model　テンプレートへ渡す情報
-	 * @return　
+	 * 
+	 * @return　エラーページテンプレート
 	 */
 	@ExceptionHandler(Exception.class)
 	public String exceptionHandler(Exception e, Model model) {

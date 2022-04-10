@@ -4,13 +4,13 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
-		<form method="post" th:action="@{/employee/register/new}" th:object="${employeeForm}">
+		<form method="post" th:action="@{/item/register/new}" th:object="${itemForm}">
 		
-			<div layout:replace="~{employees/common :: table}"></div>
+			<div layout:replace="~{items/common :: table}"></div>
 			
 			<input type="submit" value="新規登録" id="form" />
 		</form>
-		<a th:href="@{/employee/list}">社員マスタに戻る</a>
+		<a th:href="@{/item/list}">商品マスタに戻る</a>
 	</div>
 </body>
 </html>

@@ -25,7 +25,7 @@ public class AppConfig {
 	
 	/**
 	 * データベースから取得したLocalDateTime型の日時を
-	 * Thymeleafで繰り返し表示する為に必要。
+	 * Thymeleafで表示する為に必要。
 	 * 
 	 * @return　Java8TimeDialect
 	 */

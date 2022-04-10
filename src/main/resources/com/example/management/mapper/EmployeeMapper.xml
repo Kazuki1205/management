@@ -20,7 +20,7 @@
 		</association>
 	</resultMap>
 	
-		<select id="findByUsername" parameterType="String" resultMap="employeeResult">
+		<select id="findByUsernameExcludeInvalid" parameterType="String" resultMap="employeeResult">
 		SELECT
 			emp.id               AS employee_id, 
 			emp.username         AS employee_username,  
@@ -34,9 +34,9 @@
 			dep.id               AS department_id,  
 			dep.name             AS department_name      
 		FROM 
-			employee emp 
+			employees emp 
 		INNER JOIN 
-			department dep 
+			departments dep 
 		ON 
 			emp.department_id = dep.id
 		WHERE
@@ -45,7 +45,7 @@
 			emp.invalid = 0
 	</select>
 	
-			<select id="findById" parameterType="Long" resultMap="employeeResult">
+	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="employeeResult">
 		SELECT
 			emp.id               AS employee_id, 
 			emp.username         AS employee_username,  
@@ -59,15 +59,38 @@
 			dep.id               AS department_id,  
 			dep.name             AS department_name      
 		FROM 
-			employee emp 
+			employees emp 
 		INNER JOIN 
-			department dep 
+			departments dep 
 		ON 
 			emp.department_id = dep.id
 		WHERE
 			emp.id = #{id}
 		AND 
 			emp.invalid = 0
+	</select>
+	
+	<select id="findById" parameterType="Long" resultMap="employeeResult">
+		SELECT
+			emp.id               AS employee_id, 
+			emp.username         AS employee_username,  
+			emp.password         AS employee_password,  
+			emp.name             AS employee_name,  
+			emp.department_id    AS employee_department_id,  
+			emp.authority        AS employee_authority,  
+			emp.created_at       AS employee_created_at,  
+			emp.updated_at       AS employee_updated_at,  
+			emp.invalid          AS employee_invalid,  
+			dep.id               AS department_id,  
+			dep.name             AS department_name      
+		FROM 
+			employees emp 
+		INNER JOIN 
+			departments dep 
+		ON 
+			emp.department_id = dep.id
+		WHERE
+			emp.id = #{id}
 	</select>
 	
 	<select id="findAll" resultMap="employeeResult">
@@ -83,9 +106,9 @@
 			dep.id               AS department_id,  
 			dep.name             AS department_name      
 		FROM 
-			employee emp 
+			employees emp 
 		INNER JOIN 
-			department dep 
+			departments dep 
 		ON 
 			emp.department_id = dep.id
 	</select>
@@ -103,9 +126,9 @@
 			dep.id               AS department_id,  
 			dep.name             AS department_name      
 		FROM 
-			employee emp 
+			employees emp 
 		INNER JOIN 
-			department dep 
+			departments dep 
 		ON 
 			emp.department_id = dep.id
 		<where>
@@ -127,12 +150,12 @@
 		SELECT COUNT
 			(*)
 		FROM
-			employee
+			employees
 	</select>
 	
 	<insert id="create" parameterType="Employee">
 		INSERT INTO
-			employee (
+			employees (
 				username, 
 				password, 
 				name, 
@@ -148,7 +171,7 @@
 	
 	<update id="update" parameterType="Employee">
 		UPDATE 
-			employee 
+			employees
 		SET 
 			username = #{username}, 
 			name = #{name}, 
@@ -160,7 +183,7 @@
 	
 	<update id="updatePassword" parameterType="Employee">
 		UPDATE 
-			employee 
+			employees
 		SET 
 			password = #{password}, 
 			updated_at = #{updatedAt}
@@ -170,7 +193,7 @@
 	
 	<update id="delete" parameterType="Employee">
 		UPDATE 
-			employee 
+			employees 
 		SET 
 			invalid = 1, 
 			updated_at = #{updatedAt}

@@ -10,9 +10,9 @@ import com.example.management.model.Department;
 public interface DepartmentMapper {
 
 	/**
-	 * 部署テーブルのレコードを全取得する。(削除済を除く)
+	 * 部署テーブルのレコードを全取得する。
 	 * 
-	 * @return List<Employee> 部署クラス
+	 * @return List<Department> 部署クラス
 	 */
 	public List<Department> findAll();
 	

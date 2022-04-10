@@ -59,14 +59,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		// @formatter:off
-        http.authorizeRequests().antMatchers("/", "/login", "/login-failure", "/logout-complete").permitAll()
+        http.authorizeRequests()
+        
+        	// ADMIN権限のみ許可
+        	.antMatchers("/employee/**").hasRole("ADMIN")
+        	
+        	// 指定したURL形式のみ全て許可。
+        	.antMatchers("/", "/login", "/login-failure", "/logout-complete").permitAll()
+        	
+        	// その他リクエストは、ログイン状態でのみ許可。
         	.anyRequest().authenticated()
-            // ログアウト処理
+        	
+            // ログアウトURL、ログアウト成功時のURL、ログアウト後のCookie・Session・トークンの処理について設定。
             .and().logout().logoutUrl("/logout").logoutSuccessUrl("/logout-complete").clearAuthentication(true)
             .deleteCookies("JSESSIONID")
             .invalidateHttpSession(true).permitAll().and().csrf()
             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            // フォーム
+            
+            // ログインフォームURL、ログイン成功時のURL、ログイン失敗時のURLを設定。
             .and().formLogin().loginPage("/login").defaultSuccessUrl("/menu").failureUrl("/login-failure");
         // @formatter:on
 	}

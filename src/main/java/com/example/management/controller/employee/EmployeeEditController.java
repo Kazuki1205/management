@@ -51,7 +51,7 @@ public class EmployeeEditController {
 	@ModelAttribute(name = "navTitle")
 	public String setNavTitle() {
 			
-		return "社員マスタ(編集/削除)";
+		return "社員マスタ(更新/削除)";
 	}
 	
 	/**

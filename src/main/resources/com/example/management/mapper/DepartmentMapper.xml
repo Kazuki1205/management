@@ -9,14 +9,14 @@
 			id     AS id, 
 			name   AS name
 		FROM 
-			department
+			departments
 	</select>
 	<select id="findById" parameterType="Long" resultType="Department">
 		SELECT
 			id     AS id, 
 			name   AS name 
 		FROM 
-			department 
+			departments 
 		WHERE 
 			id = #{id}
 	</select>

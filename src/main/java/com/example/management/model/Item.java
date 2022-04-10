@@ -5,16 +5,22 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
- * 部署クラス
+ * 商品クラス
  */
 @Data
-public class Department {
+public class Item {
 	
-	public Department () {} // コンストラクタ(MyBatisで使用)
+	public Item () {} // コンストラクタ(MyBatisで使用)
 	
 	private Long id; // ID
 	
-	private String name; // 部署名
+	private String itemCode; // 商品コード
+	
+	private String name; // 品名
+	
+	private Long unitPrice; // 単価
+	
+	private Long carryOverStock; //　繰越在庫
 	
 	private LocalDateTime createdAt; // 作成日時
 	

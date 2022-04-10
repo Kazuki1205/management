@@ -10,29 +10,43 @@ import com.example.management.model.Employee;
 public interface EmployeeMapper {
 	
 	/**
-	 * 社員IDを基に社員テーブルから合致したレコードを取得する。(削除済を除く)
+	 * 社員IDを基に社員テーブルから合致したレコードを取得する。
+	 * 削除済みは除く
 	 * 
 	 * @param username 社員ID
+	 * 
 	 * @return Employee 社員クラス
 	 */
-	public Employee findByUsername(String username);
+	public Employee findByUsernameExcludeInvalid(String username);
 	
 	/**
-	 * IDを基に社員テーブルから合致したレコードを取得する。(削除済を除く)
+	 * IDを基に社員テーブルから合致したレコードを取得する。
+	 * 削除済みは除く
 	 * 
 	 * @param username ID
+	 * 
+	 * @return Employee 社員クラス
+	 */
+	public Employee findByIdExcludeInvalid(Long id);
+	
+	/**
+	 * IDを基に社員テーブルから合致したレコードを取得する。
+	 * 
+	 * @param username ID
+	 * 
 	 * @return Employee 社員クラス
 	 */
 	public Employee findById(Long id);
 
 	/**
+	 * 社員テーブルの全てのレコードを取得する。
+	 * 
 	 * @return List<Employee> リスト型の社員クラス
 	 */
 	public List<Employee> findAll();
 	
 	/**
 	 * 社員テーブルのレコードを、引数のあいまい検索で取得する。
-	 * 引数で空のデータを受け取った場合は検索条件から外す。
 	 * 
 	 * @param username 社員ID
 	 * @param name　社員名
@@ -43,7 +57,7 @@ public interface EmployeeMapper {
 	public List<Employee> findByConditions(String username, String name, Long departmentId);
 	
 	/**
-	 * 社員テーブルの全レコード数を取得する。(削除済を含む)
+	 * 社員テーブルの全レコード数を取得する。
 	 * 
 	 * @return Integer レコード数
 	 */
@@ -71,11 +85,9 @@ public interface EmployeeMapper {
 	public void updatePassword(Employee employee);
 	
 	/**
-	 * 社員テーブルから1件削除する。
+	 * 社員テーブルから1件論理削除する。
 	 * 
 	 * @param employee　社員クラス
 	 */
 	public void delete(Employee employee);
-	
-
 }

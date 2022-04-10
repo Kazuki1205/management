@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.management.mapper.ItemMapper">
+
+	<resultMap id="ItemResult" type="Item">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="itemCode" column="item_code" />
+		<result property="unitPrice" column="unit_price" />
+		<result property="carryOverStock" column="carry_over_stock" />
+		<result property="createdAt" column="created_at" />
+		<result property="updatedAt" column="updated_at" />
+		<result property="invalid" column="invalid" />
+	</resultMap>
+
+	<select id="findAll" resultMap="ItemResult">
+		SELECT
+			id, 
+			item_code, 
+			name, 
+			unit_price, 
+			carry_over_stock, 
+			created_at, 
+			updated_at, 
+			invalid
+		FROM
+			items
+	</select>
+	
+	<select id="findByConditions" parameterType="String" resultMap="ItemResult">
+		SELECT
+			id, 
+			item_code, 
+			name, 
+			unit_price, 
+			carry_over_stock, 
+			created_at, 
+			updated_at, 
+			invalid
+		FROM
+			items
+		<where>
+			<if test="itemCode != null">
+				item_code LIKE '%${itemCode}%'
+			</if>
+			<if test="name != null">
+				AND name LIKE '%${name}%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="findById" parameterType="Long" resultMap="ItemResult">
+		SELECT
+			id, 
+			item_code, 
+			name, 
+			unit_price, 
+			carry_over_stock, 
+			created_at, 
+			updated_at, 
+			invalid
+		FROM
+			items
+		WHERE
+			id = #{id}
+	</select>
+	
+	<select id="findByItemCode" parameterType="String" resultMap="ItemResult">
+		SELECT
+			id, 
+			item_code, 
+			name, 
+			unit_price, 
+			carry_over_stock, 
+			created_at, 
+			updated_at, 
+			invalid
+		FROM
+			items
+		WHERE
+			item_code = #{itemCode}
+	</select>
+	
+	<select id="countAll" resultType="Integer">
+		SELECT COUNT
+			(*)
+		FROM
+			items
+	</select>
+	
+	<insert id="create" parameterType="Item">
+		INSERT INTO
+			items (
+				item_code, 
+				name, 
+				unit_price, 
+				carry_over_stock
+				)
+		VALUES (
+			#{itemCode}, 
+			#{name}, 
+			#{unitPrice}, 
+			#{carryOverStock}
+			)
+	</insert>
+	
+	<update id="update" parameterType="Item">
+		UPDATE
+			items
+		SET
+			item_code = #{itemCode}, 
+			name = #{name}, 
+			unit_price = #{unitPrice}, 
+			carry_over_stock = #{carryOverStock}, 
+			updated_at = #{updatedAt}
+		WHERE
+			id = #{id}
+	</update>
+	
+	<update id="delete" parameterType="Item">
+		UPDATE
+			items
+		SET
+			invalid = 1, 
+			updated_at = #{updatedAt}
+		WHERE
+			id = #{id}
+	</update>
+
+</mapper>

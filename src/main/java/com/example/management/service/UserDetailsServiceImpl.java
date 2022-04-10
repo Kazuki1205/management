@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     protected static Logger log = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
     /**
-     * ログイン画面で入力された社員IDを、社員テーブルから取得する。
+     * ログイン画面で入力された社員IDを基に、社員テーブルからレコードを取得する。
      * 無ければ例外(UsernameNotFoundException)を投げる。
      * 
      * @return employee 社員クラス
@@ -34,10 +34,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     	
     	log.debug("username={}", username);
 
+    	// ログイン画面で入力された社員IDがnullもしくは空文字なら、例外を投げる。
         if (username == null || "".equals(username)) {
             throw new UsernameNotFoundException("Username is empty");
         }
-        Employee employee = employeeMapper.findByUsername(username);
+        
+        // ログイン画面で入力された社員IDを基に、社員テーブルからレコードを取得する。
+        Employee employee = employeeMapper.findByUsernameExcludeInvalid(username);
 
         return employee;
     }

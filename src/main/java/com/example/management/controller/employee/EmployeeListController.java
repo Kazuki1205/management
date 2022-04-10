@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.management.form.EmployeeForm;
@@ -72,12 +73,30 @@ public class EmployeeListController {
 						@RequestParam(name = "departmentId", defaultValue = "") Long departmentId, 
 						Model model) {
 		
+		// 検索条件を基にDBから社員リストを取得する
 		List<Employee> employees = employeeMapper.findByConditions(username, name, departmentId);
 		
 		model.addAttribute("employees", employees);
 		model.addAttribute("employeeForm", employeeForm);
 		
 		return "employees/list";
+	}
+	
+	/**
+	 * 社員詳細情報を表示
+	 * 
+	 * @param id ID
+	 * @param model テンプレートへ渡す情報
+	 * 
+	 * @return　社員詳細テンプレート
+	 */
+	@GetMapping("/employee/list/{id}")
+	public String detail(@PathVariable("id") Long id, Model model) {
+		
+		// テンプレートへ渡す社員情報
+		model.addAttribute("employee", employeeMapper.findById(id));
+		
+		return "employees/detail";
 	}
 }
 

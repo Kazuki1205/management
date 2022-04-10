@@ -75,6 +75,7 @@ public class EmployeeRegisterController {
 		
 		// 社員フォームの社員IDに「0001」形式のString型をセットする
 		employeeForm.setUsername(employeeService.getEmployeeUsername());
+		
 		model.addAttribute("employeeForm", employeeForm);
 		
 		return "employees/register";
@@ -97,27 +98,31 @@ public class EmployeeRegisterController {
 		
 		// 社員フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("message", "登録に失敗しました。");
+			
 			model.addAttribute("class", "alert-danger");
+			model.addAttribute("message", "登録に失敗しました。");
 
 		} else {
 			
 			// 社員IDが既に使用されている場合、エラーメッセージを表示。使用されていければDBへINSERT処理、正常処理メッセージを表示。
-			if (employeeMapper.findByUsername(employeeForm.getUsername()) == null) {
+			if (employeeMapper.findByUsernameExcludeInvalid(employeeForm.getUsername()) == null) {
 				
 				employeeService.createEmployee(employeeForm);
 				
-				model.addAttribute("message", "登録に成功しました。");
 				model.addAttribute("class", "alert-info");
+				model.addAttribute("message", "登録に成功しました。");	
 			} else {
-				model.addAttribute("message", "その社員IDはすでに使用されています。");
+				
 				model.addAttribute("class", "alert-danger");
+				model.addAttribute("message", "その社員IDはすでに使用されています。");
 			}
 		}
 		
 		// 社員フォームの社員IDに「0001」形式のString型をセットする
 		employeeForm.setUsername(employeeService.getEmployeeUsername());
+		
 		model.addAttribute("employeeForm", employeeForm);
+		
 		return "employees/register";
 	}
 }

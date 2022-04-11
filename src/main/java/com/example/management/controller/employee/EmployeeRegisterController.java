@@ -109,6 +109,8 @@ public class EmployeeRegisterController {
 				
 				employeeService.createEmployee(employeeForm);
 				
+				employeeForm = new EmployeeForm();
+				
 				model.addAttribute("class", "alert-info");
 				model.addAttribute("message", "登録に成功しました。");	
 			} else {

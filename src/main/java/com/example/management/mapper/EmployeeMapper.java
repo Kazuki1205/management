@@ -32,7 +32,7 @@ public interface EmployeeMapper {
 	/**
 	 * IDを基に社員テーブルから合致したレコードを取得する。
 	 * 
-	 * @param username ID
+	 * @param id ID
 	 * 
 	 * @return Employee 社員クラス
 	 */

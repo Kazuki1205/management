@@ -10,5 +10,7 @@ public class DepartmentForm {
 
 	private Long id; // ID
 	
+	private String departmentCode; // 部署コード
+	
 	private String name; // 部署名
 }

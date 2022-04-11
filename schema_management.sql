@@ -1,12 +1,60 @@
 DROP TABLE IF EXISTS employees CASCADE;
 DROP TABLE IF EXISTS departments CASCADE;
 DROP TABLE IF EXISTS items CASCADE;
+DROP TABLE IF EXISTS customers CASCADE;
+
+CREATE TABLE IF NOT EXISTS customers (
+	id SERIAL NOT NULL, 
+	customer_code VARCHAR(4) UNIQUE NOT NULL, 
+	name VARCHAR(128) NOT NULL, 
+	postal_code VARCHAR(8) NOT NULL, 
+	first_address VARCHAR(8) NOT NULL, 
+	second_address VARCHAR(128) NOT NULL, 
+	third_address VARCHAR(255) NOT NULL, 
+	phone_number VARCHAR(16) NOT NULL, 
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	invalid INT DEFAULT 0, 
+	PRIMARY KEY (id)
+);
+
+INSERT INTO customers (customer_code, name, postal_code, first_address, second_address, third_address, phone_number) VALUES
+	('0001', 'SAMPLE会社01','028-7644','岩手県','八幡平市雀長根','8-12-2 雀長根ヒルズ 13F','0195-30-3691'), 
+	('0002', 'SAMPLE会社02','501-4602','岐阜県','郡上市大和町小間見','6-14-8','0575-18-9506'), 
+	('0003', 'SAMPLE会社03','202-0002','東京都','西東京市ひばりが丘北','5-11-8','042-212-7605'), 
+	('0004', 'SAMPLE会社04','162-0856','東京都','新宿区市谷甲良町','3-8-7 ベルピア・市谷甲良町','03-3652-0357'), 
+	('0005', 'SAMPLE会社05','135-0023','東京都','江東区平野','1-2-5','03-3709-5552'), 
+	('0006', 'SAMPLE会社06','675-2202','兵庫県','加西市野条町','8-11-1-2F','0790-39-2093'), 
+	('0007', 'SAMPLE会社07','666-0233','兵庫県','川辺郡猪名川町紫合','3-11-3-9階','072-189-2372'), 
+	('0008', 'SAMPLE会社08','072-0001','北海道','美唄市大通東一条北','2-12-3','0126-65-2672'), 
+	('0009', 'SAMPLE会社09','013-0544','秋田県','横手市大森町長助巻','3-2-2 ＴＯＰ・大森町長助巻 11階','0182-00-5096'), 
+	('0010', 'SAMPLE会社10','740-0041','山口県','岩国市黒磯町','5-5-6-101号室','0827-82-3874'), 
+	('0011', 'SAMPLE会社11','501-2303','岐阜県','山県市片原','8-12-6','0581-04-5797'), 
+	('0012', 'SAMPLE会社12','185-0004','東京都','国分寺市新町','1-15-8','042-378-8121'), 
+	('0013', 'SAMPLE会社13','502-0847','岐阜県','岐阜市早田栄町','6-9-1','058-761-0074'), 
+	('0014', 'SAMPLE会社14','308-0076','茨城県','筑西市泉','2-9-2 ピソブランコ・泉','0296-14-3721'), 
+	('0015', 'SAMPLE会社15','115-0053','東京都','北区赤羽台','3-10-1 Kコーポ赤羽台 102号室','03-3626-2510'), 
+	('0016', 'SAMPLE会社16','865-0073','熊本県','玉名市横島町共栄','5-7-8','0968-16-4270'), 
+	('0017', 'SAMPLE会社17','198-0023','東京都','青梅市今井','2-13-9 メゾン今井 1515','0428-40-9081'), 
+	('0018', 'SAMPLE会社18','923-0183','石川県','小松市瀬領町','9-8-5','0761-00-0762'), 
+	('0019', 'SAMPLE会社19','879-6426','大分県','豊後大野市大野町郡山','9-10-8 コスモ・イオ大野町郡山','0974-80-5181'), 
+	('0020', 'SAMPLE会社20','500-8001','岐阜県','岐阜市鏡岩','6-13-7','058-622-9954'), 
+	('0021', 'SAMPLE会社21','993-0014','山形県','長井市小出','7-14-5','0238-56-5728'), 
+	('0022', 'SAMPLE会社22','954-0165','新潟県','長岡市福原','6476','0258-18-1595'), 
+	('0023', 'SAMPLE会社23','692-0002','島根県','安来市上坂田町','8-12-8','0854-82-3245'), 
+	('0024', 'SAMPLE会社24','949-2301','新潟県','上越市中郷区板橋','8-14-7 ピソブランコ・中郷区板橋 501','025-276-3449'), 
+	('0025', 'SAMPLE会社25','441-1334','愛知県','新城市中宇利','6-3-2','05362-8-3746'), 
+	('0026', 'SAMPLE会社26','311-1134','茨城県','水戸市百合が丘町','4-6-5','029-855-7698'), 
+	('0027', 'SAMPLE会社27','507-0841','岐阜県','多治見市明治町','9-6-4','0572-06-5048'), 
+	('0028', 'SAMPLE会社28','731-3166','広島県','広島市安佐南区大塚東','6-4-9','082-538-7743'), 
+	('0029', 'SAMPLE会社29','063-0012','北海道','札幌市西区福井','3-3-7 アーバンライフ福井','011-146-5366'), 
+	('0030', 'SAMPLE会社30','671-2131','兵庫県','姫路市夢前町戸倉','6-12-1','07933-7-4354');
 
 CREATE TABLE IF NOT EXISTS items (
 	id SERIAL NOT NULL, 
 	item_code VARCHAR(8) UNIQUE NOT NULL, 
 	name VARCHAR(32) NOT NULL, 
-	unit_price INT NOT NULL, 
+	unit_price BIGINT NOT NULL, 
 	carry_over_stock INT DEFAULT 0 NOT NULL, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
@@ -64,78 +112,31 @@ INSERT INTO items (item_code, name, unit_price, carry_over_stock) VALUES
 	('00000047','E007',21000,3), 
 	('00000048','E008',21200,10), 
 	('00000049','E009',21400,14), 
-	('00000050','E010',21600,20), 
-	('00000051','F001',30000,16), 
-	('00000052','F002',31000,2), 
-	('00000053','F003',32000,2), 
-	('00000054','F004',33000,13), 
-	('00000055','F005',34000,20), 
-	('00000056','F006',35000,14), 
-	('00000057','F007',36000,20), 
-	('00000058','F008',37000,18), 
-	('00000059','F009',38000,17), 
-	('00000060','F010',39000,9), 
-	('00000061','G001',27000,9), 
-	('00000062','G002',28500,17), 
-	('00000063','G003',30000,7), 
-	('00000064','G004',31500,20), 
-	('00000065','G005',33000,6), 
-	('00000066','G006',34500,15), 
-	('00000067','G007',36000,3), 
-	('00000068','G008',37500,17), 
-	('00000069','G009',39000,10), 
-	('00000070','G010',40500,0), 
-	('00000071','H001',26000,17), 
-	('00000072','H002',26400,1), 
-	('00000073','H003',26800,7), 
-	('00000074','H004',27200,9), 
-	('00000075','H005',27600,4), 
-	('00000076','H006',28000,7), 
-	('00000077','H007',28400,3), 
-	('00000078','H008',28800,11), 
-	('00000079','H009',29200,20), 
-	('00000080','H010',29600,17), 
-	('00000081','I001',35100,6), 
-	('00000082','I002',35400,0), 
-	('00000083','I003',35700,15), 
-	('00000084','I004',36000,10), 
-	('00000085','I005',36300,2), 
-	('00000086','I006',36600,15), 
-	('00000087','I007',36900,1), 
-	('00000088','I008',37200,18), 
-	('00000089','I009',37500,13), 
-	('00000090','I010',37800,9), 
-	('00000091','J001',28900,4), 
-	('00000092','J002',29400,11), 
-	('00000093','J003',29900,3), 
-	('00000094','J004',30400,11), 
-	('00000095','J005',30900,0), 
-	('00000096','J006',31400,16), 
-	('00000097','J007',31900,1), 
-	('00000098','J008',32400,16), 
-	('00000099','J009',32900,1), 
-	('00000100','J010',33400,10);
+	('00000050','E010',21600,20);
 
 CREATE TABLE IF NOT EXISTS departments (
 	id SERIAL NOT NULL, 
+	department_code VARCHAR(4) UNIQUE NOT NULL, 
 	name VARCHAR(32) NOT NULL, 
 	PRIMARY KEY (id)
 );
 
-INSERT INTO departments (name) VALUES 
-	('間接'), 
-	('営業'), 
-	('旋盤'), 
-	('切削'), 
-	('焼入'), 
-	('研磨'), 
-	('検査'), 
-	('組立'), 
-	('梱包');
+INSERT INTO departments (department_code, name) VALUES 
+	('0001', '間接'), 
+	('0002', '旋盤'), 
+	('0003', '切削'), 
+	('0004', '焼入'), 
+	('0005', '研磨'), 
+	('0006', '検査'), 
+	('0007', '組立'), 
+	('0008', '梱包'),
+	('0009', 'A営業所'), 
+	('0010', 'B営業所'), 
+	('0011', 'C営業所');
 
 CREATE TABLE IF NOT EXISTS employees (
 	id SERIAL NOT NULL, 
-	username VARCHAR(32) UNIQUE NOT NULL,
+	username VARCHAR(4) UNIQUE NOT NULL,
 	password VARCHAR(255) NOT NULL, 
 	name VARCHAR(32) NOT NULL, 
 	department_id INT NOT NULL, 
@@ -160,8 +161,10 @@ INSERT INTO employees (username, password, name, department_id) VALUES
     ('0007', '$2a$10$iLAyKBgfnFrtjW2KA/AQCeusjR8ip.KsjlSH6BAiorDyPnseKQQ3u', '社員F', 6),
    	('0008', '$2a$10$HXeIExG1cLFAJiZFotRSIeihIu/w6JV1BLw9ncg51VuggsqDEMUUK', '社員G', 7),
    	('0009', '$2a$10$G7DX1chDEd58wtPwq95tuuWhJdrO0fKEAEooQes8xox5T1NLHSi.a', '社員H', 8),
-   	('0010', '$2a$10$zJoCSWp.oDKvXBhLiDfhQO01W6z/VzarQAqhRbRwR6rMU.BuuxbEG', '社員I', 9);
-   
+   	('0010', '$2a$10$zJoCSWp.oDKvXBhLiDfhQO01W6z/VzarQAqhRbRwR6rMU.BuuxbEG', '社員I', 9),
+   	('0011', '$2a$10$o4YyGGF0cospwLxq2s4yLe./aduDsvgaWlWgeyZxhQPtHyVcFZoji', '社員J', 10),
+   	('0012', '$2a$10$IcVOaiPkuVkqzisPg71Re./xDVgqcWHRWF39Iiz6afWzoN2Jn33d2', '社員K', 11);
+   	
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO management;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO management;
 

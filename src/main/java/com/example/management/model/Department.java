@@ -14,6 +14,8 @@ public class Department {
 	
 	private Long id; // ID
 	
+	private String departmentCode; // 部署コード
+	
 	private String name; // 部署名
 	
 	private LocalDateTime createdAt; // 作成日時

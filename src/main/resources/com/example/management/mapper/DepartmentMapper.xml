@@ -7,6 +7,7 @@
 	<select id="findAll" resultType="Department">
 		SELECT 
 			id     AS id, 
+			department_code, 
 			name   AS name
 		FROM 
 			departments
@@ -14,6 +15,7 @@
 	<select id="findById" parameterType="Long" resultType="Department">
 		SELECT
 			id     AS id, 
+			department_code, 
 			name   AS name 
 		FROM 
 			departments 

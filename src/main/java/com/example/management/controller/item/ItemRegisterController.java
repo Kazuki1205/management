@@ -61,8 +61,7 @@ public class ItemRegisterController {
 	
 	@PostMapping("/item/register/new")
 	public String create(@Validated(ValidOrder.class) @ModelAttribute("itemForm") ItemForm itemForm, 
-						 BindingResult bindingResult, 
-						 Model model) {
+						 BindingResult bindingResult, Model model) {
 		
 		model.addAttribute("hasMessage", true);
 		
@@ -78,6 +77,8 @@ public class ItemRegisterController {
 				
 				itemService.createItem(itemForm);
 				
+				itemForm = new ItemForm();
+				
 				model.addAttribute("class", "alert-info");
 				model.addAttribute("message", "登録に成功しました。");
 			} else {
@@ -85,12 +86,12 @@ public class ItemRegisterController {
 				model.addAttribute("class", "alert-danger");
 				model.addAttribute("message", "その商品コードはすでに使用されています。");
 			}
-			
-			// 商品フォームの商品コードに「00000001」形式のString型をセットする
-			itemForm.setItemCode(itemService.getItemCode());
-			
-			model.addAttribute("itemForm", itemForm);
 		}
+		
+		// 商品フォームの商品コードに「00000001」形式のString型をセットする
+		itemForm.setItemCode(itemService.getItemCode());
+		
+		model.addAttribute("itemForm", itemForm);
 		
 		return "items/register";
 	}

@@ -146,7 +146,7 @@
 			emp.id
 	</select>
 	
-	<select id="countAll" resultType="int">
+	<select id="countAll" resultType="Integer">
 		SELECT COUNT
 			(*)
 		FROM

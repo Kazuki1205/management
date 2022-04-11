@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	  layout:decorate="~{layouts/layout}">
+<body>
+	<div layout:fragment="contents">
+		<form method="post" th:action="@{/customer/register/new}" th:object="${customerForm}">
+		
+			<div layout:replace="~{customers/common :: table}"></div>
+			
+			<input type="submit" value="新規登録" id="form" />
+		</form>
+		<a th:href="@{/customer/list}">顧客マスタに戻る</a>
+	</div>
+</body>
+</html>

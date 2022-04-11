@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="table">
+	<table class="table table-bordered">
+		<tr>
+			<th>
+				<label for="customerCode">顧客コード</label>
+			</th>
+			<td>
+				<input type="text" th:field="*{customerCode}" class="bg-secondary" readonly />
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="name">顧客名</label>
+			</th>
+			<td>
+				<input type="text" th:field="*{name}" />
+				<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="postalCode">郵便番号(ハイフンも可)</label>
+			</th>
+			<td>
+				<input type="text" th:field="*{postalCode}" maxlength="8" onKeyUp="AjaxZip3.zip2addr(this, '', 'firstAddress', 'secondAddress');" />
+				<span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="firstAddress">都道府県</label>
+			</th>
+			<td>
+				<input type="text" th:field="*{firstAddress}" />
+				<span th:if="${#fields.hasErrors('firstAddress')}" th:errors="*{firstAddress}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="secondAddress">市区町村</label>
+			</th>
+			<td>
+				<input type="text" th:field="*{secondAddress}" />
+				<span th:if="${#fields.hasErrors('secondAddress')}" th:errors="*{secondAddress}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="thirdAddress">町名番地</label>
+			</th>
+			<td>
+				<input type="text" th:field="*{thirdAddress}" />
+				<span th:if="${#fields.hasErrors('thirdAddress')}" th:errors="*{thirdAddress}" class="text-danger" ></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="phoneNumber">電話番号(ハイフンを含む)</label>
+			</th>
+			<td>
+				<input type="text" th:field="*{phoneNumber}" />
+				<span th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger" ></span>
+			</td>
+		</tr>
+	</table>
+</div>
+</html>

@@ -28,7 +28,7 @@ public class ItemService {
 	 */
 	public String getItemCode() {
 		
-		// 社員テーブルの全レコード数 + 1
+		// 商品テーブルの全レコード数 + 1
 		Integer tempItemCode = itemMapper.countAll() + 1;
 		
 		//　「00000000」の形の文字列に整形。
@@ -72,7 +72,7 @@ public class ItemService {
 	 * 商品クラスに、商品フォームの情報をセットする。
 	 * DBから削除(論理削除)
 	 * 
-	 * @param itemForm しフォーム
+	 * @param itemForm 商品フォーム
 	 */
 	public void deleteItem(ItemForm itemForm) {
 		

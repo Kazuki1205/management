@@ -17,7 +17,7 @@
 					<td>
 						<ul>
 							<li><a th:href="@{/item/list}">商品マスタ</a></li>
-							<li>顧客マスタ</li>
+							<li><a th:href="@{/customer/list}">顧客マスタ</a></li>
 							<li>
 								<th:block sec:authorize="hasRole('ADMIN')">
 									<a th:href="@{/employee/list}">社員マスタ</a>

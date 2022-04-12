@@ -160,13 +160,13 @@
 				password, 
 				name, 
 				department_id
-				)
+			)
 		VALUES (
 				#{username}, 
 				#{password}, 
 				#{name}, 
 				#{department.id}
-			)
+		)
 	</insert>
 	
 	<update id="update" parameterType="Employee">

@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS customers CASCADE;
 
 CREATE TABLE IF NOT EXISTS customers (
 	id SERIAL NOT NULL, 
-	customer_code VARCHAR(4) UNIQUE NOT NULL, 
+	code VARCHAR(4) UNIQUE NOT NULL, 
 	name VARCHAR(128) NOT NULL, 
 	postal_code VARCHAR(8) NOT NULL, 
 	first_address VARCHAR(8) NOT NULL, 
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS customers (
 	PRIMARY KEY (id)
 );
 
-INSERT INTO customers (customer_code, name, postal_code, first_address, second_address, third_address, phone_number) VALUES
+INSERT INTO customers (code, name, postal_code, first_address, second_address, third_address, phone_number) VALUES
 	('0001', 'SAMPLE会社01','028-7644','岩手県','八幡平市雀長根','8-12-2 雀長根ヒルズ 13F','0195-30-3691'), 
 	('0002', 'SAMPLE会社02','501-4602','岐阜県','郡上市大和町小間見','6-14-8','0575-18-9506'), 
 	('0003', 'SAMPLE会社03','202-0002','東京都','西東京市ひばりが丘北','5-11-8','042-212-7605'), 
@@ -52,7 +52,7 @@ INSERT INTO customers (customer_code, name, postal_code, first_address, second_a
 
 CREATE TABLE IF NOT EXISTS items (
 	id SERIAL NOT NULL, 
-	item_code VARCHAR(8) UNIQUE NOT NULL, 
+	code VARCHAR(8) UNIQUE NOT NULL, 
 	name VARCHAR(32) NOT NULL, 
 	unit_price BIGINT NOT NULL, 
 	carry_over_stock INT DEFAULT 0 NOT NULL, 
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS items (
 	PRIMARY KEY (id)
 );
 
-INSERT INTO items (item_code, name, unit_price, carry_over_stock) VALUES 
+INSERT INTO items (code, name, unit_price, carry_over_stock) VALUES 
 	('00000001','A001',28400,14), 
 	('00000002','A002',28700,14), 
 	('00000003','A003',29000,6), 
@@ -116,12 +116,15 @@ INSERT INTO items (item_code, name, unit_price, carry_over_stock) VALUES
 
 CREATE TABLE IF NOT EXISTS departments (
 	id SERIAL NOT NULL, 
-	department_code VARCHAR(4) UNIQUE NOT NULL, 
+	code VARCHAR(4) UNIQUE NOT NULL, 
 	name VARCHAR(32) NOT NULL, 
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	invalid INT DEFAULT 0, 
 	PRIMARY KEY (id)
 );
 
-INSERT INTO departments (department_code, name) VALUES 
+INSERT INTO departments (code, name) VALUES 
 	('0001', '間接'), 
 	('0002', '旋盤'), 
 	('0003', '切削'), 

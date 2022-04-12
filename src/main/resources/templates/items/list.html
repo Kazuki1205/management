@@ -12,8 +12,8 @@
 					<form th:action="@{/item/list}" method="get" th:object="${itemForm}">
 						<table class="form-table table table-bordered">
 							<tr>
-								<th><label for="itemCode">商品コード</label></th>
-								<td><input type="text" th:field="*{itemCode}"></td>
+								<th><label for="code">商品コード</label></th>
+								<td><input type="text" th:field="*{code}"></td>
 							</tr>
 							<tr>
 								<th><label for="name">商品名</label></th>
@@ -49,7 +49,7 @@
 										<a th:href="@{/item/edit/{id}(id=*{id})}">●</a>
 									</th:block>
 								</td>
-								<td th:text="*{itemCode}"></td>
+								<td th:text="*{code}"></td>
 								<td th:text="*{name}"></td>
 								<td th:text="|&yen;*{#numbers.formatInteger(unitPrice,3,'COMMA')}|"></td>
 								<td th:text="*{carryOverStock}"></td>

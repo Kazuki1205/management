@@ -47,12 +47,12 @@ public class ItemListController {
 	 */
 	@GetMapping("item/list")
 	public String index(@ModelAttribute("itemForm") ItemForm itemForm, 
-						@RequestParam(name = "itemCode", defaultValue = "") String itemCode, 
+						@RequestParam(name = "code", defaultValue = "") String code, 
 						@RequestParam(name = "name", defaultValue = "") String name, 
 						Model model) {
 		
 		// 検索条件を基にDBから商品リストを取得する
-		List<Item> items = itemMapper.findByConditions(itemCode, name);
+		List<Item> items = itemMapper.findByConditions(code, name);
 		
 		model.addAttribute("items", items);	
 		model.addAttribute("itemForm", itemForm);

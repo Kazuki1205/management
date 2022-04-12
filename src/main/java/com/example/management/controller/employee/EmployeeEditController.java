@@ -131,7 +131,7 @@ public class EmployeeEditController {
 		} else {
 			
 			// DBへINSERT処理、正常処理メッセージを表示。
-			employeeService.updateEmployee(employeeForm);
+			employeeService.update(employeeForm);
 			
 			redirectAttributes.addFlashAttribute("hasMessage", true);
 			redirectAttributes.addFlashAttribute("class", "alert-info");
@@ -154,7 +154,7 @@ public class EmployeeEditController {
 	public String delete(RedirectAttributes redirectAttributes, EmployeeForm employeeForm) {
 		
 		// DBへDELETE処理
-		employeeService.deleteEmployee(employeeForm);
+		employeeService.delete(employeeForm);
 		
 		redirectAttributes.addFlashAttribute("hasMessage", true);
 		redirectAttributes.addFlashAttribute("class", "alert-info");
@@ -225,7 +225,7 @@ public class EmployeeEditController {
 		} else {
 			
 			// フォームで受け取ったパスワードをエンコードしてDBへ更新。
-			employeeService.updateEmployeePassword(employeeForm);
+			employeeService.updatePassword(employeeForm);
 			
 			redirectAttributes.addFlashAttribute("hasMessage", true);
 			redirectAttributes.addFlashAttribute("class", "alert-info");

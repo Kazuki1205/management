@@ -16,7 +16,7 @@ public class CustomerForm {
 
 	private Long id; // ID
 	
-	private String customerCode; // 顧客コード
+	private String code; // 顧客コード
 	
 	@Pattern(regexp = "^[^\\p{javaWhitespace}]+", message = "空白文字は使用できません。")
 	@Size(min = 1, max = 128)

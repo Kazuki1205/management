@@ -74,7 +74,7 @@ public class EmployeeRegisterController {
 	public String index(@ModelAttribute("employeeForm") EmployeeForm employeeForm, Model model) {
 		
 		// 社員フォームの社員IDに「0001」形式のString型をセットする
-		employeeForm.setUsername(employeeService.getEmployeeUsername());
+		employeeForm.setUsername(employeeService.getUsername());
 		
 		model.addAttribute("employeeForm", employeeForm);
 		
@@ -107,7 +107,7 @@ public class EmployeeRegisterController {
 			// 社員IDが既に使用されている場合、エラーメッセージを表示。使用されていければDBへINSERT処理、正常処理メッセージを表示。
 			if (employeeMapper.findByUsernameExcludeInvalid(employeeForm.getUsername()) == null) {
 				
-				employeeService.createEmployee(employeeForm);
+				employeeService.create(employeeForm);
 				
 				employeeForm = new EmployeeForm();
 				
@@ -121,7 +121,7 @@ public class EmployeeRegisterController {
 		}
 		
 		// 社員フォームの社員IDに「0001」形式のString型をセットする
-		employeeForm.setUsername(employeeService.getEmployeeUsername());
+		employeeForm.setUsername(employeeService.getUsername());
 		
 		model.addAttribute("employeeForm", employeeForm);
 		

@@ -18,7 +18,7 @@ public class ItemForm {
 
 	private Long id; // ID
 	
-	private String itemCode; // 商品コード
+	private String code; // 商品コード
 	
 	@Pattern(regexp = "^[^\\p{javaWhitespace}]+", message = "空白文字は使用できません。")
 	@Size(min = 1, max = 32)

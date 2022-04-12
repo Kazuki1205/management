@@ -51,7 +51,7 @@ public class CustomerRegisterController {
 	public String register(@ModelAttribute("customerForm") CustomerForm customerForm, Model model) {
 		
 		// 顧客フォームの顧客コードに「0001」形式のString型をセットする
-		customerForm.setCustomerCode(customerService.getCustomerCode());
+		customerForm.setCode(customerService.getCode());
 		model.addAttribute("customerForm", customerForm);
 		
 		return "customers/register";
@@ -72,9 +72,9 @@ public class CustomerRegisterController {
 		} else {
 			
 			// 顧客コードが既に使用されている場合、エラーメッセージを表示。使用されていければDBへINSERT処理、正常処理メッセージを表示。
-			if (customerMapper.findByCustomerCode(customerForm.getCustomerCode()) == null) {
+			if (customerMapper.findByCode(customerForm.getCode()) == null) {
 			
-			customerService.createCustomer(customerForm);
+			customerService.create(customerForm);
 			
 			customerForm = new CustomerForm();
 			
@@ -88,7 +88,7 @@ public class CustomerRegisterController {
 		}
 		
 		// 顧客フォームの顧客コードに「0001」形式のString型をセットする
-		customerForm.setCustomerCode(customerService.getCustomerCode());
+		customerForm.setCode(customerService.getCode());
 		
 		model.addAttribute("customerForm", customerForm);
 		

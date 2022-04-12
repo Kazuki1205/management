@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
         
         	// ADMIN権限のみ許可
-        	.antMatchers("/employee/**").hasRole("ADMIN")
+        	.antMatchers("/employee/**", "/department/**").hasRole("ADMIN")
         	
         	// 指定したURL形式のみ全て許可。
         	.antMatchers("/", "/login", "/login-failure", "/logout-complete").permitAll()

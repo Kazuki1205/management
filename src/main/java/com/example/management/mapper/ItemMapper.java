@@ -19,12 +19,12 @@ public interface ItemMapper {
 	/**
 	 * 商品テーブルのレコードを、引数のあいまい検索で取得する。
 	 * 
-	 * @param itemCode 商品コード
+	 * @param code 商品コード
 	 * @param name 商品名
 	 * 
 	 * @return List<Item> リスト型の商品クラス
 	 */
-	public List<Item> findByConditions(String itemCode, String name);
+	public List<Item> findByConditions(String code, String name);
 	
 	/**
 	 * IDを基に商品テーブルから合致したレコードを取得する。
@@ -38,11 +38,11 @@ public interface ItemMapper {
 	/**
 	 * 商品コードを基に商品テーブルから合致したレコードを取得する。
 	 * 
-	 * @param itemCode 商品コード
+	 * @param code 商品コード
 	 * 
 	 * @return Item 商品クラス
 	 */
-	public Item findByItemCode(String itemCode);
+	public Item findByCode(String code);
 	
 	/**
 	 * 商品テーブルの全レコード数を取得する。

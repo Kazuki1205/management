@@ -4,39 +4,44 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
-		<table class="table table-borderd">
-			<thead>
+		<table class="table table-borderd text-center">
+			<thead class="container h3">
 				<tr>
-					<th>マスタ関係</th>
-					<th>登録関係</th>
-					<th>その他</th>
+					<th class="col-md-4">マスタ関係</th>
+					<th class="col-md-4">登録関係</th>
+					<th class="col-md-4">その他</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td>
 						<ul>
-							<li><a th:href="@{/item/list}">商品マスタ</a></li>
-							<li><a th:href="@{/customer/list}">顧客マスタ</a></li>
-							<li>
+							<li class="h5"><a th:href="@{/item/list}">商品マスタ</a></li>
+							<li class="h5"><a th:href="@{/customer/list}">顧客マスタ</a></li>
+							<li class="h5">
 								<th:block sec:authorize="hasRole('ADMIN')">
 									<a th:href="@{/employee/list}">社員マスタ</a>
+								</th:block>
+							</li>
+							<li class="h5">
+								<th:block sec:authorize="hasRole('ADMIN')">
+									<a th:href="@{/department/list}">部署マスタ</a>
 								</th:block>
 							</li>
 						</ul>
 					</td>
 					<td>
 						<ul>
-							<li>製作手配</li>
-							<li>売上入力</li>
-							<li>日報入力</li>
+							<li class="h5">製作手配</li>
+							<li class="h5">売上入力</li>
+							<li class="h5">日報入力</li>
 						</ul>
 					</td>
 					<td>
 						<ul>
-							<li>進捗一覧</li>
-							<li>在庫一覧</li>
-							<li>　</li>
+							<li class="h5">進捗一覧</li>
+							<li class="h5">在庫一覧</li>
+							<li class="h5">　</li>
 						</ul>
 					</td>
 				</tr>

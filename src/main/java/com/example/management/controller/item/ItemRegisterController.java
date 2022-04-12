@@ -51,7 +51,7 @@ public class ItemRegisterController {
 	public String register(@ModelAttribute("itemForm") ItemForm itemForm, Model model) {
 		
 		// 商品フォームの商品コードに「00000001」形式のString型をセットする
-		itemForm.setItemCode(itemService.getItemCode());
+		itemForm.setCode(itemService.getCode());
 		
 		model.addAttribute("itemForm", itemForm);
 		
@@ -73,9 +73,9 @@ public class ItemRegisterController {
 		} else {
 			
 			// 商品コードが既に使用されている場合、エラーメッセージを表示。使用されていければDBへINSERT処理、正常処理メッセージを表示。
-			if (itemMapper.findByItemCode(itemForm.getItemCode()) == null) {
+			if (itemMapper.findByCode(itemForm.getCode()) == null) {
 				
-				itemService.createItem(itemForm);
+				itemService.create(itemForm);
 				
 				itemForm = new ItemForm();
 				
@@ -89,7 +89,7 @@ public class ItemRegisterController {
 		}
 		
 		// 商品フォームの商品コードに「00000001」形式のString型をセットする
-		itemForm.setItemCode(itemService.getItemCode());
+		itemForm.setCode(itemService.getCode());
 		
 		model.addAttribute("itemForm", itemForm);
 		

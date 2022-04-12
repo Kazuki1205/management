@@ -7,7 +7,7 @@
 
 	<resultMap id="customerResult" type="Customer">
 		<id property="id" column="id" />
-		<result property="customerCode" column="customer_code" />
+		<result property="code" column="code" />
 		<result property="name" column="name" />
 		<result property="postalCode" column="postal_code" />
 		<result property="firstAddress" column="first_address" />
@@ -22,7 +22,7 @@
 	<select id="findAll" resultMap="customerResult">
 		SELECT
 			id, 
-			customer_code, 
+			code, 
 			name, 
 			postal_code, 
 			first_address, 
@@ -39,7 +39,7 @@
 	<select id="findByConditions" resultMap="customerResult">
 		SELECT
 			id, 
-			customer_code, 
+			code, 
 			name, 
 			postal_code, 
 			first_address, 
@@ -52,8 +52,8 @@
 		FROM
 			customers
 		<where>
-			<if test="name != null">
-				customer_code LIKE '%${customerCode}%'
+			<if test="code != null">
+				code LIKE '%${code}%'
 			</if>
 			<if test="name != null">
 				AND name LIKE '%${name}%'
@@ -73,7 +73,7 @@
 	<select id="findById" parameterType="Long" resultMap="customerResult">
 		SELECT
 			id, 
-			customer_code, 
+			code, 
 			name, 
 			postal_code, 
 			first_address, 
@@ -92,7 +92,7 @@
 	<select id="findByCustomerCode" parameterType="String" resultMap="customerResult">
 		SELECT
 			id, 
-			customer_code, 
+			code, 
 			name, 
 			postal_code, 
 			first_address, 
@@ -105,7 +105,7 @@
 		FROM
 			customers
 		WHERE
-			customer_code = #{customer_code}
+			code = #{code}
 	</select>
 
 	<select id="countAll" resultType="Integer">
@@ -118,30 +118,30 @@
 	<insert id="create" parameterType="Customer">
 		INSERT INTO
 			customers (
-				customer_code, 
+				code, 
 				name, 
 				postal_code, 
 				first_address, 
 				second_address, 
 				third_address, 
 				phone_number
-				)
+			)
 		VALUES (
-			#{customerCode}, 
+			#{code}, 
 			#{name}, 
 			#{postalCode}, 
 			#{firstAddress}, 
 			#{secondAddress}, 
 			#{thirdAddress}, 
 			#{phoneNumber}
-			)
+		)
 	</insert>
 	
 	<update id="update" parameterType="Customer">
 		UPDATE
 			customers
 		SET
-			customer_code = #{customerCode}, 
+			code = #{code}, 
 			name = #{name}, 
 			postal_code = #{postalCode}, 
 			first_address = #{firstAddress}, 

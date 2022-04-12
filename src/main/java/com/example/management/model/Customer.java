@@ -14,7 +14,7 @@ public class Customer {
 	
 	private Long id; // ID
 	
-	private String customerCode; // 顧客コード
+	private String code; // 顧客コード
 	
 	private String name; // 顧客名
 	

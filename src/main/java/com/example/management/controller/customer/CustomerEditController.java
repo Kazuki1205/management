@@ -96,7 +96,7 @@ public class CustomerEditController {
 		} else {
 			
 			// DBへINSERT処理、正常処理メッセージを表示。
-			customerService.updateCustomer(customerForm);
+			customerService.update(customerForm);
 			
 			redirectAttributes.addFlashAttribute("hasMessage", true);
 			redirectAttributes.addFlashAttribute("class", "alert-info");
@@ -111,7 +111,7 @@ public class CustomerEditController {
 	public String delete(@ModelAttribute("customerForm") CustomerForm customerForm, RedirectAttributes redirectAttributes) {
 		
 		// DBへDELETE処理
-		customerService.deleteCustomer(customerForm);
+		customerService.delete(customerForm);
 		
 		redirectAttributes.addFlashAttribute("hasMessage", true);
 		redirectAttributes.addFlashAttribute("class", "alert-info");

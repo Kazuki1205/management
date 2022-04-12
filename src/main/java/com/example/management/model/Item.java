@@ -14,7 +14,7 @@ public class Item {
 	
 	private Long id; // ID
 	
-	private String itemCode; // 商品コード
+	private String code; // 商品コード
 	
 	private String name; // 品名
 	

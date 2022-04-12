@@ -19,13 +19,13 @@ public interface CustomerMapper {
 	/**
 	 * 顧客テーブルのレコードを、引数のあいまい検索で取得する。
 	 * 
-	 * @param customerCode 顧客コード
+	 * @param code 顧客コード
 	 * @param name　顧客名
 	 * @param address　住所
 	 * 
 	 * @return List<Customer> リスト型の顧客クラス
 	 */
-	public List<Customer> findByConditions(String customerCode, String name, String address);
+	public List<Customer> findByConditions(String code, String name, String address);
 	
 	/**
 	 * IDを基に顧客テーブルから合致したレコードを取得する。
@@ -39,11 +39,11 @@ public interface CustomerMapper {
 	/**
 	 * 顧客コードを基に顧客テーブルから合致したレコードを取得する。
 	 * 
-	 * @param customerCode 顧客コード
+	 * @param code 顧客コード
 	 * 
 	 * @return Customer 顧客クラス
 	 */
-	public Customer findByCustomerCode(String customerCode);
+	public Customer findByCode(String code);
 	
 	/**
 	 * テーブルの全レコード数を取得する。

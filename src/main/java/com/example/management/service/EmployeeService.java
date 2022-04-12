@@ -36,10 +36,10 @@ public class EmployeeService {
 	 * 
 	 * @param employeeForm 社員フォーム
 	 */
-	public void createEmployee(EmployeeForm employeeForm) {
+	public void create(EmployeeForm employeeForm) {
 		
 		// 社員フォームから社員クラスに情報の詰め替え。(パスワードはエンコードする)
-		Employee employee = employeeModelMapping(employeeForm, 1);
+		Employee employee = modelMapping(employeeForm, 1);
 		
 		employeeMapper.create(employee);
 	}
@@ -51,10 +51,10 @@ public class EmployeeService {
 	 * 
 	 * @param employeeForm　社員フォーム	
 	 */
-	public void updateEmployee(EmployeeForm employeeForm) {
+	public void update(EmployeeForm employeeForm) {
 		
 		// 社員フォームから社員クラスに情報の詰め替え。
-		Employee employee = employeeModelMapping(employeeForm, 0);
+		Employee employee = modelMapping(employeeForm, 0);
 		
 		employeeMapper.update(employee);
 	}
@@ -66,10 +66,10 @@ public class EmployeeService {
 	 * 
 	 * @param employeeForm　社員フォーム	
 	 */
-	public void updateEmployeePassword(EmployeeForm employeeForm) {
+	public void updatePassword(EmployeeForm employeeForm) {
 		
 		// 社員フォームから社員クラスに情報の詰め替え。(パスワードはエンコードする)
-		Employee employee = employeeModelMapping(employeeForm, 1);
+		Employee employee = modelMapping(employeeForm, 1);
 		
 		employeeMapper.updatePassword(employee);
 	}
@@ -81,7 +81,7 @@ public class EmployeeService {
 	 * 
 	 * @param employeeForm 社員フォーム
 	 */
-	public void deleteEmployee(EmployeeForm employeeForm) {
+	public void delete(EmployeeForm employeeForm) {
 		
 		Employee employee = new Employee();
 		
@@ -97,7 +97,7 @@ public class EmployeeService {
 	 * 
 	 * @return username 社員ID
 	 */
-	public String getEmployeeUsername() {
+	public String getUsername() {
 		
 		// 社員テーブルの全レコード数 + 1
 		Integer tempUsername = employeeMapper.countAll() + 1;
@@ -114,9 +114,9 @@ public class EmployeeService {
 	 * @param employeeForm　社員フォーム
 	 * @param encodeFlag 社員フォームがパスワードの情報を持つ場合は「1」、無ければ「0」
 	 * 
-	 * @return 社員クラス
+	 * @return employee 社員クラス
 	 */
-	private Employee employeeModelMapping(EmployeeForm employeeForm, Integer encodeFlag) {
+	private Employee modelMapping(EmployeeForm employeeForm, Integer encodeFlag) {
 		
 		Employee employee = new Employee();
 		

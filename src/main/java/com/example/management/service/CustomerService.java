@@ -24,17 +24,17 @@ public class CustomerService {
 	 * 顧客テーブルの全レコード数をInteger型で取得し、
 	 * その値に+1をした上で[0000」の形に整形する。
 	 * 
-	 * @return customerCode 顧客コード
+	 * @return code 顧客コード
 	 */
-	public String getCustomerCode() {
+	public String getCode() {
 		
 		// 顧客テーブルの全レコード数 + 1
-		Integer tempCustomerCode = customerMapper.countAll() + 1;
+		Integer tempCode = customerMapper.countAll() + 1;
 		
 		//　「0000」の形の文字列に整形。
-		String customerCode = String.format("%04d", tempCustomerCode);
+		String code = String.format("%04d", tempCode);
 		
-		return customerCode;
+		return code;
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class CustomerService {
 	 * 
 	 * @param customerForm 顧客フォーム
 	 */
-	public void createCustomer(CustomerForm customerForm) {
+	public void create(CustomerForm customerForm) {
 		
 		// 顧客フォームから顧客クラスに情報の詰め替え。
 		Customer customer = modelMapper.map(customerForm, Customer.class);
@@ -70,7 +70,7 @@ public class CustomerService {
 	 * 
 	 * @param customerForm　顧客フォーム	
 	 */
-	public void updateCustomer(CustomerForm customerForm) {
+	public void update(CustomerForm customerForm) {
 		
 		// 顧客フォームから顧客クラスに情報の詰め替え。
 		Customer customer = modelMapper.map(customerForm, Customer.class);
@@ -85,7 +85,7 @@ public class CustomerService {
 	 * 
 	 * @param customerForm 顧客フォーム
 	 */
-	public void deleteCustomer(CustomerForm customerForm) {
+	public void delete(CustomerForm customerForm) {
 		
 		Customer customer = new Customer();
 		

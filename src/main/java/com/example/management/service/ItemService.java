@@ -24,17 +24,17 @@ public class ItemService {
 	 * 商品テーブルの全レコード数をInteger型で取得し、
 	 * その値に+1をした上で[00000000」の形に整形する。
 	 * 
-	 * @return username 社員ID
+	 * @return code 商品コード
 	 */
-	public String getItemCode() {
+	public String getCode() {
 		
 		// 商品テーブルの全レコード数 + 1
-		Integer tempItemCode = itemMapper.countAll() + 1;
+		Integer tempCode = itemMapper.countAll() + 1;
 		
 		//　「00000000」の形の文字列に整形。
-		String itemCode = String.format("%08d", tempItemCode);
+		String code = String.format("%08d", tempCode);
 		
-		return itemCode;
+		return code;
 	}
 	
 	/**
@@ -44,7 +44,7 @@ public class ItemService {
 	 * 
 	 * @param itemForm 商品フォーム
 	 */
-	public void createItem(ItemForm itemForm) {
+	public void create(ItemForm itemForm) {
 		
 		// 商品フォームから商品クラスに情報の詰め替え。
 		Item item = modelMapper.map(itemForm, Item.class);
@@ -59,7 +59,7 @@ public class ItemService {
 	 * 
 	 * @param itemForm　商品フォーム	
 	 */
-	public void updateItem(ItemForm itemForm) {
+	public void update(ItemForm itemForm) {
 		
 		// 商品フォームから商品クラスに情報の詰め替え。
 		Item item = modelMapper.map(itemForm, Item.class);
@@ -74,7 +74,7 @@ public class ItemService {
 	 * 
 	 * @param itemForm 商品フォーム
 	 */
-	public void deleteItem(ItemForm itemForm) {
+	public void delete(ItemForm itemForm) {
 		
 		Item item = new Item();
 		

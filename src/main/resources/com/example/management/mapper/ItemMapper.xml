@@ -8,7 +8,7 @@
 	<resultMap id="ItemResult" type="Item">
 		<id property="id" column="id" />
 		<result property="name" column="name" />
-		<result property="itemCode" column="item_code" />
+		<result property="code" column="code" />
 		<result property="unitPrice" column="unit_price" />
 		<result property="carryOverStock" column="carry_over_stock" />
 		<result property="createdAt" column="created_at" />
@@ -19,7 +19,7 @@
 	<select id="findAll" resultMap="ItemResult">
 		SELECT
 			id, 
-			item_code, 
+			code, 
 			name, 
 			unit_price, 
 			carry_over_stock, 
@@ -33,7 +33,7 @@
 	<select id="findByConditions" parameterType="String" resultMap="ItemResult">
 		SELECT
 			id, 
-			item_code, 
+			code, 
 			name, 
 			unit_price, 
 			carry_over_stock, 
@@ -43,8 +43,8 @@
 		FROM
 			items
 		<where>
-			<if test="itemCode != null">
-				item_code LIKE '%${itemCode}%'
+			<if test="code != null">
+				code LIKE '%${code}%'
 			</if>
 			<if test="name != null">
 				AND name LIKE '%${name}%'
@@ -55,7 +55,7 @@
 	<select id="findById" parameterType="Long" resultMap="ItemResult">
 		SELECT
 			id, 
-			item_code, 
+			code, 
 			name, 
 			unit_price, 
 			carry_over_stock, 
@@ -71,7 +71,7 @@
 	<select id="findByItemCode" parameterType="String" resultMap="ItemResult">
 		SELECT
 			id, 
-			item_code, 
+			code, 
 			name, 
 			unit_price, 
 			carry_over_stock, 
@@ -81,7 +81,7 @@
 		FROM
 			items
 		WHERE
-			item_code = #{itemCode}
+			code = #{code}
 	</select>
 	
 	<select id="countAll" resultType="Integer">
@@ -94,24 +94,24 @@
 	<insert id="create" parameterType="Item">
 		INSERT INTO
 			items (
-				item_code, 
+				code, 
 				name, 
 				unit_price, 
 				carry_over_stock
-				)
+			)
 		VALUES (
-			#{itemCode}, 
+			#{code}, 
 			#{name}, 
 			#{unitPrice}, 
 			#{carryOverStock}
-			)
+		)
 	</insert>
 	
 	<update id="update" parameterType="Item">
 		UPDATE
 			items
 		SET
-			item_code = #{itemCode}, 
+			code = #{code}, 
 			name = #{name}, 
 			unit_price = #{unitPrice}, 
 			carry_over_stock = #{carryOverStock}, 

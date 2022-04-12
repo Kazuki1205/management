@@ -4,22 +4,155 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	
 <mapper namespace="com.example.management.mapper.DepartmentMapper">
-	<select id="findAll" resultType="Department">
+
+	<resultMap id="departmentResult" type="Department">
+		<id property="id" column="department_id" />
+		<result property="code" column="department_code" />
+		<result property="name" column="department_name" />
+		<result property="createdAt" column="department_created_at" />
+		<result property="updatedAt" column="department_updated_at" />
+		<result property="invalid" column="department_invalid" />
+		<collection property="employees" ofType="Employee">
+			<id property="id" column="employee_id" />
+			<result property="username" column="employee_username" />
+			<result property="name" column="employee_name" />
+		</collection>
+	</resultMap>
+
+	<select id="findAll" resultMap="departmentResult">
 		SELECT 
-			id     AS id, 
-			department_code, 
-			name   AS name
+			dep.id                  AS department_id, 
+			dep.code                AS department_code, 
+			dep.name                AS department_name, 
+			dep.created_at          AS department_created_at, 
+			dep.updated_at          AS department_updated_at, 
+			dep.invalid             AS department_invalid, 
+			emp.id                  AS employee_id, 
+			emp.username            AS employee_username, 
+			emp.name                AS employee_name 
 		FROM 
+			departments dep
+		LEFT JOIN
+			employees emp
+		ON
+			dep.id = emp.department_id
+		AND
+			emp.invalid = 0
+	</select>
+	
+	<select id="findByConditions" resultMap="departmentResult">
+		SELECT 
+			dep.id                  AS department_id, 
+			dep.code                AS department_code, 
+			dep.name                AS department_name, 
+			dep.created_at          AS department_created_at, 
+			dep.updated_at          AS department_updated_at, 
+			dep.invalid             AS department_invalid, 
+			emp.id                  AS employee_id, 
+			emp.username            AS employee_username, 
+			emp.name                AS employee_name 
+		FROM 
+			departments dep
+		LEFT JOIN
+			employees emp
+		ON
+			dep.id = emp.department_id
+		AND
+			emp.invalid = 0
+		<where>
+			<if test="code != null">
+				dep.code LIKE '%${code}%'
+			</if>
+			<if test="name != null">
+				AND dep.name LIKE '%${name}%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="findById" parameterType="Long" resultMap="departmentResult">
+		SELECT 
+			dep.id                  AS department_id, 
+			dep.code                AS department_code, 
+			dep.name                AS department_name, 
+			dep.created_at          AS department_created_at, 
+			dep.updated_at          AS department_updated_at, 
+			dep.invalid             AS department_invalid, 
+			emp.id                  AS employee_id, 
+			emp.username            AS employee_username, 
+			emp.name                AS employee_name 
+		FROM 
+			departments dep
+		LEFT JOIN
+			employees emp
+		ON
+			dep.id = emp.department_id
+		AND
+			emp.invalid = 0
+		WHERE
+			dep.id = #{id}
+	</select>
+	
+	<select id="findByCode" parameterType="String" resultMap="departmentResult">
+		SELECT 
+			dep.id                  AS department_id, 
+			dep.code                AS department_code, 
+			dep.name                AS department_name, 
+			dep.created_at          AS department_created_at, 
+			dep.updated_at          AS department_updated_at, 
+			dep.invalid             AS department_invalid, 
+			emp.id                  AS employee_id, 
+			emp.username            AS employee_username, 
+			emp.name                AS employee_name 
+		FROM 
+			departments dep
+		LEFT JOIN
+			employees emp
+		ON
+			dep.id = emp.department_id
+		AND
+			emp.invalid = 0
+		WHERE
+			dep.code = #{code}
+	</select>
+	
+	<select id="countAll" resultType="Integer">
+		SELECT COUNT
+			(*)
+		FROM
 			departments
 	</select>
-	<select id="findById" parameterType="Long" resultType="Department">
-		SELECT
-			id     AS id, 
-			department_code, 
-			name   AS name 
-		FROM 
-			departments 
-		WHERE 
+
+	<insert id="create" parameterType="Department">
+		INSERT INTO
+			departments (
+				code, 
+				name
+			)
+		VALUES (
+			#{code}, 
+			#{name}
+		)
+	</insert>
+	
+	<update id="update" parameterType="Department">
+		UPDATE
+			departments
+		SET
+			code = #{code}, 
+			name = #{name}, 
+			updated_at = #{updatedAt}
+		WHERE
 			id = #{id}
-	</select>
+	</update>
+	
+	<update id="delete" parameterType="Department">
+		UPDATE
+			departments
+		SET
+			invalid = 1, 
+			updated_at = #{updatedAt}
+		WHERE
+			id = #{id}
+	</update>
+	
 </mapper>

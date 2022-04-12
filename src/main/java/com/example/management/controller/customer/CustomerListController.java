@@ -48,13 +48,13 @@ public class CustomerListController {
 	 */
 	@GetMapping("/customer/list")
 	public String index(@ModelAttribute("customerForm") CustomerForm customerForm, 
-						@RequestParam(name = "customerCode", defaultValue = "") String customerCode, 
+						@RequestParam(name = "code", defaultValue = "") String code, 
 						@RequestParam(name = "name", defaultValue = "") String name, 
 						@RequestParam(name = "address", defaultValue = "") String address, 
 						Model model) {
 		
 		// 検索条件を基にDBから顧客リストを取得する
-		List<Customer> customers = customerMapper.findByConditions(customerCode, name, address);
+		List<Customer> customers = customerMapper.findByConditions(code, name, address);
 		
 		model.addAttribute("customers", customers);
 		model.addAttribute("customerForm", customerForm);

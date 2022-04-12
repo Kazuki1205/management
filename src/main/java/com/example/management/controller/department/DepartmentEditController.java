@@ -1,4 +1,4 @@
-package com.example.management.controller.item;
+package com.example.management.controller.department;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,26 +12,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.management.form.ItemForm;
-import com.example.management.mapper.ItemMapper;
-import com.example.management.service.ItemService;
-import com.example.management.validation.ValidOrder;
+import com.example.management.form.DepartmentForm;
+import com.example.management.mapper.DepartmentMapper;
+import com.example.management.service.DepartmentService;
 
-/**
- * 商品マスタの編集コントローラー
- */
 @Controller
-public class ItemEditController {
+public class DepartmentEditController {
 	
 	@Autowired
-	private ItemMapper itemMapper;
+	private DepartmentMapper departmentMapper;
 	
 	@Autowired
 	private ModelMapper modelMapper;
 	
 	@Autowired
-	private ItemService itemService;
-	
+	private DepartmentService departmentService;
+
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
 	 * ナビゲーションバーの名前を設定する。
@@ -42,76 +38,76 @@ public class ItemEditController {
 	@ModelAttribute(name = "navTitle")
 	public String setNavTitle() {
 			
-		return "商品マスタ(更新/削除)";
+		return "部署マスタ(更新/削除)";
 	}
 
 	/**
-	 * 商品マスタ一覧から選んだID情報を基に
-	 * itemFormに詰め直して編集画面を表示する
+	 * 部署マスタ一覧から選んだID情報を基に
+	 * departmentFormに詰め直して編集画面を表示する
 	 * 
 	 * @param id ID
 	 * @param model テンプレートへ渡す情報
 	 * 
-	 * @return 商品編集テンプレート
+	 * @return 部署編集テンプレート
 	 */
-	@GetMapping("/item/edit/{id}")
+	@GetMapping("/department/edit/{id}")
 	public String edit(@PathVariable("id") Long id, Model model) {
 		
-		// ID情報を基にDBから商品テーブルを検索し商品クラスとして取得、商品フォームへ詰め替える。
-		ItemForm itemForm = modelMapper.map(itemMapper.findById(id), ItemForm.class);
+		// ID情報を基にDBから部署テーブルを検索し部署クラスとして取得、部署フォームへ詰め替える。
+		DepartmentForm departmentForm = modelMapper.map(departmentMapper.findById(id), DepartmentForm.class);
 		
-		model.addAttribute("itemForm", itemForm);
+		model.addAttribute("departmentForm", departmentForm);
 		
-		return "items/edit";
+		return "departments/edit";
 	}
 	
 	/**
-	 * 商品情報を受け取り、DBを更新するメソッド
+	 * 部署情報を受け取り、DBを更新するメソッド
 	 * 更新できたらリストにリダイレクト。
 	 * 
-	 * @param itemForm　商品フォーム
-	 * @param bindingResult 商品フォームのバリデーション結果
+	 * @param departmentForm　部署フォーム
+	 * @param bindingResult 部署フォームのバリデーション結果
 	 * @param model テンプレートへ渡す情報
 	 * @param redirectAttributes リダイレクト先へ渡す情報
 	 * 
-	 * @return　商品編集テンプレート/商品リストへリダイレクト
+	 * @return　部署編集テンプレート/部署リストへリダイレクト
 	 */
-	@PostMapping("/item/edit/update")
-	public String update(@Validated(ValidOrder.class) @ModelAttribute("itemForm") ItemForm itemForm, 
+	@PostMapping("/department/edit/update")
+	public String update(@Validated @ModelAttribute("departmentForm") DepartmentForm departmentForm, 
 						 BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 		
-		// 商品フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
+		// 部署フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 			
 			model.addAttribute("hasMessage", true);
 			model.addAttribute("class", "alert-danger");
 			model.addAttribute("message", "更新に失敗しました。");
 			
-			return "items/edit";
+			return "departments/edit";
 		} else {
 			
 			// DBへINSERT処理、正常処理メッセージを表示。
-			itemService.update(itemForm);
+			departmentService.update(departmentForm);
 			
 			redirectAttributes.addFlashAttribute("hasMessage", true);
 			redirectAttributes.addFlashAttribute("class", "alert-info");
 			redirectAttributes.addFlashAttribute("message", "更新に成功しました。");
 			
-			return "redirect:/item/list";
+			return "redirect:/department/list";
 		}
 	}
 	
 	
-	@PostMapping("/item/edit/delete")
-	public String delete(@ModelAttribute("itemForm") ItemForm itemForm, RedirectAttributes redirectAttributes) {
+	@PostMapping("/department/edit/delete")
+	public String delete(@ModelAttribute("departmentForm") DepartmentForm departmentForm, RedirectAttributes redirectAttributes) {
 		
 		// DBへDELETE処理
-		itemService.delete(itemForm);
+		departmentService.delete(departmentForm);
 		
 		redirectAttributes.addFlashAttribute("hasMessage", true);
 		redirectAttributes.addFlashAttribute("class", "alert-info");
 		redirectAttributes.addFlashAttribute("message", "削除に成功しました。");
 		
-		return "redirect:/item/list";
+		return "redirect:/department/list";
 	}
 }

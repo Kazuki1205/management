@@ -61,12 +61,12 @@ public class EmployeeEditController {
 	 * 
 	 * @return 部署型のリスト
 	 */
-	@ModelAttribute(name = "departmentList")
-	public List<Department> getDepartmentList() {
+	@ModelAttribute(name = "departments")
+	public List<Department> getDepartments() {
 		
-		List<Department> departmentList = departmentMapper.findAll();
+		List<Department> departments = departmentMapper.findAll();
 		
-		return departmentList;
+		return departments;
 	}
 	
 	/**

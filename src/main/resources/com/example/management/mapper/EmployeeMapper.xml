@@ -6,33 +6,33 @@
 <mapper namespace="com.example.management.mapper.EmployeeMapper">
 
 	<resultMap id="employeeResult" type="Employee">
-		<id property="id" column="employee_id" />
-		<result property="username" column="employee_username" />
-		<result property="password" column="employee_password" />
-		<result property="name" column="employee_name" />
-		<result property="authority" column="employee_authority" />
-		<result property="createdAt" column="employee_created_at" />
-		<result property="updatedAt" column="employee_updated_at" />
-		<result property="invalid" column="employee_invalid" />
+		<id property="id" column="emp_id" />
+		<result property="username" column="emp_username" />
+		<result property="password" column="emp_password" />
+		<result property="name" column="emp_name" />
+		<result property="authority" column="emp_authority" />
+		<result property="createdAt" column="emp_created_at" />
+		<result property="updatedAt" column="emp_updated_at" />
+		<result property="invalid" column="emp_invalid" />
 		<association property="department" javaType="Department">
-			<id property="id" column="department_id" />
-			<result property="name" column="department_name" />
+			<id property="id" column="dep_id" />
+			<result property="name" column="dep_name" />
 		</association>
 	</resultMap>
 	
 		<select id="findByUsernameExcludeInvalid" parameterType="String" resultMap="employeeResult">
 		SELECT
-			emp.id               AS employee_id, 
-			emp.username         AS employee_username,  
-			emp.password         AS employee_password,  
-			emp.name             AS employee_name,  
-			emp.department_id    AS employee_department_id,  
-			emp.authority        AS employee_authority,  
-			emp.created_at       AS employee_created_at,  
-			emp.updated_at       AS employee_updated_at,  
-			emp.invalid          AS employee_invalid,  
-			dep.id               AS department_id,  
-			dep.name             AS department_name      
+			emp.id               AS emp_id, 
+			emp.username         AS emp_username,  
+			emp.password         AS emp_password,  
+			emp.name             AS emp_name,  
+			emp.department_id    AS emp_department_id,  
+			emp.authority        AS emp_authority,  
+			emp.created_at       AS emp_created_at,  
+			emp.updated_at       AS emp_updated_at,  
+			emp.invalid          AS emp_invalid,  
+			dep.id               AS dep_id,  
+			dep.name             AS dep_name      
 		FROM 
 			employees emp 
 		INNER JOIN 
@@ -47,17 +47,17 @@
 	
 	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="employeeResult">
 		SELECT
-			emp.id               AS employee_id, 
-			emp.username         AS employee_username,  
-			emp.password         AS employee_password,  
-			emp.name             AS employee_name,  
-			emp.department_id    AS employee_department_id,  
-			emp.authority        AS employee_authority,  
-			emp.created_at       AS employee_created_at,  
-			emp.updated_at       AS employee_updated_at,  
-			emp.invalid          AS employee_invalid,  
-			dep.id               AS department_id,  
-			dep.name             AS department_name      
+			emp.id               AS emp_id, 
+			emp.username         AS emp_username,  
+			emp.password         AS emp_password,  
+			emp.name             AS emp_name,  
+			emp.department_id    AS emp_department_id,  
+			emp.authority        AS emp_authority,  
+			emp.created_at       AS emp_created_at,  
+			emp.updated_at       AS emp_updated_at,  
+			emp.invalid          AS emp_invalid,  
+			dep.id               AS dep_id,  
+			dep.name             AS dep_name      
 		FROM 
 			employees emp 
 		INNER JOIN 
@@ -72,17 +72,17 @@
 	
 	<select id="findById" parameterType="Long" resultMap="employeeResult">
 		SELECT
-			emp.id               AS employee_id, 
-			emp.username         AS employee_username,  
-			emp.password         AS employee_password,  
-			emp.name             AS employee_name,  
-			emp.department_id    AS employee_department_id,  
-			emp.authority        AS employee_authority,  
-			emp.created_at       AS employee_created_at,  
-			emp.updated_at       AS employee_updated_at,  
-			emp.invalid          AS employee_invalid,  
-			dep.id               AS department_id,  
-			dep.name             AS department_name      
+			emp.id               AS emp_id, 
+			emp.username         AS emp_username,  
+			emp.password         AS emp_password,  
+			emp.name             AS emp_name,  
+			emp.department_id    AS emp_department_id,  
+			emp.authority        AS emp_authority,  
+			emp.created_at       AS emp_created_at,  
+			emp.updated_at       AS emp_updated_at,  
+			emp.invalid          AS emp_invalid,  
+			dep.id               AS dep_id,  
+			dep.name             AS dep_name      
 		FROM 
 			employees emp 
 		INNER JOIN 
@@ -95,16 +95,16 @@
 	
 	<select id="findAll" resultMap="employeeResult">
 		SELECT
-			emp.id               AS employee_id, 
-			emp.username         AS employee_username,  
-			emp.password         AS employee_password,  
-			emp.name             AS employee_name,    
-			emp.authority        AS employee_authority,  
-			emp.created_at       AS employee_created_at,  
-			emp.updated_at       AS employee_updated_at,  
-			emp.invalid          AS employee_invalid,  
-			dep.id               AS department_id,  
-			dep.name             AS department_name      
+			emp.id               AS emp_id, 
+			emp.username         AS emp_username,  
+			emp.password         AS emp_password,  
+			emp.name             AS emp_name,    
+			emp.authority        AS emp_authority,  
+			emp.created_at       AS emp_created_at,  
+			emp.updated_at       AS emp_updated_at,  
+			emp.invalid          AS emp_invalid,  
+			dep.id               AS dep_id,  
+			dep.name             AS dep_name      
 		FROM 
 			employees emp 
 		INNER JOIN 
@@ -115,16 +115,16 @@
 		
 	<select id="findByConditions" resultMap="employeeResult">
 		SELECT
-			emp.id               AS employee_id, 
-			emp.username         AS employee_username,  
-			emp.password         AS employee_password,  
-			emp.name             AS employee_name,    
-			emp.authority        AS employee_authority,  
-			emp.created_at       AS employee_created_at,  
-			emp.updated_at       AS employee_updated_at,  
-			emp.invalid          AS employee_invalid,  
-			dep.id               AS department_id,  
-			dep.name             AS department_name      
+			emp.id               AS emp_id, 
+			emp.username         AS emp_username,  
+			emp.password         AS emp_password,  
+			emp.name             AS emp_name,    
+			emp.authority        AS emp_authority,  
+			emp.created_at       AS emp_created_at,  
+			emp.updated_at       AS emp_updated_at,  
+			emp.invalid          AS emp_invalid,  
+			dep.id               AS dep_id,  
+			dep.name             AS dep_name      
 		FROM 
 			employees emp 
 		INNER JOIN 

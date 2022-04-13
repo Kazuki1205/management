@@ -1,5 +1,7 @@
 jQuery(function($){
+	
 	$.extend( $.fn.dataTable.defaults, {
+		
 		language: { url: "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json" }
 	});
 
@@ -37,35 +39,60 @@ jQuery(function($){
 
 
 $(function() {
+	
 	$(".alert").fadeOut(3000);
 });
 
 $(function(){
+	
     $("#form").on("click", function(){
+	
         if(window.confirm('入力内容を確認して問題なければOKを押してください')) {
+	
             return true;
         } else {
+	
             return false;
         }
     });
 });
 
 $(function(){
+	
     $("#form-delete").on("click", function(){
+	
         if(window.confirm('この情報を削除しますか？')) {
+	
             return true;
         } else {
+	
             return false;
         }
     });
 });
 
 $(function(){
+	
     $("#form-change").on("click", function(){
+	
         if(window.confirm('入力したパスワードに変更しますか？')) {
+	
             return true;
         } else {
+	
             return false;
         }
     });
+});
+
+$(document).ready(function() {
+	
+    $('.select').select2({
+	
+        // コンテナ幅のカスタマイズをサポートします。
+        width: '350px',
+	
+        // クリア可能な選択をサポートします。
+        allowClear: true
+	});
 });

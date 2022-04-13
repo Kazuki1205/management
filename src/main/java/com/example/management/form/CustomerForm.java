@@ -23,7 +23,6 @@ public class CustomerForm {
 	private String name; // 顧客名
 	
 	@Pattern(regexp = "^\\d{3}[-]{0,1}\\d{4}$", message = "郵便番号の形式で入力して下さい。(ハイフン無しでも可)")
-	@NotBlank(groups = ValidGroup1.class)
 	private String postalCode; // 郵便番号
 	
 	private String address; // 住所

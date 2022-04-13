@@ -25,5 +25,5 @@ public class Department {
 	
 	private LocalDateTime updatedAt; // 更新日時
 	
-	private Integer invalid; // 削除フラグ
+	private Short invalid; // 削除フラグ
 }

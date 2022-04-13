@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.management.mapper.ProductionMapper">
+
+	<resultMap id="productionResult" type="Production">
+		<id property="id" column="pro_id" />
+		<result property="lotNumber" column="pro_lot_number" />
+		<result property="lotQuantity" column="pro_lot_quantity" />
+		<result property="scheduledCompletionDate" column="pro_scheduled_completion_date" />
+		<result property="createdAt" column="pro_created_at" />
+		<result property="updatedAt" column="pro_updated_at" />
+		<result property="invalid" column="pro_invalid" />
+		<association property="item" javaType="Item">
+			<id property="id" column="ite_id" />
+			<result property="code" column="ite_code" />
+			<result property="name" column="ite_name" />
+		</association>
+	</resultMap>
+
+	<select id="findAll" resultMap="productionResult">
+		SELECT
+			pro.id                          AS pro_id, 
+			pro.lot_number                  AS pro_lot_number, 
+			pro.lot_quantity                AS pro_lot_quantity, 
+			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
+			pro.created_at                  AS pro_created_at, 
+			pro.updated_at                  AS pro_updated_at, 
+			pro.invalid                     AS pro_invalid, 
+			ite.id                          AS ite_id, 
+			ite.code                        AS ite_code, 
+			ite.name                        AS ite_name
+		FROM
+			productions pro
+		INNER JOIN
+			items ite
+		ON
+			pro.item_id = ite.id
+	</select>
+	
+	<select id="findByConditions" resultMap="productionResult">
+		SELECT
+			pro.id                          AS pro_id, 
+			pro.lot_number                  AS pro_lot_number, 
+			pro.lot_quantity                AS pro_lot_quantity, 
+			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
+			pro.created_at                  AS pro_created_at, 
+			pro.updated_at                  AS pro_updated_at, 
+			pro.invalid                     AS pro_invalid, 
+			ite.id                          AS ite_id, 
+			ite.code                        AS ite_code, 
+			ite.name                        AS ite_name
+		FROM
+			productions pro
+		INNER JOIN
+			items ite
+		ON
+			pro.item_id = ite.id
+		<where>
+			<if test="lotNumber != null">
+				pro.lot_number LIKE '%${lotNumber}%'
+			</if>
+			<if test="itemCode != null">
+				AND ite.code LIKE '%${itemCode}%'
+			</if>
+			<if test="itemName != null">
+				AND ite.name LIKE '%${itemName}%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="findByLotNumber" resultMap="productionResult">
+		SELECT
+			pro.id                          AS pro_id, 
+			pro.lot_number                  AS pro_lot_number, 
+			pro.lot_quantity                AS pro_lot_quantity, 
+			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
+			pro.created_at                  AS pro_created_at, 
+			pro.updated_at                  AS pro_updated_at, 
+			pro.invalid                     AS pro_invalid, 
+			ite.id                          AS ite_id, 
+			ite.code                        AS ite_code, 
+			ite.name                        AS ite_name
+		FROM
+			productions pro
+		INNER JOIN
+			items ite
+		ON
+			pro.item_id = ite.id
+		WHERE
+			lot_number = #{lotNumber}
+	</select>
+	
+	<select id="findById" parameterType="Long" resultMap="productionResult">
+		SELECT
+			pro.id                          AS pro_id, 
+			pro.lot_number                  AS pro_lot_number, 
+			pro.lot_quantity                AS pro_lot_quantity, 
+			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
+			pro.created_at                  AS pro_created_at, 
+			pro.updated_at                  AS pro_updated_at, 
+			pro.invalid                     AS pro_invalid, 
+			ite.id                          AS ite_id, 
+			ite.code                        AS ite_code, 
+			ite.name                        AS ite_name
+		FROM
+			productions pro
+		INNER JOIN
+			items ite
+		ON
+			pro.item_id = ite.id
+		WHERE
+			pro.id = #{id}
+	</select>
+	
+	<select id="getLotNumberByLatest" resultType="String">
+		SELECT
+			lot_number
+		FROM
+			productions
+		ORDER BY 
+			id DESC
+		LIMIT 1
+	</select>
+	
+	<insert id="create" parameterType="Production">
+		INSERT INTO
+			productions (
+				item_id, 
+				lot_number, 
+				lot_quantity, 
+				scheduled_completion_date
+			)
+		VALUES (
+			#{item.id}, 
+			#{lotNumber}, 
+			#{lotQuantity}, 
+			#{scheduledCompletionDate}
+		)
+	</insert>
+	
+	<update id="update" parameterType="Production">
+		UPDATE
+			productions
+		SET
+			item_id = #{item.id}, 
+			lot_number = #{lotNumber}, 
+			lot_quantity = #{lotQuantity}, 
+			scheduled_completion_date = #{scheduledCompletionDate}, 
+			updated_at = #{updatedAt}
+		WHERE
+			id = #{id}
+	</update>
+	
+	<update id="delete" parameterType="Production">
+		UPDATE
+			productions
+		SET
+			invalid = 1, 
+			updated_at = #{updatedAt}
+		WHERE
+			id = #{id}
+	</update>
+
+</mapper>

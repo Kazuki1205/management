@@ -22,7 +22,7 @@
 				<td>
 					<select th:field="*{departmentId}">
 						<option value="" selected>選択して下さい</option>
-						<option th:each="department : ${departmentList}" th:value="${department.id}" th:text="${department.name}"></option>			
+						<option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"></option>			
 					</select>
 					<span th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}" class="text-danger"></span>
 				</td>

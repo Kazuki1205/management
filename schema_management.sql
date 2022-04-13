@@ -2,9 +2,10 @@ DROP TABLE IF EXISTS employees CASCADE;
 DROP TABLE IF EXISTS departments CASCADE;
 DROP TABLE IF EXISTS items CASCADE;
 DROP TABLE IF EXISTS customers CASCADE;
+DROP TABLE IF EXISTS productions CASCADE;
 
 CREATE TABLE IF NOT EXISTS customers (
-	id SERIAL NOT NULL, 
+	id BIGSERIAL NOT NULL, 
 	code VARCHAR(4) UNIQUE NOT NULL, 
 	name VARCHAR(128) NOT NULL, 
 	postal_code VARCHAR(8) NOT NULL, 
@@ -14,7 +15,7 @@ CREATE TABLE IF NOT EXISTS customers (
 	phone_number VARCHAR(16) NOT NULL, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-	invalid INT DEFAULT 0, 
+	invalid SMALLINT DEFAULT 0, 
 	PRIMARY KEY (id)
 );
 
@@ -51,14 +52,14 @@ INSERT INTO customers (code, name, postal_code, first_address, second_address, t
 	('0030', 'SAMPLE会社30','671-2131','兵庫県','姫路市夢前町戸倉','6-12-1','07933-7-4354');
 
 CREATE TABLE IF NOT EXISTS items (
-	id SERIAL NOT NULL, 
+	id BIGSERIAL NOT NULL, 
 	code VARCHAR(8) UNIQUE NOT NULL, 
 	name VARCHAR(32) NOT NULL, 
 	unit_price BIGINT NOT NULL, 
 	carry_over_stock INT DEFAULT 0 NOT NULL, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-	invalid INT DEFAULT 0, 
+	invalid SMALLINT DEFAULT 0, 
 	PRIMARY KEY (id)
 );
 
@@ -115,12 +116,12 @@ INSERT INTO items (code, name, unit_price, carry_over_stock) VALUES
 	('00000050','E010',21600,20);
 
 CREATE TABLE IF NOT EXISTS departments (
-	id SERIAL NOT NULL, 
+	id BIGSERIAL NOT NULL, 
 	code VARCHAR(4) UNIQUE NOT NULL, 
 	name VARCHAR(32) NOT NULL, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-	invalid INT DEFAULT 0, 
+	invalid SMALLINT DEFAULT 0, 
 	PRIMARY KEY (id)
 );
 
@@ -138,19 +139,19 @@ INSERT INTO departments (code, name) VALUES
 	('0011', 'C営業所');
 
 CREATE TABLE IF NOT EXISTS employees (
-	id SERIAL NOT NULL, 
+	id BIGSERIAL NOT NULL, 
 	username VARCHAR(4) UNIQUE NOT NULL,
 	password VARCHAR(255) NOT NULL, 
 	name VARCHAR(32) NOT NULL, 
-	department_id INT NOT NULL, 
+	department_id BIGINT NOT NULL, 
 	authority VARCHAR(32) DEFAULT 'ROLE_USER' NOT NULL, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-	invalid INT DEFAULT 0, 
+	invalid SMALLINT DEFAULT 0, 
 	PRIMARY KEY (id)
 );
 
-ALTER TABLE employees ADD CONSTRAINT FK_employee_department FOREIGN KEY (department_id) REFERENCES departments;
+ALTER TABLE employees ADD CONSTRAINT FK_employees_departments FOREIGN KEY (department_id) REFERENCES departments;
 
 INSERT INTO employees (username, password, name, department_id, authority) VALUES 
 	('0001', '$2a$10$FTvFiXdJvVsngfi5gdwjZ.NRo9vz.FZ61LcDHUOogQddwJWwgGdJK', 'admin', 1, 'ROLE_ADMIN'); 
@@ -167,6 +168,18 @@ INSERT INTO employees (username, password, name, department_id) VALUES
    	('0010', '$2a$10$zJoCSWp.oDKvXBhLiDfhQO01W6z/VzarQAqhRbRwR6rMU.BuuxbEG', '社員I', 9),
    	('0011', '$2a$10$o4YyGGF0cospwLxq2s4yLe./aduDsvgaWlWgeyZxhQPtHyVcFZoji', '社員J', 10),
    	('0012', '$2a$10$IcVOaiPkuVkqzisPg71Re./xDVgqcWHRWF39Iiz6afWzoN2Jn33d2', '社員K', 11);
+   	
+CREATE TABLE IF NOT EXISTS productions (
+	id BIGSERIAL NOT NULL, 
+	item_id BIGINT NOT NULL, 
+	lot_number VARCHAR(16) UNIQUE NOT NULL, 
+	lot_quantity INT NOT NULL, 
+	scheduled_completion_date DATE NOT NULL, 
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	invalid SMALLINT DEFAULT 0, 
+	PRIMARY KEY (id)
+);
    	
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO management;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO management;

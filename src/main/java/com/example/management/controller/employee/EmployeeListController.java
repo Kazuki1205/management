@@ -48,17 +48,18 @@ public class EmployeeListController {
 	 * 
 	 * @return 部署型のリスト
 	 */
-	@ModelAttribute(name = "departmentList")
-	public List<Department> getDepartmentList() {
+	@ModelAttribute(name = "departments")
+	public List<Department> getDepartments() {
 		
-		List<Department> departmentList = departmentMapper.findAll();
+		List<Department> departments = departmentMapper.findAll();
 		
-		return departmentList;
+		return departments;
 	}
 	
 	/**
 	 * 社員マスタ一覧画面を表示
 	 * 
+	 * @param employeeForm 社員フォーム
 	 * @param username 検索条件に入力された社員ID
 	 * @param name 検索条件に入力された社員名
 	 * @param departmentId 検索条件に入力された部署ID

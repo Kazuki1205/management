@@ -6,30 +6,30 @@
 <mapper namespace="com.example.management.mapper.DepartmentMapper">
 
 	<resultMap id="departmentResult" type="Department">
-		<id property="id" column="department_id" />
-		<result property="code" column="department_code" />
-		<result property="name" column="department_name" />
-		<result property="createdAt" column="department_created_at" />
-		<result property="updatedAt" column="department_updated_at" />
-		<result property="invalid" column="department_invalid" />
+		<id property="id" column="dep_id" />
+		<result property="code" column="dep_code" />
+		<result property="name" column="dep_name" />
+		<result property="createdAt" column="dep_created_at" />
+		<result property="updatedAt" column="dep_updated_at" />
+		<result property="invalid" column="dep_invalid" />
 		<collection property="employees" ofType="Employee">
-			<id property="id" column="employee_id" />
-			<result property="username" column="employee_username" />
-			<result property="name" column="employee_name" />
+			<id property="id" column="emp_id" />
+			<result property="username" column="emp_username" />
+			<result property="name" column="emp_name" />
 		</collection>
 	</resultMap>
 
 	<select id="findAll" resultMap="departmentResult">
 		SELECT 
-			dep.id                  AS department_id, 
-			dep.code                AS department_code, 
-			dep.name                AS department_name, 
-			dep.created_at          AS department_created_at, 
-			dep.updated_at          AS department_updated_at, 
-			dep.invalid             AS department_invalid, 
-			emp.id                  AS employee_id, 
-			emp.username            AS employee_username, 
-			emp.name                AS employee_name 
+			dep.id                  AS dep_id, 
+			dep.code                AS dep_code, 
+			dep.name                AS dep_name, 
+			dep.created_at          AS dep_created_at, 
+			dep.updated_at          AS dep_updated_at, 
+			dep.invalid             AS dep_invalid, 
+			emp.id                  AS emp_id, 
+			emp.username            AS emp_username, 
+			emp.name                AS emp_name 
 		FROM 
 			departments dep
 		LEFT JOIN
@@ -42,15 +42,15 @@
 	
 	<select id="findByConditions" resultMap="departmentResult">
 		SELECT 
-			dep.id                  AS department_id, 
-			dep.code                AS department_code, 
-			dep.name                AS department_name, 
-			dep.created_at          AS department_created_at, 
-			dep.updated_at          AS department_updated_at, 
-			dep.invalid             AS department_invalid, 
-			emp.id                  AS employee_id, 
-			emp.username            AS employee_username, 
-			emp.name                AS employee_name 
+			dep.id                  AS dep_id, 
+			dep.code                AS dep_code, 
+			dep.name                AS dep_name, 
+			dep.created_at          AS dep_created_at, 
+			dep.updated_at          AS dep_updated_at, 
+			dep.invalid             AS dep_invalid, 
+			emp.id                  AS emp_id, 
+			emp.username            AS emp_username, 
+			emp.name                AS emp_name 
 		FROM 
 			departments dep
 		LEFT JOIN
@@ -71,15 +71,15 @@
 	
 	<select id="findById" parameterType="Long" resultMap="departmentResult">
 		SELECT 
-			dep.id                  AS department_id, 
-			dep.code                AS department_code, 
-			dep.name                AS department_name, 
-			dep.created_at          AS department_created_at, 
-			dep.updated_at          AS department_updated_at, 
-			dep.invalid             AS department_invalid, 
-			emp.id                  AS employee_id, 
-			emp.username            AS employee_username, 
-			emp.name                AS employee_name 
+			dep.id                  AS dep_id, 
+			dep.code                AS dep_code, 
+			dep.name                AS dep_name, 
+			dep.created_at          AS dep_created_at, 
+			dep.updated_at          AS dep_updated_at, 
+			dep.invalid             AS dep_invalid, 
+			emp.id                  AS emp_id, 
+			emp.username            AS emp_username, 
+			emp.name                AS emp_name 
 		FROM 
 			departments dep
 		LEFT JOIN
@@ -94,15 +94,15 @@
 	
 	<select id="findByCode" parameterType="String" resultMap="departmentResult">
 		SELECT 
-			dep.id                  AS department_id, 
-			dep.code                AS department_code, 
-			dep.name                AS department_name, 
-			dep.created_at          AS department_created_at, 
-			dep.updated_at          AS department_updated_at, 
-			dep.invalid             AS department_invalid, 
-			emp.id                  AS employee_id, 
-			emp.username            AS employee_username, 
-			emp.name                AS employee_name 
+			dep.id                  AS dep_id, 
+			dep.code                AS dep_code, 
+			dep.name                AS dep_name, 
+			dep.created_at          AS dep_created_at, 
+			dep.updated_at          AS dep_updated_at, 
+			dep.invalid             AS dep_invalid, 
+			emp.id                  AS emp_id, 
+			emp.username            AS emp_username, 
+			emp.name                AS emp_name 
 		FROM 
 			departments dep
 		LEFT JOIN

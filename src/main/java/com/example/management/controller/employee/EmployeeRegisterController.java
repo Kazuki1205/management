@@ -52,14 +52,14 @@ public class EmployeeRegisterController {
 	 * 社員マスタ登録画面のセレクトボックスの部署一覧を取得する。
 	 * ※modelに自動的にaddAttributeされる。
 	 * 
-	 * @return 部署型のリスト
+	 * @return departments 部署型のリスト
 	 */
-	@ModelAttribute(name = "departmentList")
-	public List<Department> getDepartmentList() {
+	@ModelAttribute(name = "departments")
+	public List<Department> getDepartments() {
 		
-		List<Department> departmentList = departmentMapper.findAll();
+		List<Department> departments = departmentMapper.findAll();
 		
-		return departmentList;
+		return departments;
 	}
 	
 	/**

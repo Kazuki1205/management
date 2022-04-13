@@ -54,7 +54,7 @@ public interface ItemMapper {
 	/**
 	 * 商品テーブルに1件新規登録する。
 	 * 
-	 * @param item
+	 * @param item 商品クラス
 	 */
 	public void create(Item item);
 	

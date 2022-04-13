@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	  layout:decorate="~{layouts/layout}">
+<body>
+	<div layout:fragment="contents">
+		<table class="table table-borderd" th:object="${production}">
+			<tr>
+				<th>製作番号</th>
+				<td th:text="*{lotNumber}" />
+			</tr>
+			<tr>
+				<th>商品コード</th>
+				<td th:text="*{item.code}" />
+			</tr>
+			<tr>
+				<th>商品名</th>
+				<td th:text="*{item.name}" />
+			</tr>
+			<tr>
+				<th>製作数</th>
+				<td th:text="*{lotQuantity}" />
+			</tr>
+			<tr>
+				<th>完成予定日</th>
+				<td th:text="*{#temporals.format(scheduledCompletionDate, 'yy/MM/dd')}" />
+			</tr>
+			<tr>
+				<th>完成数</th>
+				<td />
+			</tr>
+			<tr>
+				<th>不良数</th>
+				<td />
+			</tr>
+			<tr>
+				<th>完成日</th>
+				<td />
+			</tr>
+			<tr>
+				<th>登録日時</th>
+				<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}" />
+			</tr>
+			<tr>
+				<th>更新日時</th>
+				<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}" />
+			</tr>
+			<tr>
+				<th>区分</th>
+				<td th:text="*{invalid} == 0 ? '有効' : '削除済'" />
+			</tr>
+		</table>
+		<hr>
+		<p class="text-center h2">入庫履歴</p>
+		<table class="table table-borderd">
+			<thead>
+				<tr>
+					<th>入庫日</th>
+					<th>入庫数量</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td />
+					<td />
+				</tr>
+			</tbody>
+		</table>
+		<a th:href="@{/production/log}">製作履歴に戻る</a>
+	</div>
+</body>
+</html>

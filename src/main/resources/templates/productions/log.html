@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	  layout:decorate="~{layouts/layout}">
+<body>
+	<div layout:fragment="contents">
+		<div class="container-fulid">
+			<div class="row">
+				<div class="col-md-3 border-end text-center">
+					<h3>検索条件</h3>
+					<hr>
+					<form th:action="@{/production/log}" method="get" th:object="${productionForm}">
+						<table class="form-table table table-bordered">
+							<tr>
+								<th><label for="lotNumber">製作番号</label></th>
+								<td><input type="text" th:field="*{lotNumber}"></td>
+							</tr>
+							<tr>
+								<th><label for="itemCode">商品コード</label></th>
+								<td><input type="text" th:field="*{itemCode}"></td>
+							</tr>
+							<tr>
+								<th><label for="itemName">商品名</label></th>
+								<td><input type="text" th:field="*{itemName}"></td>
+							</tr>
+						</table>
+						<input type="submit" value="検索" />
+					</form>	
+				</div>
+				<div class="col-md-9">
+					<a th:href="@{/production/register}" class="h4">新規登録</a>
+					<table id="DataTables" class="text-center master-log table table-bordered">
+						<thead>
+							<tr class="border-3">
+								<th>詳細</th>
+								<th>編集</th>
+								<th>製作番号</th>
+								<th>商品コード</th>
+								<th>商品名</th>
+								<th>製作数</th>
+								<th>完成予定日</th>
+								<th>完成数(予定)</th>
+								<th>不良数(予定)</th>
+								<th>完成日(予定)</th>
+								<th>登録日時</th>
+								<th>更新日時</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="production : ${productions}" th:object="${production}" 
+								th:class="*{invalid} == 1 ? 'bg-secondary' : '' ">
+								<td>
+									<a th:href="@{/production/log/{id}(id=*{id})}">■</a>
+								</td>
+								<td>
+									<th:block th:if="*{invalid} == 0">
+										<a th:href="@{/production/edit/{id}(id=*{id})}">●</a>
+									</th:block>
+								</td>
+								<td th:text="*{lotNumber}"></td>
+								<td th:text="*{item.code}"></td>
+								<td th:text="*{item.name}"></td>
+								<td th:text="*{lotQuantity}"></td>
+								<td th:text="*{#temporals.format(scheduledCompletionDate, 'yy/MM/dd')}"></td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>
+								<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

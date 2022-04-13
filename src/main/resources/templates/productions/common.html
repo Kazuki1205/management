@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="table">
+	<table class="table table-bordered">
+		<tr>
+			<th>
+				<label for="lotNumber">製作番号</label>
+			</th>
+			<td>
+				<input type="text" th:field="*{lotNumber}" class="bg-secondary" readonly />
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="itemCode">商品名</label>
+			</th>
+			<td>
+				<select th:field="*{itemId}" class="select">
+					<option value="" selected>選択して下さい</option>
+					<option th:each="item : ${items}" th:value="${item.id}" th:text="|商品コード:${item.code} 商品名:${item.name}|"></option>
+				</select>
+				<span th:if="${#fields.hasErrors('itemId')}" th:errors="*{itemId}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="lotQuantity">製作数</label>
+			</th>
+			<td>
+				<input type="number" th:field="*{lotQuantity}" min="1" />
+				<span th:if="${#fields.hasErrors('lotQuantity')}" th:errors="*{lotQuantity}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="scheduledCompletionDate">完成予定日</label>
+			</th>
+			<td>
+				<input type="date" th:field="*{scheduledCompletionDate}" />
+				<span th:if="${#fields.hasErrors('scheduledCompletionDate')}" th:errors="*{scheduledCompletionDate}" class="text-danger"></span>
+			</td>
+		</tr>
+	</table>
+</div>
+</html>

@@ -39,7 +39,8 @@ public class ItemListController {
 	/**
 	 * 商品マスタ一覧画面を表示
 	 * 
-	 * @param itemCode 検索条件に入力された商品コード
+	 * @param itemForm 商品フォーム
+	 * @param code 検索条件に入力された商品コード
 	 * @param name 検索条件に入力された商品名
 	 * @param model テンプレートへ渡す情報
 	 * 

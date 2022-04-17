@@ -27,8 +27,4 @@ public class ItemForm {
 	@NotNull(groups = ValidGroup1.class, message="入力して下さい。")
 	@PositiveOrZero(groups = ValidGroup2.class, message = "「0」以上の数値を設定して下さい。")
 	private Long unitPrice; // 単価
-	
-	@NotNull(groups = ValidGroup1.class, message="入力して下さい。")
-	@PositiveOrZero(groups = ValidGroup2.class, message = "「0」以上の数値を設定して下さい。")
-	private Long carryOverStock; // 繰越在庫
 }

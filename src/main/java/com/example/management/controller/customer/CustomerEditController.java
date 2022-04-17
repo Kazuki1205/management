@@ -63,7 +63,7 @@ public class CustomerEditController {
 		modelMapper.typeMap(Customer.class, CustomerForm.class).addMappings(mapper -> mapper.skip(CustomerForm::setAddress));
 		
 		// ID情報を基にDBから顧客テーブルを検索し顧客クラスとして取得、顧客フォームへ詰め替える。
-		CustomerForm customerForm = modelMapper.map(customerMapper.findById(id), CustomerForm.class);
+		CustomerForm customerForm = modelMapper.map(customerMapper.findByIdExcludeInvalid(id), CustomerForm.class);
 		
 		model.addAttribute("customerForm", customerForm);
 		

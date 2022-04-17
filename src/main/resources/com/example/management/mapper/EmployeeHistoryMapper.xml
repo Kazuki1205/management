@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.management.mapper.EmployeeHistoryMapper">
+
+	<resultMap id="employeeHistoryResult" type="EmployeeHistory">
+		<id property="id" column="emp_id" />
+		<result property="employeeId" column="emp_employee_id" />
+		<result property="username" column="emp_username" />
+		<result property="name" column="emp_name" />
+		<result property="updatedAt" column="emp_updated_at" />
+		<association property="department" javaType="Department">
+			<id property="id" column="dep_id" />
+			<result property="code" column="dep_code" />
+			<result property="name" column="dep_name" />
+		</association>
+	</resultMap>
+
+	<!--　社員履歴テーブルを社員IDで内部結合(社員IDでグループ化、更新日時が最大のレコードと結合)し、引数で受け取った社員IDを基に、該当レコードを取得する。 -->
+	<select id="findByUserIdByLatest" parameterType="Long" resultMap="employeeHistoryResult">
+		SELECT
+			emp.id                     AS emp_id, 
+			emp.employee_id            AS emp_employee_id, 
+			emp.username               AS emp_username, 
+			emp.name                   AS emp_name, 
+			emp.updated_at             AS emp_updated_at, 
+			dep.id                     AS dep_id, 
+			dep.code                   AS dep_code, 
+			dep.name                   AS dep_name
+		FROM
+			employees_history emp <!-- 社員履歴テーブル -->
+		INNER JOIN
+			departments dep <!-- 部署テーブル -->
+		ON
+			emp.department_id = dep.id <!-- 部署IDで結合 -->
+		INNER JOIN (
+			SELECT
+				employee_id, 
+				max(updated_at) AS max_updated_at <!-- 更新日時の最大値 -->
+			FROM 
+				employees_history <!-- 社員履歴テーブル -->
+			GROUP BY
+				employee_id <!-- 社員IDでグループ化 -->
+		) a <!-- サブクエリの社員履歴テーブル -->
+		ON 
+			emp.employee_id = a.employee_id <!-- メインとサブクエリの社員IDで結合 -->
+		AND
+			emp.updated_at = a.max_updated_at <!-- メインの更新日時とサブクエリの最大更新日時で結合 -->
+		WHERE
+			emp.employee_id = #{employeeId} <!-- 引数の社員IDと一致した場合 -->
+	</select>
+
+</mapper>

@@ -8,13 +8,14 @@ import com.example.management.model.Item;
  * MyBatisで使用するMapperクラス(@Mapperアノテーションは設定にて省略)
  */
 public interface ItemMapper {
-
+	
 	/**
 	 * 商品テーブルの全てのレコードを取得する。
+	 * 削除済みは除く
 	 * 
 	 * @return List<Item> リスト型の商品クラス
 	 */
-	public List<Item> findAll();
+	public List<Item> findAllExcludeInvalid();
 	
 	/**
 	 * 商品テーブルのレコードを、引数のあいまい検索で取得する。
@@ -34,6 +35,16 @@ public interface ItemMapper {
 	 * @return Item 商品クラス
 	 */
 	public Item findById(Long id);
+
+	/**
+	 * IDを基に商品テーブルから合致したレコードを取得する。
+	 * 削除済みは除く
+	 * 
+	 * @param id ID
+	 * 
+	 * @return Item 商品クラス
+	 */
+	public Item findByIdExcludeInvalid(Long id);
 	
 	/**
 	 * 商品コードを基に商品テーブルから合致したレコードを取得する。

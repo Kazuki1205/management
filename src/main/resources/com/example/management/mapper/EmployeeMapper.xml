@@ -5,6 +5,7 @@
 	
 <mapper namespace="com.example.management.mapper.EmployeeMapper">
 
+	<!-- SQL結果に対応した社員クラス -->
 	<resultMap id="employeeResult" type="Employee">
 		<id property="id" column="emp_id" />
 		<result property="username" column="emp_username" />
@@ -19,8 +20,9 @@
 			<result property="name" column="dep_name" />
 		</association>
 	</resultMap>
-	
-		<select id="findByUsernameExcludeInvalid" parameterType="String" resultMap="employeeResult">
+
+	<!-- 引数で受け取った社員ID(username)を基に、該当レコードを取得する。 -->
+	<select id="findByUsername" parameterType="String" resultMap="employeeResult">
 		SELECT
 			emp.id               AS emp_id, 
 			emp.username         AS emp_username,  
@@ -34,17 +36,42 @@
 			dep.id               AS dep_id,  
 			dep.name             AS dep_name      
 		FROM 
-			employees emp 
+			employees emp <!-- 社員テーブル -->
 		INNER JOIN 
-			departments dep 
+			departments dep <!-- 部署テーブル -->
 		ON 
-			emp.department_id = dep.id
+			emp.department_id = dep.id <!-- 部署IDで結合 -->
 		WHERE
-			emp.username = #{username}
-		AND 
-			emp.invalid = 0
+			emp.username = #{username} <!-- 引数の社員ID(username)と一致した場合 -->
 	</select>
 	
+	<!-- 引数で受け取った社員ID(username)を基に、該当レコードを取得する。※削除済みを除く -->
+	<select id="findByUsernameExcludeInvalid" parameterType="String" resultMap="employeeResult">
+		SELECT
+			emp.id               AS emp_id, 
+			emp.username         AS emp_username,  
+			emp.password         AS emp_password,  
+			emp.name             AS emp_name,  
+			emp.department_id    AS emp_department_id,  
+			emp.authority        AS emp_authority,  
+			emp.created_at       AS emp_created_at,  
+			emp.updated_at       AS emp_updated_at,  
+			emp.invalid          AS emp_invalid,  
+			dep.id               AS dep_id,  
+			dep.name             AS dep_name      
+		FROM 
+			employees emp <!-- 社員テーブル -->
+		INNER JOIN 
+			departments dep <!-- 部署テーブル -->
+		ON 
+			emp.department_id = dep.id <!-- 部署IDで結合 -->
+		WHERE
+			emp.username = #{username} <!-- 社員ID(username)と一致した場合 -->
+		AND 
+			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
+	</select>
+	
+	<!-- 引数で受け取ったIDを基に、該当レコードを取得する。※削除済みを除く -->
 	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="employeeResult">
 		SELECT
 			emp.id               AS emp_id, 
@@ -59,17 +86,18 @@
 			dep.id               AS dep_id,  
 			dep.name             AS dep_name      
 		FROM 
-			employees emp 
+			employees emp <!-- 社員テーブル -->
 		INNER JOIN 
-			departments dep 
+			departments dep <!-- 部署テーブル -->
 		ON 
-			emp.department_id = dep.id
+			emp.department_id = dep.id <!-- 部署IDで結合 -->
 		WHERE
-			emp.id = #{id}
+			emp.id = #{id} <!-- 引数のIDと一致した場合 -->
 		AND 
-			emp.invalid = 0
+			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
 	</select>
 	
+	<!-- 引数で受け取ったIDを基に、該当レコードを取得する。 -->
 	<select id="findById" parameterType="Long" resultMap="employeeResult">
 		SELECT
 			emp.id               AS emp_id, 
@@ -84,35 +112,16 @@
 			dep.id               AS dep_id,  
 			dep.name             AS dep_name      
 		FROM 
-			employees emp 
+			employees emp <!-- 社員テーブル -->
 		INNER JOIN 
-			departments dep 
+			departments dep <!-- 部署テーブル -->
 		ON 
-			emp.department_id = dep.id
+			emp.department_id = dep.id <!-- 部署IDで結合 -->
 		WHERE
-			emp.id = #{id}
-	</select>
-	
-	<select id="findAll" resultMap="employeeResult">
-		SELECT
-			emp.id               AS emp_id, 
-			emp.username         AS emp_username,  
-			emp.password         AS emp_password,  
-			emp.name             AS emp_name,    
-			emp.authority        AS emp_authority,  
-			emp.created_at       AS emp_created_at,  
-			emp.updated_at       AS emp_updated_at,  
-			emp.invalid          AS emp_invalid,  
-			dep.id               AS dep_id,  
-			dep.name             AS dep_name      
-		FROM 
-			employees emp 
-		INNER JOIN 
-			departments dep 
-		ON 
-			emp.department_id = dep.id
+			emp.id = #{id} <!-- 引数のIDと一致した場合 -->
 	</select>
 		
+	<!-- 引数で受け取った社員ID(username)・社員名・部署IDを基に、あいまい検索を掛ける -->
 	<select id="findByConditions" resultMap="employeeResult">
 		SELECT
 			emp.id               AS emp_id, 
@@ -126,49 +135,62 @@
 			dep.id               AS dep_id,  
 			dep.name             AS dep_name      
 		FROM 
-			employees emp 
+			employees emp <!-- 社員テーブル -->
 		INNER JOIN 
-			departments dep 
+			departments dep <!-- 部署テーブル -->
 		ON 
-			emp.department_id = dep.id
+			emp.department_id = dep.id <!-- 部署IDで結合 -->
 		<where>
 			<if test="username != null">
-				emp.username LIKE '%${username}%'
+				emp.username LIKE '%${username}%' <!-- 引数の社員ID(username)がnullでない場合、あいまい検索 -->
 			</if>
 			<if test="name != null">
-				AND emp.name LIKE '%${name}%'
+				AND emp.name LIKE '%${name}%' <!-- 引数の社員ID(username)がnullでない場合、あいまい検索 -->
 			</if>
 			<if test="departmentId != null">
-				AND emp.department_id = #{departmentId}
+				AND emp.department_id = #{departmentId} <!-- 引数の社員ID(username)がnullでない場合、一致するかどうか -->
 			</if>
 		</where>
 		ORDER BY
-			emp.id
+			emp.id <!-- IDの昇順 -->
 	</select>
 	
+	<!-- 社員テーブルのレコード数を取得する -->
 	<select id="countAll" resultType="Integer">
 		SELECT COUNT
 			(*)
 		FROM
-			employees
+			employees <!-- 社員テーブル -->
 	</select>
 	
+	<!-- 社員テーブルに1件データを挿入する。 -->
 	<insert id="create" parameterType="Employee">
 		INSERT INTO
-			employees (
+			employees ( <!-- 社員テーブル -->
 				username, 
 				password, 
 				name, 
-				department_id
+				department_id, 
+				authority
 			)
 		VALUES (
 				#{username}, 
 				#{password}, 
 				#{name}, 
-				#{department.id}
+				#{department.id}, 
+					<if test="department.id == 1">
+						'ROLE_OFFICE' <!-- 部署IDが「1」の場合、OFFICE権限を付与する -->
+					</if>
+					<if test="department.id &gt;= 2 and department.id &lt;= 8">
+						'ROLE_FIELD' <!-- 部署IDが「2～8」の場合、FIELD権限を付与する -->
+					</if>
+					<if test="department.id &gt;= 9">
+						'ROLE_SALE' <!-- 部署IDが「9～」の場合、SALE権限を付与する -->
+					</if>
 		)
 	</insert>
 	
+	<!-- 引数で受け取ったIDを基に、社員テーブルの1件のデータを更新する。 -->
 	<update id="update" parameterType="Employee">
 		UPDATE 
 			employees
@@ -176,29 +198,40 @@
 			username = #{username}, 
 			name = #{name}, 
 			department_id = #{department.id},  
-			updated_at = #{updatedAt}
+			updated_at = #{updatedAt}, 
+				<if test="department.id == 1">
+					authority = 'ROLE_OFFICE' <!-- 部署IDが「1」の場合、OFFICE権限を付与する -->
+				</if>
+				<if test="department.id &gt;= 2 and department.id &lt;= 8">
+					authority = 'ROLE_FIELD' <!-- 部署IDが「2～8」の場合、FIELD権限を付与する -->
+				</if>
+				<if test="department.id &gt;= 9">
+					authority = 'ROLE_SALE' <!-- 部署IDが「9～」の場合、SALE権限を付与する -->
+				</if>
 		WHERE 
-			id = #{id}
+			id = #{id} <!-- 引数のIDと一致した場合 -->
 	</update>
 	
+	<!-- 引数で受け取ったID・パスワードを基に、社員テーブルの1件のパスワードを更新する。 -->
 	<update id="updatePassword" parameterType="Employee">
 		UPDATE 
-			employees
+			employees <!-- 社員テーブル -->
 		SET 
 			password = #{password}, 
 			updated_at = #{updatedAt}
 		WHERE 
-			id = #{id}
+			id = #{id} <!-- 引数のIDと一致した場合 -->
 	</update>
 	
+	<!-- 引数で受け取ったIDを基に、社員テーブルの1件のデータを削除(論理)する。 -->
 	<update id="delete" parameterType="Employee">
 		UPDATE 
-			employees 
+			employees <!-- 社員テーブル -->
 		SET 
 			invalid = 1, 
 			updated_at = #{updatedAt}
 		WHERE 
-			id = #{id}
+			id = #{id} <!-- 引数のIDと一致した場合 -->
 	</update>
 	
 </mapper>

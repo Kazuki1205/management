@@ -2,7 +2,6 @@ package com.example.management.controller.production;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.ProductionForm;
 import com.example.management.mapper.ItemMapper;
@@ -57,12 +57,19 @@ public class ProductionRegisterController {
 	@ModelAttribute(name = "items")
 	public List<Item> getItems() {
 		
-		List<Item> items = itemMapper.findAll();
+		List<Item> items = itemMapper.findAllExcludeInvalid();
 		
 		return items;
 	}
 	
-	
+	/**
+	 * 製作手配登録画面を表示
+	 * 
+	 * @param productionForm 製作手配フォーム ※@ModelAttributeにより、無ければnewされる。
+	 * @param model テンプレートへ渡す情報
+	 * 
+	 * @return 製作手配新規登録テンプレート
+	 */
 	@GetMapping("/production/register")
 	public String register(@ModelAttribute("productionForm") ProductionForm productionForm, Model model) {
 		
@@ -74,10 +81,21 @@ public class ProductionRegisterController {
 		return "productions/register";
 	}
 	
-	
+	/**
+	 * 製作手配新規登録メソッド
+	 * 
+	 * @param productionForm 製作手配フォーム
+	 * @param bindingResult 製作手配フォームのバリデーション結果
+	 * @param redirectAttributes リダイレクト先へ渡す情報
+	 * @param model テンプレートへ渡す情報
+	 * 
+	 * @return 製作手配新規登録テンプレート/リダイレクト
+	 */
 	@PostMapping("/production/register/new")
 	public String create(@Validated(ValidOrder.class) @ModelAttribute("productionForm") ProductionForm productionForm, 
-						 BindingResult bindingResult, Model model) {
+						 BindingResult bindingResult, 
+						 RedirectAttributes redirectAttributes, 
+						 Model model) {
 		
 		model.addAttribute("hasMessage", true);
 		
@@ -88,15 +106,17 @@ public class ProductionRegisterController {
 			model.addAttribute("message", "登録に失敗しました。");
 		} else {
 			
-			// 製作番号が既に使用されている場合、エラーメッセージを表示。使用されていければDBへINSERT処理、正常処理メッセージを表示。
+			// 製作番号が既に使用されている場合、エラーメッセージを表示。使用されていなければDBへINSERT処理、正常処理メッセージを表示。
 			if (productionMapper.findByLotNumber(productionForm.getLotNumber()) == null) {
 				
 				productionService.create(productionForm);
 				
-				productionForm = new ProductionForm();
+				// フォーム再送を防ぐ為、リダイレクト。
+				redirectAttributes.addFlashAttribute("hasMessage", true);
+				redirectAttributes.addFlashAttribute("class", "alert-info");
+				redirectAttributes.addFlashAttribute("message", "登録に成功しました。");	
 				
-				model.addAttribute("class", "alert-info");
-				model.addAttribute("message", "登録に成功しました。");
+				return "redirect:/production/register";
 			} else {
 				
 				model.addAttribute("class", "alert-danger");

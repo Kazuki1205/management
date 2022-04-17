@@ -11,6 +11,15 @@ public interface EmployeeMapper {
 	
 	/**
 	 * 社員IDを基に社員テーブルから合致したレコードを取得する。
+	 * 
+	 * @param username 社員ID
+	 * 
+	 * @return Employee 社員クラス
+	 */
+	public Employee findByUsername(String username);
+	
+	/**
+	 * 社員IDを基に社員テーブルから合致したレコードを取得する。
 	 * 削除済みは除く
 	 * 
 	 * @param username 社員ID
@@ -37,13 +46,6 @@ public interface EmployeeMapper {
 	 * @return Employee 社員クラス
 	 */
 	public Employee findById(Long id);
-
-	/**
-	 * 社員テーブルの全てのレコードを取得する。
-	 * 
-	 * @return List<Employee> リスト型の社員クラス
-	 */
-	public List<Employee> findAll();
 	
 	/**
 	 * 社員テーブルのレコードを、引数のあいまい検索で取得する。

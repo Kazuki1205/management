@@ -10,13 +10,6 @@ import com.example.management.model.Customer;
 public interface CustomerMapper {
 
 	/**
-	 * 顧客テーブルの全てのレコードを取得する。
-	 * 
-	 * @return List<Customer> リスト型の顧客クラス
-	 */
-	public List<Customer> findAll();
-	
-	/**
 	 * 顧客テーブルのレコードを、引数のあいまい検索で取得する。
 	 * 
 	 * @param code 顧客コード
@@ -35,6 +28,16 @@ public interface CustomerMapper {
 	 * @return Customer 顧客クラス
 	 */
 	public Customer findById(Long id);
+	
+	/**
+	 * IDを基に顧客テーブルから合致したレコードを取得する。
+	 * 削除済みは除く
+	 * 
+	 * @param id ID
+	 * 
+	 * @return Customer 顧客クラス
+	 */
+	public Customer findByIdExcludeInvalid(Long id);
 	
 	/**
 	 * 顧客コードを基に顧客テーブルから合致したレコードを取得する。

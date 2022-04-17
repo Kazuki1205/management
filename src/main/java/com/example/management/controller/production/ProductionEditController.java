@@ -62,7 +62,7 @@ public class ProductionEditController {
 	@ModelAttribute(name = "items")
 	public List<Item> getItems() {
 		
-		List<Item> items = itemMapper.findAll();
+		List<Item> items = itemMapper.findAllExcludeInvalid();
 		
 		return items;
 	}
@@ -80,7 +80,7 @@ public class ProductionEditController {
 	public String edit(@PathVariable("id") Long id, Model model) {
 		
 		// ID情報を基にDBから製作手配テーブルを検索し製作手配クラスとして取得、製作手配フォームへ詰め替える。
-		ProductionForm productionForm = modelMapper.map(productionMapper.findById(id), ProductionForm.class);
+		ProductionForm productionForm = modelMapper.map(productionMapper.findByIdExcludeInvalid(id), ProductionForm.class);
 		
 		model.addAttribute("productionForm", productionForm);
 		

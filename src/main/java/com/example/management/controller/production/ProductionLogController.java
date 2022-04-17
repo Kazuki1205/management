@@ -2,7 +2,6 @@ package com.example.management.controller.production;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.management.form.ProductionForm;
 import com.example.management.mapper.ProductionMapper;
 import com.example.management.model.Production;
-import com.example.management.service.ProductionService;
 
 /**
  * 製作手配の履歴画面コントローラー
@@ -23,13 +21,7 @@ import com.example.management.service.ProductionService;
 public class ProductionLogController {
 	
 	@Autowired
-	private ProductionService productionService;
-	
-	@Autowired
 	private ProductionMapper productionMapper;
-	
-	@Autowired
-	private ModelMapper modelMapper;
 
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド

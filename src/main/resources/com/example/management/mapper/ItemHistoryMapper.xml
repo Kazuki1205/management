@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.management.mapper.ItemHistoryMapper">
+	
+	<!-- SQL結果に対応した商品履歴クラス -->
+	<resultMap id="itemHistoryResult" type="ItemHistory">
+		<id property="id" column="id" />
+		<result property="itemId" column="item_id" />
+		<result property="code" column="code" />
+		<result property="name" column="name" />
+		<result property="unitPrice" column="unit_price" />
+		<result property="updatedAt" column="updated_at" />
+	</resultMap>
+
+	<!--　商品履歴テーブルを商品IDで内部結合(商品IDでグループ化、更新日時が最大のレコードと結合)し、引数で受け取った商品IDを基に、該当レコードを取得する。 -->
+	<select id="findByItemIdByLatest" parameterType="Long" resultMap="itemHistoryResult">
+		SELECT
+			a.id, 
+			a.item_id, 
+			a.code, 
+			a.name, 
+			a.unit_price, 
+			a.updated_at
+		FROM
+			items_history a <!-- メインの商品履歴テーブル -->
+		INNER JOIN (
+			SELECT
+				item_id, 
+				max(updated_at) AS max_updated_at <!-- 商品IDでグループ化された更新日時の最大値 -->
+			FROM
+				items_history <!-- 商品履歴テーブル -->
+			GROUP BY
+				item_id <!-- 商品IDでグループ化 -->
+		) b <!-- サブクエリの商品履歴テーブル -->
+		ON 
+			a.item_id = b.item_id <!-- メインとサブクエリの商品IDで結合 -->
+		AND
+			a.updated_at = b.max_updated_at <!-- メインの更新日時とサブクエリの最大更新日時で結合 -->
+		WHERE
+			a.item_id = #{item_id} <!-- 引数で受け取った商品IDと一致した場合 -->
+	</select>
+
+</mapper>

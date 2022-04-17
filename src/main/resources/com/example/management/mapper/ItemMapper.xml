@@ -5,129 +5,152 @@
 	
 <mapper namespace="com.example.management.mapper.ItemMapper">
 
+	<!-- SQL結果に対応した商品クラス -->
 	<resultMap id="ItemResult" type="Item">
 		<id property="id" column="id" />
 		<result property="name" column="name" />
 		<result property="code" column="code" />
 		<result property="unitPrice" column="unit_price" />
-		<result property="carryOverStock" column="carry_over_stock" />
 		<result property="createdAt" column="created_at" />
 		<result property="updatedAt" column="updated_at" />
 		<result property="invalid" column="invalid" />
 	</resultMap>
-
-	<select id="findAll" resultMap="ItemResult">
+	
+	<!-- 全てのレコードを取得※削除済みを除く -->
+	<select id="findAllExcludeInvalid" resultMap="ItemResult">
 		SELECT
 			id, 
 			code, 
 			name, 
 			unit_price, 
-			carry_over_stock, 
 			created_at, 
 			updated_at, 
 			invalid
 		FROM
-			items
+			items <!-- 商品テーブル -->
+		WHERE
+			invalid = 0 <!-- 未削除のみ -->
+		ORDER BY
+			id ASC <!-- IDの昇順 -->
 	</select>
 	
+	<!-- 引数で受け取った商品コード・商品名を基に、あいまい検索を掛ける -->
 	<select id="findByConditions" parameterType="String" resultMap="ItemResult">
 		SELECT
 			id, 
 			code, 
 			name, 
 			unit_price, 
-			carry_over_stock, 
 			created_at, 
 			updated_at, 
 			invalid
 		FROM
-			items
+			items <!-- 商品テーブル -->
 		<where>
 			<if test="code != null">
-				code LIKE '%${code}%'
+				code LIKE '%${code}%' <!-- 引数の商品コードがnullでない場合、あいまい検索 -->
 			</if>
 			<if test="name != null">
-				AND name LIKE '%${name}%'
+				AND name LIKE '%${name}%' <!-- 引数の商品名がnullでない場合、あいまい検索 -->
 			</if>
 		</where>
 	</select>
 	
+	<!-- 引数で受け取ったIDを基に、該当レコードを取得 -->
 	<select id="findById" parameterType="Long" resultMap="ItemResult">
 		SELECT
 			id, 
 			code, 
 			name, 
 			unit_price, 
-			carry_over_stock, 
 			created_at, 
 			updated_at, 
 			invalid
 		FROM
-			items
+			items <!-- 商品テーブル -->
 		WHERE
-			id = #{id}
+			id = #{id} <!-- 引数のIDと一致した場合 -->
 	</select>
 	
-	<select id="findByItemCode" parameterType="String" resultMap="ItemResult">
+	<!-- 引数で受け取ったIDを基に、該当レコードを取得※削除済みを除く -->
+	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="ItemResult">
 		SELECT
 			id, 
 			code, 
 			name, 
 			unit_price, 
-			carry_over_stock, 
 			created_at, 
 			updated_at, 
 			invalid
 		FROM
-			items
+			items <!-- 商品テーブル -->
 		WHERE
-			code = #{code}
+			id = #{id} <!-- 引数のIDと一致した場合 -->
+		AND
+			invalid = 0 <!-- 未削除のみ -->
 	</select>
 	
+	<!-- 引数で受け取った商品コードを基に、該当レコードを取得する -->
+	<select id="findByCode" parameterType="String" resultMap="ItemResult">
+		SELECT
+			id, 
+			code, 
+			name, 
+			unit_price, 
+			created_at, 
+			updated_at, 
+			invalid
+		FROM
+			items <!-- 商品テーブル -->
+		WHERE
+			code = #{code} <!-- 引数の商品コードと一致した場合 -->
+	</select>
+	
+	<!-- 商品テーブルのレコード数を取得する -->
 	<select id="countAll" resultType="Integer">
 		SELECT COUNT
 			(*)
 		FROM
-			items
+			items <!-- 商品テーブル -->
 	</select>
 	
+	<!-- 商品テーブルに1件データを挿入する。 -->
 	<insert id="create" parameterType="Item">
 		INSERT INTO
-			items (
+			items ( <!-- 商品テーブル -->
 				code, 
 				name, 
-				unit_price, 
-				carry_over_stock
+				unit_price
 			)
 		VALUES (
 			#{code}, 
 			#{name}, 
-			#{unitPrice}, 
-			#{carryOverStock}
+			#{unitPrice}
 		)
 	</insert>
 	
+	<!-- 引数で受け取った商品IDを基に、商品テーブルの1件のデータを更新する。 -->
 	<update id="update" parameterType="Item">
 		UPDATE
-			items
+			items <!-- 商品テーブル -->
 		SET
 			code = #{code}, 
 			name = #{name}, 
 			unit_price = #{unitPrice}, 
-			carry_over_stock = #{carryOverStock}, 
 			updated_at = #{updatedAt}
 		WHERE
-			id = #{id}
+			id = #{id} <!-- 引数の商品IDと一致した場合 -->
 	</update>
 	
+	<!-- 引数で受け取った商品IDを基に、商品テーブルの1件のデータを削除(論理)する。 -->
 	<update id="delete" parameterType="Item">
 		UPDATE
-			items
+			items <!-- 商品テーブル -->
 		SET
 			invalid = 1, 
 			updated_at = #{updatedAt}
 		WHERE
-			id = #{id}
+			id = #{id} <!-- 引数の商品IDと一致した場合 -->
 	</update>
 
 </mapper>

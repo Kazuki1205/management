@@ -5,6 +5,7 @@
 	
 <mapper namespace="com.example.management.mapper.CustomerMapper">
 
+	<!-- SQL結果に対応した顧客クラス -->
 	<resultMap id="customerResult" type="Customer">
 		<id property="id" column="id" />
 		<result property="code" column="code" />
@@ -19,23 +20,7 @@
 		<result property="invalid" column="invalid" />
 	</resultMap>
 	
-	<select id="findAll" resultMap="customerResult">
-		SELECT
-			id, 
-			code, 
-			name, 
-			postal_code, 
-			first_address, 
-			second_address, 
-			third_address, 
-			phone_number, 
-			created_at, 
-			updated_at, 
-			invalid
-		FROM
-			customers
-	</select>
-	
+	<!-- 引数で受け取った顧客コード・顧客名・住所を基に、あいまい検索を掛ける -->
 	<select id="findByConditions" resultMap="customerResult">
 		SELECT
 			id, 
@@ -50,26 +35,27 @@
 			updated_at, 
 			invalid
 		FROM
-			customers
+			customers <!-- 顧客テーブル -->
 		<where>
 			<if test="code != null">
-				code LIKE '%${code}%'
+				code LIKE '%${code}%' <!-- 引数の顧客コードがnullでない場合、あいまい検索 -->
 			</if>
 			<if test="name != null">
-				AND name LIKE '%${name}%'
+				AND name LIKE '%${name}%' <!-- 引数の顧客名がnullでない場合、あいまい検索 -->
 			</if>
 			<if test="address != null">
 				AND (
-					first_address LIKE '%${address}%'
+					first_address LIKE '%${address}%' <!-- 引数の住所がnullでない場合、都道府県をあいまい検索 -->
 				OR 
-					second_address LIKE '%${address}%'
+					second_address LIKE '%${address}%' <!-- 引数の住所がnullでない場合、市区町村をあいまい検索 -->
 				OR
-					third_address LIKE '%${address}%'
+					third_address LIKE '%${address}%' <!-- 引数の住所がnullでない場合、町名番地をあいまい検索 -->
 				)
 			</if>
 		</where>
 	</select>
 	
+	<!-- 引数で受け取ったIDを基に、該当レコードを取得する。 -->
 	<select id="findById" parameterType="Long" resultMap="customerResult">
 		SELECT
 			id, 
@@ -84,11 +70,54 @@
 			updated_at, 
 			invalid
 		FROM
-			customers
+			customers <!-- 顧客テーブル -->
 		WHERE
-			id = #{id}
+			id = #{id} <!-- 引数の顧客IDと一致した場合 -->
 	</select>
 	
+	<!-- 引数で受け取った顧客コードを基に、該当レコードを取得する -->
+	<select id="findByCode" parameterType="String" resultMap="customerResult">
+		SELECT
+			id, 
+			code, 
+			name, 
+			postal_code, 
+			first_address, 
+			second_address, 
+			third_address, 
+			phone_number, 
+			created_at, 
+			updated_at, 
+			invalid
+		FROM
+			customers <!-- 顧客テーブル -->
+		WHERE
+			code = #{code} <!-- 引数の顧客コードと一致した場合 -->
+	</select>
+	
+	<!-- 引数で受け取った顧客IDを基に、該当レコードを取得する※削除済みを除く -->
+	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="customerResult">
+		SELECT
+			id, 
+			code, 
+			name, 
+			postal_code, 
+			first_address, 
+			second_address, 
+			third_address, 
+			phone_number, 
+			created_at, 
+			updated_at, 
+			invalid
+		FROM
+			customers <!-- 顧客テーブル -->
+		WHERE
+			id = #{id} <!-- 引数の顧客IDと一致した場合 -->
+		AND
+			invalid = 0 <!-- 未削除のみ -->
+	</select>
+	
+	<!-- 引数で受け取った顧客コードを基に、該当レコードを取得する。 -->
 	<select id="findByCustomerCode" parameterType="String" resultMap="customerResult">
 		SELECT
 			id, 
@@ -103,21 +132,23 @@
 			updated_at, 
 			invalid
 		FROM
-			customers
+			customers <!-- 顧客テーブル -->
 		WHERE
-			code = #{code}
+			code = #{code} <!-- 引数の顧客コードと一致した場合 -->
 	</select>
 
+	<!-- 顧客テーブルのレコード数を取得する。 -->
 	<select id="countAll" resultType="Integer">
 		SELECT COUNT
 			(*)
 		FROM
-			customers
+			customers <!-- 顧客テーブル -->
 	</select>
 	
+	<!-- 顧客テーブルに1件データを挿入する -->
 	<insert id="create" parameterType="Customer">
 		INSERT INTO
-			customers (
+			customers ( <!-- 顧客テーブル -->
 				code, 
 				name, 
 				postal_code, 
@@ -137,9 +168,10 @@
 		)
 	</insert>
 	
+	<!-- 引数の顧客IDを基に、顧客データの1件のデータを更新する -->
 	<update id="update" parameterType="Customer">
 		UPDATE
-			customers
+			customers <!-- 顧客テーブル -->
 		SET
 			code = #{code}, 
 			name = #{name}, 
@@ -150,17 +182,18 @@
 			phone_number = #{phoneNumber}, 
 			updated_at = #{updatedAt}
 		WHERE
-			id = #{id}
+			id = #{id} <!-- 引数の顧客IDと一致した場合 -->
 	</update>
 
+	<!-- 引数の顧客IDを基に、顧客データの1件のデータを削除(論理)する -->
 	<update id="delete" parameterType="Customer">
 		UPDATE
-			customers
+			customers <!-- 顧客テーブル -->
 		SET
 			invalid = 1, 
 			updated_at = #{updatedAt}
 		WHERE
-			id = #{id}
+			id = #{id} <!-- 引数の顧客IDと一致した場合 -->
 	</update>
 
 </mapper>

@@ -29,15 +29,6 @@
 				<span th:if="${#fields.hasErrors('unitPrice')}" th:errors="*{unitPrice}" class="text-danger"></span>
 			</td>
 		</tr>
-		<tr>
-			<th>
-				<label for="carryOverStock">繰越在庫</label>
-			</th>
-			<td>
-				<input type="number" th:field="*{carryOverStock}" min="0" />
-				<span th:if="${#fields.hasErrors('carryOverStock')}" th:errors="*{carryOverStock}" class="text-danger"></span>
-			</td>
-		</tr>
 	</table>
 </div>
 </html>

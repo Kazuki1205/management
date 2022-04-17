@@ -8,13 +8,13 @@ import com.example.management.model.Production;
  * MyBatisで使用するMapperクラス(@Mapperアノテーションは設定にて省略)
  */
 public interface ProductionMapper {
-
+	
 	/**
 	 * 製作手配テーブルの全てのレコードを取得する。
 	 * 
 	 * @return List<Production> リスト型の製作手配
 	 */
-	public List<Production> findAll();
+	public List<Production> findAllExcludeInvalid();
 	
 	/**
 	 * 製作手配テーブルのレコードを、引数のあいまい検索で取得する。
@@ -46,11 +46,30 @@ public interface ProductionMapper {
 	public Production findById(Long id);
 	
 	/**
+	 * IDを基に製作手配テーブルから合致したレコードを取得する。
+	 * 削除済みは除く
+	 * 
+	 * @param id ID
+	 * 
+	 * @return Production 製作手配クラス
+	 */
+	public Production findByIdExcludeInvalid(Long id);
+	
+	/**
 	 * 製作番号の最新データを取得する。
 	 * 
 	 * @return 最新の製作番号
 	 */
 	public String getLotNumberByLatest();
+	
+	/**
+	 * IDを基に製作手配テーブルの製作数を取得する。
+	 * 
+	 * @param id ID
+	 * 
+	 * @return 製作数
+	 */
+	public Integer getLotQuantity(Long id);
 	
 	/**
 	 * 製作手配テーブルに1件新規登録する。

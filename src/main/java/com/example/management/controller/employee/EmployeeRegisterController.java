@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.EmployeeForm;
 import com.example.management.mapper.DepartmentMapper;
@@ -57,7 +58,7 @@ public class EmployeeRegisterController {
 	@ModelAttribute(name = "departments")
 	public List<Department> getDepartments() {
 		
-		List<Department> departments = departmentMapper.findAll();
+		List<Department> departments = departmentMapper.findAllExcludeInvalid();
 		
 		return departments;
 	}
@@ -86,13 +87,16 @@ public class EmployeeRegisterController {
 	 * 
 	 * @param employeeForm 社員フォーム
 	 * @param bindingResult 社員フォームのバリデーション結果
+	 * @param redirectAttributes リダイレクト先へ渡す情報
 	 * @param model テンプレートへ渡す情報
 	 * 
-	 * @return 社員新規登録テンプレート
+	 * @return 社員新規登録テンプレート/リダイレクト
 	 */
 	@PostMapping("/employee/register/new")
 	public String create(@Validated(ValidOrder.class) @ModelAttribute("employeeForm") EmployeeForm employeeForm, 
-			BindingResult bindingResult, Model model) {
+						 BindingResult bindingResult, 
+						 RedirectAttributes redirectAttributes, 
+						 Model model) {
 		
 		model.addAttribute("hasMessage", true);
 		
@@ -104,15 +108,17 @@ public class EmployeeRegisterController {
 
 		} else {
 			
-			// 社員IDが既に使用されている場合、エラーメッセージを表示。使用されていければDBへINSERT処理、正常処理メッセージを表示。
-			if (employeeMapper.findByUsernameExcludeInvalid(employeeForm.getUsername()) == null) {
+			// 社員IDが既に使用されている場合、エラーメッセージを表示。使用されていなければDBへINSERT処理、正常処理メッセージを表示。
+			if (employeeMapper.findByUsername(employeeForm.getUsername()) == null) {
 				
 				employeeService.create(employeeForm);
 				
-				employeeForm = new EmployeeForm();
+				// フォーム再送を防ぐ為、リダイレクト。
+				redirectAttributes.addFlashAttribute("hasMessage", true);
+				redirectAttributes.addFlashAttribute("class", "alert-info");
+				redirectAttributes.addFlashAttribute("message", "登録に成功しました。");	
 				
-				model.addAttribute("class", "alert-info");
-				model.addAttribute("message", "登録に成功しました。");	
+				return "redirect:/employee/register";
 			} else {
 				
 				model.addAttribute("class", "alert-danger");

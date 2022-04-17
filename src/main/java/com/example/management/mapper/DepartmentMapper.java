@@ -8,13 +8,14 @@ import com.example.management.model.Department;
  * MyBatisで使用するMapperクラス(@Mapperアノテーションは設定にて省略)
  */
 public interface DepartmentMapper {
-
+	
 	/**
 	 * 部署テーブルのレコードを全取得する。
+	 * 削除済みは除く
 	 * 
 	 * @return List<Department> 部署クラス
 	 */
-	public List<Department> findAll();
+	public List<Department> findAllExcludeInvalid();
 	
 	/**
 	 * IDを基に部署テーブルから合致したレコードを取得する。
@@ -24,6 +25,15 @@ public interface DepartmentMapper {
 	 * @return Department 部署クラス
 	 */
 	public Department findById(Long id);
+	
+	/**
+	 * IDを基に部署テーブルから合致したレコードを取得する。
+	 * 削除済みは除く
+	 * @param id ID
+	 * 
+	 * @return Department 部署クラス
+	 */
+	public Department findByIdExcludeInvalid(Long id);
 	
 	/**
 	 * 部署テーブルのレコードを、引数のあいまい検索で取得する。

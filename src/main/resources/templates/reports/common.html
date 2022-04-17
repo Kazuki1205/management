@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="table">
+	<table class="table table-bordered">
+		<tr>
+			<th>
+				<label for="productionId">製作番号</label>
+			</th>
+			<td>
+				<select th:field="*{productionId}" class="select" id="ajax-productionId">
+					<option value="" selected>選択して下さい</option>
+					<option th:each="production : ${productions}" th:value="${production.id}" th:text="${production.lotNumber}" />
+				</select>
+				<span th:if="${#fields.hasErrors('productionId')}" th:errors="*{productionId}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="itemName">商品名</label>
+			</th>
+			<td>
+				<input type="text" th:field="*{itemName}" class="bg-secondary" id="ajax-itemName" readonly />
+				<span th:if="${#fields.hasErrors('itemName')}" th:errors="*{itemName}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="lotQuantity">製作数</label>
+			</th>
+			<td>
+				<input type="number" th:field="*{lotQuantity}" class="bg-secondary" id="ajax-lotQuantity" readonly />
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="completionQuantity">完了数</label>
+			</th>
+			<td>
+				<input type="number" th:field="*{completionQuantity}" min="0" />
+				<span th:if="${#fields.hasErrors('completionQuantity')}" th:errors="*{completionQuantity}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="failureQuantity">不良数</label>
+			</th>
+			<td>
+				<input type="number" th:field="*{failureQuantity}" min="0" />
+				<span th:if="${#fields.hasErrors('failureQuantity')}" th:errors="*{failureQuantity}" class="text-danger"></span>
+			</td>
+		</tr>
+	</table>
+</div>
+</html>

@@ -33,7 +33,6 @@
 								<th>商品コード</th>
 								<th>商品名</th>
 								<th>単価</th>
-								<th>繰越在庫</th>
 								<th>登録日時</th>
 								<th>更新日時</th>
 							</tr>
@@ -52,7 +51,6 @@
 								<td th:text="*{code}"></td>
 								<td th:text="*{name}"></td>
 								<td th:text="|&yen;*{#numbers.formatInteger(unitPrice,3,'COMMA')}|"></td>
-								<td th:text="*{carryOverStock}"></td>
 								<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>
 								<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}"></td>
 							</tr>

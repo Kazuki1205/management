@@ -1,4 +1,4 @@
-package com.example.management.controller.employee;
+package com.example.management.controller.report;
 
 import java.util.List;
 
@@ -10,23 +10,23 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.management.form.EmployeeForm;
+import com.example.management.form.ReportForm;
 import com.example.management.mapper.DepartmentMapper;
-import com.example.management.mapper.EmployeeMapper;
+import com.example.management.mapper.ReportMapper;
 import com.example.management.model.Department;
-import com.example.management.model.Employee;
+import com.example.management.model.Report;
 
 /**
- * 社員マスタの一覧画面コントローラー
+ * 日報入力の履歴画面コントローラー
  */
 @Controller
-public class EmployeeListController {
+public class ReportLogController {
+	
+	@Autowired
+	private ReportMapper reportMapper;
 	
 	@Autowired
 	private DepartmentMapper departmentMapper;
-	
-	@Autowired
-	private EmployeeMapper employeeMapper;
 	
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -38,7 +38,7 @@ public class EmployeeListController {
 	@ModelAttribute(name = "navTitle")
 	public String setNavTitle() {
 		
-		return "社員マスタ";
+		return "日報履歴";
 	}
 	
 	/**
@@ -57,54 +57,50 @@ public class EmployeeListController {
 	}
 	
 	/**
-	 * 社員マスタ一覧画面を表示
+	 * 日報履歴一覧を表示
 	 * 
-	 * @param employeeForm 社員フォーム
-	 * @param username 検索条件に入力された社員ID
-	 * @param name 検索条件に入力された社員名
-	 * @param departmentId 検索条件に入力された部署ID
+	 * @param reportForm 日報入力フォーム
+	 * @param lotNumber 製作番号
+	 * @param itemCode 商品コード
+	 * @param itemName 商品名
+	 * @param departmentId 部署ID
+	 * @param employeeName 社員名
 	 * @param model テンプレートへ渡す情報
 	 * 
-	 * @return 社員マスタ一覧テンプレート
+	 * @return 日報入力詳細テンプレート
 	 */
-	@GetMapping("employee/list")
-	public String index(@ModelAttribute("employeeForm") EmployeeForm employeeForm, 
-						@RequestParam(name = "username", defaultValue = "") String username, 
-						@RequestParam(name = "name", defaultValue = "") String name, 
+	@GetMapping("/report/log")
+	public String index(@ModelAttribute("reportForm") ReportForm reportForm, 
+						@RequestParam(name = "lotNumber", defaultValue = "") String lotNumber, 
+						@RequestParam(name = "itemCode", defaultValue = "") String itemCode, 
+						@RequestParam(name = "itemName", defaultValue = "") String itemName, 
 						@RequestParam(name = "departmentId", defaultValue = "") Long departmentId, 
+						@RequestParam(name = "employeeName", defaultValue = "") String employeeName, 
 						Model model) {
 		
-		// 検索条件を基にDBから社員リストを取得する
-		List<Employee> employees = employeeMapper.findByConditions(username, name, departmentId);
+		// 検索条件を基にDBから日報入力リストを取得する
+		List<Report> reports = reportMapper.findByConditions(lotNumber, itemCode, itemName, departmentId, employeeName);
 		
-		model.addAttribute("employees", employees);
-		model.addAttribute("employeeForm", employeeForm);
+		model.addAttribute("reports", reports);
+		model.addAttribute("reportForm", reportForm);
 		
-		return "employees/list";
+		return "reports/log";
 	}
 	
 	/**
-	 * 社員詳細情報を表示
+	 * 日報履歴詳細情報を表示
 	 * 
 	 * @param id ID
 	 * @param model テンプレートへ渡す情報
 	 * 
-	 * @return　社員詳細テンプレート
+	 * @return 日報入力詳細テンプレート
 	 */
-	@GetMapping("/employee/list/{id}")
+	@GetMapping("/report/log/{id}")
 	public String detail(@PathVariable("id") Long id, Model model) {
 		
-		// テンプレートへ渡す社員情報
-		model.addAttribute("employee", employeeMapper.findById(id));
+		// テンプレートへ渡す日報入力情報
+		model.addAttribute("report", reportMapper.findById(id));
 		
-		return "employees/detail";
+		return "reports/detail";
 	}
 }
-
-
-
-
-
-
-
-

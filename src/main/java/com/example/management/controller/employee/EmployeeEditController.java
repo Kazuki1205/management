@@ -64,7 +64,7 @@ public class EmployeeEditController {
 	@ModelAttribute(name = "departments")
 	public List<Department> getDepartments() {
 		
-		List<Department> departments = departmentMapper.findAll();
+		List<Department> departments = departmentMapper.findAllExcludeInvalid();
 		
 		return departments;
 	}
@@ -97,7 +97,7 @@ public class EmployeeEditController {
 	public String edit(@PathVariable("id") Long id, Model model) {
 		
 		// ID情報を基にDBから社員テーブルを検索し社員クラスとして取得、社員フォームへ詰め替える。
-		EmployeeForm employeeForm = modelMapper.map(employeeMapper.findById(id), EmployeeForm.class);
+		EmployeeForm employeeForm = modelMapper.map(employeeMapper.findByIdExcludeInvalid(id), EmployeeForm.class);
 		
 		model.addAttribute("employeeForm", employeeForm);
 		

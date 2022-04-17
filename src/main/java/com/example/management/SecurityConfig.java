@@ -64,6 +64,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	// ADMIN権限のみ許可
         	.antMatchers("/employee/**", "/department/**").hasRole("ADMIN")
         	
+        	// ADMIN・OFFICE権限のみ許可
+        	.antMatchers("/production/**").hasAnyRole("ADMIN", "OFFICE")
+        	
+        	// ADMIN・FIELD権限のみ許可
+        	.antMatchers("/report/register**", "/report/edit**").hasAnyRole("ADMIN", "FIELD")
+        	
         	// 指定したURL形式のみ全て許可。
         	.antMatchers("/", "/login", "/login-failure", "/logout-complete").permitAll()
         	

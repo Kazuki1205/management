@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.management.mapper.ReportMapper">
+
+	<!-- SQL結果に対応した日報入力クラス -->
+	<resultMap id="reportResult" type="Report">
+		<id property="id" column="rep_id" />
+		<result property="completionQuantity" column="rep_completion_quantity" />
+		<result property="failureQuantity" column="rep_failure_quantity" />
+		<result property="createdAt" column="rep_created_at" />
+		<result property="updatedAt" column="rep_updated_at" />
+		<result property="invalid" column="rep_invalid" />
+		<association property="production" javaType="Production">
+			<id property="id" column="pro_id" />
+			<result property="lotNumber" column="pro_lot_number" />
+			<result property="lotQuantity" column="pro_lot_quantity" />
+			<association property="item" javaType="Item">
+				<id property="id" column="ite_id" />
+				<result property="code" column="ite_code" />
+				<result property="name" column="ite_name" />
+			</association>
+		</association>
+		<association property="employeeHistory" javaType="EmployeeHistory">
+			<id property="id" column="emp_id" />
+			<result property="employeeId" column="emp_employee_id" />
+			<result property="username" column="emp_username" />
+			<result property="name" column="emp_name" />
+			<association property="department" javaType="Department">
+				<id property="id" column="dep_id" />
+				<result property="code" column="dep_code" />
+				<result property="name" column="dep_name" />
+			</association>
+		</association>
+	</resultMap>
+
+	<!-- 引数で受け取った製作番号・商品コード・商品名・部署ID・社員名を基に、あいまい検索を掛ける -->
+	<select id="findByConditions" resultMap="reportResult">
+		SELECT
+			rep.id                    AS rep_id, 
+			rep.completion_quantity   AS rep_completion_quantity, 
+			rep.failure_quantity      AS rep_failure_quantity, 
+			rep.created_at            AS rep_created_at, 
+			rep.updated_at            AS rep_updated_at, 
+			rep.invalid     		  AS rep_invalid, 
+			pro.p_id                  AS pro_id, 
+			pro.p_lot_number          AS pro_lot_number, 
+			pro.p_lot_quantity        AS pro_lot_quantity, 
+			pro.i_id                  AS ite_id, 
+			pro.i_code                AS ite_code, 
+			pro.i_name                AS ite_name, 
+			emp.e_id                  AS emp_id, 
+			emp.e_employee_id         AS emp_employee_id, 
+			emp.e_username            AS emp_username, 
+			emp.e_name                AS emp_name, 
+			emp.d_id                  AS dep_id, 
+			emp.d_code                AS dep_code, 
+			emp.d_name                AS dep_name
+		FROM
+			reports rep <!-- 日報入力テーブル -->
+		INNER JOIN (
+			SELECT
+				p.id                  AS p_id, 
+				p.lot_number          AS p_lot_number, 
+				p.lot_quantity        AS p_lot_quantity, 
+				i.id                  AS i_id, 
+				i.code                AS i_code, 
+				i.name                AS i_name
+			FROM
+				productions p <!-- 製作手配テーブル -->
+			INNER JOIN
+				items i <!-- 商品テーブル -->
+			ON
+				p.item_id = i.id <!-- 商品IDで結合 -->	
+			) pro <!-- サブクエリの製作手配テーブル -->
+		ON
+			rep.production_id = pro.p_id <!-- 日報入力テーブルとサブクエリの製作手配テーブルを製作手配IDで結合 -->
+		INNER JOIN (
+			SELECT
+				e.id                  AS e_id, 
+				e.employee_id         AS e_employee_id, 
+				e.username            AS e_username, 
+				e.name                AS e_name, 
+				d.id                  AS d_id, 
+				d.code                AS d_code, 
+				d.name                AS d_name
+			FROM
+				employees_history e <!-- 社員履歴テーブル -->
+			INNER JOIN
+				departments d <!-- 部署テーブル -->
+			ON 
+				e.department_id = d.id <!-- 部署IDで結合 -->
+			) emp <!-- サブクエリの社員履歴テーブル -->
+		ON
+			rep.employee_history_id = emp.e_id <!-- 日報入力テーブルとサブクエリの社員履歴テーブルを社員履歴IDで結合 -->
+		<where>
+			<if test="lotNumber != null">
+				pro.p_lot_number LIKE '%${lotNumber}%' <!-- 引数の製作番号がnullでない場合、あいまい検索 -->
+			</if>
+			<if test="itemCode != null">
+				AND pro.i_code LIKE '%${itemCode}%' <!-- 引数の商品コードがnullでない場合、あいまい検索 -->
+			</if>
+			<if test="itemName != null">
+				AND pro.i_name LIKE '%${itemName}%' <!-- 引数の商品名がnullでない場合、あいまい検索 -->
+			</if>
+			<if test="departmentId != null">
+				AND emp.d_id = #{departmentId} <!-- 引数の部署IDがnullでない場合、一致するかどうか -->
+			</if>
+			<if test="employeeName != null">
+				AND emp.e_name LIKE '%${employeeName}%' <!-- 引数の社員名がnullでない場合、あいまい検索 -->
+			</if>
+		</where>
+		ORDER BY
+			rep.updated_at ASC
+	</select>
+	
+	<!-- 引数で受け取った日報入力IDを基に、該当レコードを取得 -->
+	<select id="findById" parameterType="Long" resultMap="reportResult">
+		SELECT
+			rep.id                    AS rep_id, 
+			rep.completion_quantity   AS rep_completion_quantity, 
+			rep.failure_quantity      AS rep_failure_quantity, 
+			rep.created_at            AS rep_created_at, 
+			rep.updated_at            AS rep_updated_at, 
+			rep.invalid     		  AS rep_invalid, 
+			pro.p_id                  AS pro_id, 
+			pro.p_lot_number          AS pro_lot_number, 
+			pro.p_lot_quantity        AS pro_lot_quantity, 
+			pro.i_id                  AS ite_id, 
+			pro.i_code                AS ite_code, 
+			pro.i_name                AS ite_name, 
+			emp.e_id                  AS emp_id, 
+			emp.e_employee_id         AS emp_employee_id, 
+			emp.e_username            AS emp_username, 
+			emp.e_name                AS emp_name, 
+			emp.d_id                  AS dep_id, 
+			emp.d_code                AS dep_code, 
+			emp.d_name                AS dep_name
+		FROM
+			reports rep <!-- 日報入力テーブル -->
+		INNER JOIN (
+			SELECT
+				p.id                  AS p_id, 
+				p.lot_number          AS p_lot_number, 
+				p.lot_quantity        AS p_lot_quantity, 
+				i.id                  AS i_id, 
+				i.code                AS i_code, 
+				i.name                AS i_name
+			FROM
+				productions p <!-- 製作手配テーブル -->
+			INNER JOIN
+				items i <!-- 商品テーブル -->
+			ON
+				p.item_id = i.id <!-- 商品IDで結合 -->	
+			) pro <!-- サブクエリの製作手配テーブル -->
+		ON
+			rep.production_id = pro.p_id <!-- 日報入力テーブルとサブクエリの製作手配テーブルを製作手配IDで結合 -->
+		INNER JOIN (
+			SELECT
+				e.id                  AS e_id, 
+				e.employee_id         AS e_employee_id, 
+				e.username            AS e_username, 
+				e.name                AS e_name, 
+				d.id                  AS d_id, 
+				d.code                AS d_code, 
+				d.name                AS d_name
+			FROM
+				employees_history e <!-- 社員履歴テーブル -->
+			INNER JOIN
+				departments d <!-- 部署テーブル -->
+			ON 
+				e.department_id = d.id <!-- 部署IDで結合 -->
+			) emp <!-- サブクエリの社員履歴テーブル -->
+		ON
+			rep.employee_history_id = emp.e_id <!-- 日報入力テーブルとサブクエリの社員履歴テーブルを社員履歴IDで結合 -->
+		WHERE
+			rep.id = #{id} <!-- 引数の日報入力IDと一致した場合 -->
+	</select>
+
+	<!-- 日報入力テーブルに1件データを挿入する。 -->
+	<insert id="create" parameterType="Report">
+		INSERT INTO
+			reports ( <!-- 日報入力テーブル -->
+				production_id, 
+				employee_history_id, 
+				completion_quantity, 
+				failure_quantity
+			)
+		VALUES (
+			#{production.id}, 
+			#{employeeHistory.id}, 
+			#{completionQuantity}, 
+			#{failureQuantity}
+		)
+	</insert>
+	
+	<update id="update" parameterType="Report">
+		UPDATE
+			reports <!-- 日報入力テーブル -->
+		SET
+			production_id = #{production.id}, 
+			employee_history_id = #{employeeHistory.id}, 
+			completion_quantity = #{completionQuantity}, 
+			failure_quantity = #{failureQuantity}, 
+			updated_at = #{updatedAt}
+		WHERE
+			id = #{id} <!-- IDと一致した場合 -->
+	</update>
+	
+	<update id="delete" parameterType="Report">
+		UPDATE
+			reports <!-- 日報入力フォーム -->
+		SET
+			invalid = 1, 
+			updated_at = #{updatedAt}
+		WHERE
+			id = #{id} <!-- IDと一致した場合 -->
+	</update>
+</mapper>

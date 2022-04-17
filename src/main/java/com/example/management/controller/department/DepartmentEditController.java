@@ -54,7 +54,7 @@ public class DepartmentEditController {
 	public String edit(@PathVariable("id") Long id, Model model) {
 		
 		// ID情報を基にDBから部署テーブルを検索し部署クラスとして取得、部署フォームへ詰め替える。
-		DepartmentForm departmentForm = modelMapper.map(departmentMapper.findById(id), DepartmentForm.class);
+		DepartmentForm departmentForm = modelMapper.map(departmentMapper.findByIdExcludeInvalid(id), DepartmentForm.class);
 		
 		model.addAttribute("departmentForm", departmentForm);
 		

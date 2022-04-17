@@ -118,7 +118,7 @@ public class ProductionService {
 		// 文字列型の日付をLocalDate型に変換してセット。
 		production.setScheduledCompletionDate(LocalDate.parse(productionForm.getScheduledCompletionDate()));
 		
-		//商品IDを基に商品情報をセットする。
+		//商品IDを基に商品テーブルから、登録時点の最新レコードの主キーを取得する。
 		production.setItem(itemMapper.findById(productionForm.getItemId()));
 			
 		return production;

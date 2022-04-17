@@ -41,10 +41,11 @@ public class EmployeeForm {
 	 * @return バリデーションチェックの真偽値
 	 */
 	@AssertTrue(groups = ValidGroup1.class, message = "パスワードと確認用パスワードが一致しません。")
-	public boolean isPasswordValid () {
+	public boolean isPasswordValid() {
 		
 		// そもそもパスワードの入力が無い場合は一致するかどうかの判別ができない為、このバリデーションはtrueとして返す。
 		if (password == null || password.isEmpty()) {
+			
 			return true;
 		}
 		

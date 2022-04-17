@@ -58,7 +58,7 @@ public class ItemEditController {
 	public String edit(@PathVariable("id") Long id, Model model) {
 		
 		// ID情報を基にDBから商品テーブルを検索し商品クラスとして取得、商品フォームへ詰め替える。
-		ItemForm itemForm = modelMapper.map(itemMapper.findById(id), ItemForm.class);
+		ItemForm itemForm = modelMapper.map(itemMapper.findByIdExcludeInvalid(id), ItemForm.class);
 		
 		model.addAttribute("itemForm", itemForm);
 		

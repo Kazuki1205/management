@@ -5,6 +5,7 @@
 	
 <mapper namespace="com.example.management.mapper.DepartmentMapper">
 
+	<!-- SQL結果に対応した部署クラス -->
 	<resultMap id="departmentResult" type="Department">
 		<id property="id" column="dep_id" />
 		<result property="code" column="dep_code" />
@@ -18,8 +19,9 @@
 			<result property="name" column="emp_name" />
 		</collection>
 	</resultMap>
-
-	<select id="findAll" resultMap="departmentResult">
+	
+	<!-- 全てのレコードを取得※社員テーブル・部署テーブルの削除済みを除く -->
+	<select id="findAllExcludeInvalid" resultMap="departmentResult">
 		SELECT 
 			dep.id                  AS dep_id, 
 			dep.code                AS dep_code, 
@@ -31,15 +33,20 @@
 			emp.username            AS emp_username, 
 			emp.name                AS emp_name 
 		FROM 
-			departments dep
+			departments dep <!-- 部署テーブル -->
 		LEFT JOIN
-			employees emp
+			employees emp <!-- 社員テーブル -->
 		ON
-			dep.id = emp.department_id
+			dep.id = emp.department_id <!-- 部署IDで結合 -->
 		AND
-			emp.invalid = 0
+			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
+		WHERE
+			dep.invalid = 0	<!-- 部署テーブルの未削除のみ -->
+		ORDER BY
+			dep.id ASC <!-- 部署IDの昇順 -->
 	</select>
 	
+	<!-- 引数で受け取った商品コード・商品名を基に、あいまい検索を掛ける -->
 	<select id="findByConditions" resultMap="departmentResult">
 		SELECT 
 			dep.id                  AS dep_id, 
@@ -52,23 +59,24 @@
 			emp.username            AS emp_username, 
 			emp.name                AS emp_name 
 		FROM 
-			departments dep
+			departments dep <!-- 部署テーブル -->
 		LEFT JOIN
-			employees emp
+			employees emp <!-- 社員テーブル -->
 		ON
-			dep.id = emp.department_id
+			dep.id = emp.department_id <!-- 部署IDで結合 -->
 		AND
-			emp.invalid = 0
+			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
 		<where>
 			<if test="code != null">
-				dep.code LIKE '%${code}%'
+				dep.code LIKE '%${code}%' <!-- 引数の部署コードがnullでない場合、あいまい検索 -->
 			</if>
 			<if test="name != null">
-				AND dep.name LIKE '%${name}%'
+				AND dep.name LIKE '%${name}%' <!-- 引数の部署名がnullでない場合、あいまい検索 -->
 			</if>
 		</where>
 	</select>
 	
+	<!-- 引数で受け取ったIDを基に、該当レコードを取得する -->
 	<select id="findById" parameterType="Long" resultMap="departmentResult">
 		SELECT 
 			dep.id                  AS dep_id, 
@@ -81,17 +89,44 @@
 			emp.username            AS emp_username, 
 			emp.name                AS emp_name 
 		FROM 
-			departments dep
+			departments dep <!-- 部署テーブル -->
 		LEFT JOIN
-			employees emp
+			employees emp <!-- 社員テーブル -->
 		ON
-			dep.id = emp.department_id
+			dep.id = emp.department_id <!-- 部署IDで結合 -->
 		AND
-			emp.invalid = 0
+			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
 		WHERE
-			dep.id = #{id}
+			dep.id = #{id} <!-- 引数の部署IDと一致した場合 -->
 	</select>
 	
+	<!-- 引数で受け取ったIDを基に、該当レコードを取得する。※社員テーブルと部署テーブルの削除済みを除く -->
+	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="departmentResult">
+		SELECT 
+			dep.id                  AS dep_id, 
+			dep.code                AS dep_code, 
+			dep.name                AS dep_name, 
+			dep.created_at          AS dep_created_at, 
+			dep.updated_at          AS dep_updated_at, 
+			dep.invalid             AS dep_invalid, 
+			emp.id                  AS emp_id, 
+			emp.username            AS emp_username, 
+			emp.name                AS emp_name 
+		FROM 
+			departments dep <!-- 部署テーブル -->
+		LEFT JOIN
+			employees emp <!-- 社員テーブル -->
+		ON
+			dep.id = emp.department_id <!-- 部署IDで結合 -->
+		AND
+			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
+		WHERE
+			dep.id = #{id} <!-- 引数の部署IDと一致した場合 -->
+		AND
+			dep.invalid = 0 <!-- 部署テーブルの未削除のみ -->
+	</select>
+	
+	<!-- 引数で受け取った部署コードを基に、該当レコードを取得する。 -->
 	<select id="findByCode" parameterType="String" resultMap="departmentResult">
 		SELECT 
 			dep.id                  AS dep_id, 
@@ -104,27 +139,29 @@
 			emp.username            AS emp_username, 
 			emp.name                AS emp_name 
 		FROM 
-			departments dep
+			departments dep <!-- 部署テーブル -->
 		LEFT JOIN
-			employees emp
+			employees emp <!-- 社員テーブル -->
 		ON
-			dep.id = emp.department_id
+			dep.id = emp.department_id <!-- 部署IDで結合 -->
 		AND
-			emp.invalid = 0
+			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
 		WHERE
-			dep.code = #{code}
+			dep.code = #{code} <!-- 引数の部署コードと一致した場合 -->
 	</select>
 	
+	<!-- 部署テーブルのレコード数を取得する -->
 	<select id="countAll" resultType="Integer">
 		SELECT COUNT
 			(*)
 		FROM
-			departments
+			departments <!-- 部署テーブル -->
 	</select>
 
+	<!-- 部署テーブルに1件データを挿入する。 -->
 	<insert id="create" parameterType="Department">
 		INSERT INTO
-			departments (
+			departments ( <!-- 部署テーブル -->
 				code, 
 				name
 			)
@@ -134,25 +171,27 @@
 		)
 	</insert>
 	
+	<!-- 引数で受け取った部署IDを基に、部署テーブルの1件のデータを更新する。 -->
 	<update id="update" parameterType="Department">
 		UPDATE
-			departments
+			departments <!-- 部署テーブル -->
 		SET
 			code = #{code}, 
 			name = #{name}, 
 			updated_at = #{updatedAt}
 		WHERE
-			id = #{id}
+			id = #{id} <!-- 引数の部署IDと一致した場合 -->
 	</update>
 	
+	<!-- 引数で受け取った部署IDを基に、部署テーブルの1件のデータを削除(論理)する。 -->
 	<update id="delete" parameterType="Department">
 		UPDATE
-			departments
+			departments <!-- 部署テーブル -->
 		SET
 			invalid = 1, 
 			updated_at = #{updatedAt}
 		WHERE
-			id = #{id}
+			id = #{id} <!-- 引数の部署IDと一致した場合 -->
 	</update>
 	
 </mapper>

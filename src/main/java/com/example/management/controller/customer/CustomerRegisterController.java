@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.CustomerForm;
 import com.example.management.mapper.CustomerMapper;
@@ -57,10 +58,21 @@ public class CustomerRegisterController {
 		return "customers/register";
 	}
 	
-	
+	/**
+	 * 顧客マスタ新規登録メソッド
+	 * 
+	 * @param customerForm 顧客フォーム
+	 * @param bindingResult 顧客フォームのバリデーション結果
+	 * @param redirectAttributes リダイレクト先へ渡す情報
+	 * @param model　テンプレートへ渡す情報
+	 * 
+	 * @return 顧客マスタ新規登録テンプレート/リダイレクト
+	 */
 	@PostMapping("/customer/register/new")
 	public String create(@Validated(ValidOrder.class) @ModelAttribute("customerForm") CustomerForm customerForm, 
-						 BindingResult bindingResult, Model model) {
+						 BindingResult bindingResult, 
+						 RedirectAttributes redirectAttributes, 
+						 Model model) {
 		
 		model.addAttribute("hasMessage", true);
 		
@@ -71,15 +83,17 @@ public class CustomerRegisterController {
 			model.addAttribute("message", "登録に失敗しました。");
 		} else {
 			
-			// 顧客コードが既に使用されている場合、エラーメッセージを表示。使用されていければDBへINSERT処理、正常処理メッセージを表示。
+			// 顧客コードが既に使用されている場合、エラーメッセージを表示。使用されていなければDBへINSERT処理、正常処理メッセージを表示。
 			if (customerMapper.findByCode(customerForm.getCode()) == null) {
 			
 			customerService.create(customerForm);
 			
-			customerForm = new CustomerForm();
+			// フォーム再送を防ぐ為、リダイレクト。
+			redirectAttributes.addFlashAttribute("hasMessage", true);
+			redirectAttributes.addFlashAttribute("class", "alert-info");
+			redirectAttributes.addFlashAttribute("message", "登録に成功しました。");	
 			
-			model.addAttribute("class", "alert-info");
-			model.addAttribute("message", "登録に成功しました。");
+			return "redirect:/customer/register";
 			} else {
 				
 				model.addAttribute("class", "alert-danger");

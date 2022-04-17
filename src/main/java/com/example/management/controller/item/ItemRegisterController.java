@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.ItemForm;
 import com.example.management.mapper.ItemMapper;
@@ -58,10 +59,21 @@ public class ItemRegisterController {
 		return "items/register";
 	}
 	
-	
+	/**
+	 * 商品マスタ新規登録メソッド
+	 * 
+	 * @param itemForm 商品フォーム
+	 * @param bindingResult 商品フォームのバリデーション結果
+	 * @param redirectAttirbutes リダイレクト先へ渡す情報
+	 * @param model テンプレートへ渡す情報
+	 * 
+	 * @return 商品新規登録テンプレート/リダイレクト
+	 */
 	@PostMapping("/item/register/new")
 	public String create(@Validated(ValidOrder.class) @ModelAttribute("itemForm") ItemForm itemForm, 
-						 BindingResult bindingResult, Model model) {
+						 BindingResult bindingResult, 
+						 RedirectAttributes redirectAttributes, 
+						 Model model) {
 		
 		model.addAttribute("hasMessage", true);
 		
@@ -72,15 +84,17 @@ public class ItemRegisterController {
 			model.addAttribute("message", "登録に失敗しました。");
 		} else {
 			
-			// 商品コードが既に使用されている場合、エラーメッセージを表示。使用されていければDBへINSERT処理、正常処理メッセージを表示。
+			// 商品コードが既に使用されている場合、エラーメッセージを表示。使用されていなければDBへINSERT処理、正常処理メッセージを表示。
 			if (itemMapper.findByCode(itemForm.getCode()) == null) {
 				
 				itemService.create(itemForm);
 				
-				itemForm = new ItemForm();
+				// フォーム再送を防ぐ為、リダイレクト。
+				redirectAttributes.addFlashAttribute("hasMessage", true);
+				redirectAttributes.addFlashAttribute("class", "alert-info");
+				redirectAttributes.addFlashAttribute("message", "登録に成功しました。");	
 				
-				model.addAttribute("class", "alert-info");
-				model.addAttribute("message", "登録に成功しました。");
+				return "redirect:/item/register";
 			} else {
 				
 				model.addAttribute("class", "alert-danger");

@@ -40,6 +40,21 @@ public class DepartmentEditController {
 			
 		return "部署マスタ(更新/削除)";
 	}
+	
+	/**
+	 * 各ハンドラメソッド実行前に呼び出されるメソッド
+	 * employees/common.htmlのパスワード登録フォーム以外を表示。
+	 * ※modelに自動的にaddAttributeされる。
+	 * 
+	 * @return 編集フラグ
+	 */
+	@ModelAttribute(name = "editFlag")
+	public Integer setEditFlag() {
+		
+		Integer editFlag = 1;
+		
+		return editFlag;
+	}
 
 	/**
 	 * 部署マスタ一覧から選んだID情報を基に
@@ -97,7 +112,15 @@ public class DepartmentEditController {
 		}
 	}
 	
-	
+	/**
+	 * 部署情報をDBから削除するメソッド(論理削除)
+	 * 削除が完了したらリストにリダイレクト。
+	 * 
+	 * @param redirectAttributes リダイレクト先へ渡す情報
+	 * @param departmentForm 部署フォーム
+	 * 
+	 * @return　部署マスタへリダイレクト
+	 */
 	@PostMapping("/department/edit/delete")
 	public String delete(@ModelAttribute("departmentForm") DepartmentForm departmentForm, RedirectAttributes redirectAttributes) {
 		

@@ -10,7 +10,7 @@ import com.example.management.validation.ValidGroup2;
 import lombok.Data;
 
 /**
- * 製作手配画面の入力フォーム用クラス
+ * 製作画面の入力フォーム用クラス
  */
 @Data
 public class ProductionForm {

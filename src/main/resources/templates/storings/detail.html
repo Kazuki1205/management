@@ -4,18 +4,26 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
-		<table class="table table-borderd" th:object="${item}">
+		<table class="table table-borderd" th:object="${storing}">
+			<tr>
+				<th>製作番号</th>
+				<td th:text="*{production.lotNumber}" />
+			</tr>
 			<tr>
 				<th>商品コード</th>
-				<td th:text="*{code}" />
+				<td th:text="*{production.item.code}" />
 			</tr>
 			<tr>
 				<th>商品名</th>
-				<td th:text="*{name}" />
+				<td th:text="*{production.item.name}" />
 			</tr>
 			<tr>
-				<th>単価</th>
-				<td th:text="|&yen;*{#numbers.formatInteger(unitPrice,3,'COMMA')}|" />
+				<th>入庫数</th>
+				<td th:text="*{storingQuantity}" />
+			</tr>
+			<tr>
+				<th>完了入力</th>
+				<td th:text="*{completionInput} == 0 ? '未完了' : '完了済' " />
 			</tr>
 			<tr>
 				<th>登録日時</th>
@@ -25,12 +33,8 @@
 				<th>更新日時</th>
 				<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}" />
 			</tr>
-			<tr>
-				<th>削除区分</th>
-				<td th:text="*{invalid} == 0 ? '' : '済'" />
-			</tr>
 		</table>
-		<a th:href="@{/item/list}">商品マスタに戻る</a>
+		<a th:href="@{/storing/log}">入庫履歴に戻る</a>
 	</div>
 </body>
 </html>

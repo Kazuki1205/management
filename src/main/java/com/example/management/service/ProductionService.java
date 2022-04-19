@@ -12,7 +12,7 @@ import com.example.management.mapper.ProductionMapper;
 import com.example.management.model.Production;
 
 /**
- * 製作手配のロジッククラス
+ * 製作のロジッククラス
  */
 @Service
 public class ProductionService {
@@ -28,7 +28,7 @@ public class ProductionService {
 	
 	/**
 	 * 「年4桁-月2桁-通し番号4桁」形式の製作番号で、
-	 * 製作手配テーブルの最新製番 + 1の文字列を取得する。
+	 * 製作テーブルの最新製番 + 1の文字列を取得する。
 	 * 月替りでは「年4桁-月2桁-0001」を取得する。
 	 * 
 	 * @return lotNumber 製作番号
@@ -38,7 +38,7 @@ public class ProductionService {
 		// 現在の日付を文字列で取得する。
 		String nowDate = new String(LocalDate.now().toString());
 		
-		// 製作手配テーブルの最新レコードの製作番号を文字列で取得する。
+		// 製作テーブルの最新レコードの製作番号を文字列で取得する。
 		String lotNumber = productionMapper.getLotNumberByLatest();
 		
 		// 最新の製作番号の年月と、現在の年月が一致する場合は、下4桁の通し番号 + 1に置き換える。
@@ -58,67 +58,67 @@ public class ProductionService {
 	}
 	
 	/**
-	 * 製作手配情報の新規登録メソッド
+	 * 製作情報の新規登録メソッド
 	 * DBへ登録
 	 * 
-	 * @param productionForm 製作手配フォーム
+	 * @param productionForm 製作フォーム
 	 */
 	public void create(ProductionForm productionForm) {
 		
-		//　製作手配フォームから製作手配クラスに詰め替え、DBを更新する。
+		//　製作フォームから製作クラスに詰め替え、DBを更新する。
 		productionMapper.create(modelMapping(productionForm));
 	}
 	
 	/**
-	 * 製作手配情報の更新メソッド
+	 * 製作情報の更新メソッド
 	 * DBの更新
 	 * 
-	 * @param productionForm　製作手配フォーム	
+	 * @param productionForm　製作フォーム	
 	 */
 	public void update(ProductionForm productionForm) {
 		
-		//　製作手配フォームから製作手配クラスに詰め替え、DBを更新する。
+		//　製作フォームから製作クラスに詰め替え、DBを更新する。
 		productionMapper.update(modelMapping(productionForm));
 	}
 	
 	/**
-	 * 製作手配情報の削除メソッド
-	 * 製作手配クラスに、製作手配フォームの情報をセットする。
+	 * 製作情報の削除メソッド
+	 * 製作クラスに、製作フォームの情報をセットする。
 	 * DBから削除(論理削除)
 	 * 
-	 * @param productionForm 製作手配フォーム
+	 * @param productionForm 製作フォーム
 	 */
 	public void delete(ProductionForm productionForm) {
 		
 		Production production = new Production();
 		
-		// 製作手配フォームから製作手配クラスにIDをセットする。
+		// 製作フォームから製作クラスにIDをセットする。
 		production.setId(productionForm.getId());
 		
 		productionMapper.delete(production);
 	}
 	
 	/**
-	 * 製作手配フォームで受け取る日付(文字列)を
+	 * 製作フォームで受け取る日付(文字列)を
 	 * LocalDate型に変換してセットする。
 	 * 商品IDを基に商品テーブルから該当レコードを取得しセットする。
 	 * 
-	 * @param productionForm 製作手配フォーム
+	 * @param productionForm 製作フォーム
 	 * 
-	 * @return production 製作手配クラス
+	 * @return production 製作クラス
 	 */
 	private Production modelMapping(ProductionForm productionForm) {
 		
 		// フォームから受け取った日付は文字列型の為、モデルマッパーの詰め替えから除外。
 		modelMapper.typeMap(ProductionForm.class, Production.class).addMappings(mapper -> mapper.skip(Production::setScheduledCompletionDate));
 		
-		// 製作手配フォームから製作手配クラスに情報の詰め替え。
+		// 製作フォームから製作クラスに情報の詰め替え。
 		Production production = modelMapper.map(productionForm, Production.class);
 		
 		// 文字列型の日付をLocalDate型に変換してセット。
 		production.setScheduledCompletionDate(LocalDate.parse(productionForm.getScheduledCompletionDate()));
 		
-		//商品IDを基に商品テーブルから、登録時点の最新レコードの主キーを取得する。
+		//商品IDを基に商品テーブルから、商品情報を取得する。
 		production.setItem(itemMapper.findById(productionForm.getItemId()));
 			
 		return production;

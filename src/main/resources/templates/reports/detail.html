@@ -18,6 +18,10 @@
 				<td th:text="*{production.item.name}" />
 			</tr>
 			<tr>
+				<th>製作数</th>
+				<td th:text="*{production.lotQuantity}" />
+			</tr>
+			<tr>
 				<th>完了数</th>
 				<td th:text="*{completionQuantity}" />
 			</tr>
@@ -42,9 +46,13 @@
 				<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}" />
 			</tr>
 			<tr>
-				<th>区分</th>
-				<td th:text="*{invalid} == 0 ? '有効' : '削除済'" />
+				<th>製作状況</th>
+				<td th:text="*{production.invalid} == 0 ? '製作中' : '製作中止'" />
 			</tr>
+			<tr>
+				<th>削除区分</th>
+				<td th:text="*{invalid} == 0 ? '' : '済'" />
+			</tr>		
 		</table>
 		<a th:href="@{/report/log}">日報履歴に戻る</a>
 	</div>

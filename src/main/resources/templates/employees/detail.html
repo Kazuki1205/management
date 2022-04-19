@@ -26,8 +26,8 @@
 				<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}" />
 			</tr>
 			<tr>
-				<th>区分</th>
-				<td th:text="*{invalid} == 0 ? '有効' : '削除済'" />
+				<th>削除区分</th>
+				<td th:text="*{invalid} == 0 ? '' : '済' " />
 			</tr>
 		</table>
 		<a th:href="@{/employee/list}">社員マスタに戻る</a>

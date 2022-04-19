@@ -11,7 +11,7 @@ import com.example.management.mapper.ReportMapper;
 import com.example.management.model.Report;
 
 /**
- * 日報入力のロジッククラス
+ * 日報のロジッククラス
  */
 @Service
 public class ReportService {
@@ -29,58 +29,58 @@ public class ReportService {
 	private ReportMapper reportMapper;
 	
 	/**
-	 * 日報入力テーブルに1件新規登録するメソッド
+	 * 日報テーブルに1件新規登録するメソッド
 	 * 
-	 * @param reportForm 日報入力フォーム
+	 * @param reportForm 日報フォーム
 	 * @param employeeId 社員ID
 	 */
 	public void create(ReportForm reportForm, Long employeeId) {
 		
-		// 日報入力フォームから日報入力クラスに値を詰め替え、DBへinsert処理を行う。
+		// 日報フォームから日報クラスに値を詰め替え、DBへinsert処理を行う。
 		reportMapper.create(modelMapping(reportForm, employeeId));
 	}
 	
 	/**
-	 * 日報入力テーブルをに1件更新するメソッド
+	 * 日報テーブルをに1件更新するメソッド
 	 * 
-	 * @param reportForm 日報入力フォーム
+	 * @param reportForm 日報フォーム
 	 * @param employeeId 社員ID
 	 */
 	public void update(ReportForm reportForm, Long employeeId) {
 		
-		// 日報入力フォームから日報入力クラスに値を詰め替え、DBへupdate処理を行う。
+		// 日報フォームから日報クラスに値を詰め替え、DBへupdate処理を行う。
 		reportMapper.update(modelMapping(reportForm, employeeId));
 	}
 	
 	/**
-	 * 日報入力テーブルをに1件削除するメソッド
+	 * 日報テーブルをに1件削除するメソッド
 	 * 
-	 * @param reportForm 日報入力フォーム
+	 * @param reportForm 日報フォーム
 	 */
 	public void delete(ReportForm reportForm) {
 		
 		Report report = new Report();
 		
-		// 日報入力クラスにIDをセット
+		// 日報クラスにIDをセット
 		report.setId(reportForm.getId());
 		
 		reportMapper.delete(report);
 	}
 	
 	/**
-	 * 日報入力フォームから日報入力クラスへ値の詰め替えを行うメソッド
+	 * 日報フォームから日報クラスへ値の詰め替えを行うメソッド
 	 * 
-	 * @param reportForm 日報入力フォーム
+	 * @param reportForm 日報フォーム
 	 * 
-	 * @return 日報入力クラス
+	 * @return 日報クラス
 	 */
 	private Report modelMapping(ReportForm reportForm, Long employeeId) {
 		
-		// 日報入力フォームから日報クラスへ値の詰め替え。
+		// 日報フォームから日報クラスへ値の詰め替え。
 		Report report = modelMapper.map(reportForm, Report.class);
 		
-		// 製作手配クラスをセットする。
-		report.setProduction(productionMapper.findByIdExcludeInvalid(reportForm.getProductionId()));	
+		// 製作クラスをセットする。
+		report.setProduction(productionMapper.findByIdExcludeInvalidAndCompletion(reportForm.getProductionId()));	
 		
 		// 社員履歴クラスをセットする。
 		report.setEmployeeHistory(employeeHistoryMapper.findByUserIdByLatest(employeeId));

@@ -11,8 +11,6 @@ import lombok.Data;
 @Data
 public class Department {
 	
-	public Department () {} // コンストラクタ(MyBatisで使用)
-	
 	private Long id; // ID
 	
 	private String code; // 部署コード

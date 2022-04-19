@@ -8,9 +8,12 @@ DROP TABLE IF EXISTS customers_history CASCADE;
 DROP TABLE IF EXISTS productions CASCADE;
 DROP TABLE IF EXISTS employees_history CASCADE;
 DROP TABLE IF EXISTS reports CASCADE;
+DROP TABLE IF EXISTS stocks CASCADE;
+DROP TABLE IF EXISTS storings CASCADE;
 DROP FUNCTION IF EXISTS process_employees_history CASCADE; 
 DROP FUNCTION IF EXISTS process_items_history CASCADE; 
 DROP FUNCTION IF EXISTS process_customers_history CASCADE; 
+DROP FUNCTION IF EXISTS process_stocks CASCADE; 
 
 ---- テーブル作成 ----
 -- 顧客テーブル --
@@ -112,7 +115,7 @@ CREATE TABLE IF NOT EXISTS employees_history (
 ALTER TABLE employees_history ADD CONSTRAINT FK_employees_history_employees FOREIGN KEY (employee_id) REFERENCES employees;
 ALTER TABLE employees_history ADD CONSTRAINT FK_employees_history_departments FOREIGN KEY (department_id) REFERENCES departments;
    
--- 製作手配テーブル --
+-- 製作テーブル --
 CREATE TABLE IF NOT EXISTS productions (
 	id BIGSERIAL NOT NULL, 
 	item_id BIGINT NOT NULL, 
@@ -121,11 +124,12 @@ CREATE TABLE IF NOT EXISTS productions (
 	scheduled_completion_date DATE NOT NULL, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	completion_flag SMALLINT DEFAULT 0, 
 	invalid SMALLINT DEFAULT 0, 
 	PRIMARY KEY (id)
 );
 
--- 日報入力テーブル --
+-- 日報テーブル --
 CREATE TABLE IF NOT EXISTS reports (
 	id BIGSERIAL NOT NULL, 
 	production_id BIGINT NOT NULL, 
@@ -135,6 +139,28 @@ CREATE TABLE IF NOT EXISTS reports (
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	invalid SMALLINT DEFAULT 0, 
+	PRIMARY KEY (id)
+);
+
+-- 在庫テーブル --
+CREATE TABLE IF NOT EXISTS stocks (
+	id BIGSERIAL NOT NULL, 
+	item_id BIGINT NOT NULL, 
+	actual_quantity INT DEFAULT 0, 
+	created_at TIMESTAMP NOT NULL, 
+	updated_at TIMESTAMP NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT quantity_check CHECK(actual_quantity >= 0)
+);
+
+-- 入庫テーブル --
+CREATE TABLE IF NOT EXISTS storings (
+	id BIGSERIAL NOT NULL, 
+	production_id BIGINT NOT NULL, 
+	storing_quantity INT NOT NULL, 
+	completion_input SMALLINT DEFAULT 0, 
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	PRIMARY KEY (id)
 );
 
@@ -171,7 +197,7 @@ $process_employees_history$
 LANGUAGE plpgsql;
 
 -- 社員履歴テーブル作成トリガー --
-CREATE TRIGGER trigger_employees_history AFTER INSERT OR UPDATE OF username, name, department_id ON employees
+CREATE TRIGGER trigger_employees_history AFTER INSERT OR UPDATE OF name, department_id ON employees
 	FOR EACH ROW EXECUTE FUNCTION process_employees_history();
 
 -- 商品履歴テーブル作成関数 --
@@ -199,7 +225,7 @@ $process_items_history$
 LANGUAGE plpgsql;
 
 -- 商品履歴テーブル作成トリガー --
-CREATE TRIGGER trigger_items_history AFTER INSERT OR UPDATE OF code, name, unit_price ON items
+CREATE TRIGGER trigger_items_history AFTER INSERT OR UPDATE OF name, unit_price ON items
 	FOR EACH ROW EXECUTE FUNCTION process_items_history();
 	
 -- 顧客履歴テーブル作成関数 --
@@ -235,8 +261,32 @@ $process_customers_history$
 LANGUAGE plpgsql;
 
 -- 顧客履歴テーブル作成トリガー --
-CREATE TRIGGER trigger_customers_history AFTER INSERT OR UPDATE OF code, name, postal_code, first_address, second_address, third_address, phone_number ON customers
+CREATE TRIGGER trigger_customers_history AFTER INSERT OR UPDATE OF name, postal_code, first_address, second_address, third_address, phone_number ON customers
 	FOR EACH ROW EXECUTE FUNCTION process_customers_history();
+	
+-- 在庫テーブル作成関数 --
+CREATE FUNCTION process_stocks() RETURNS TRIGGER AS $process_stocks$
+BEGIN
+	INSERT INTO
+		stocks (
+			item_id, 
+			created_at, 
+			updated_at
+		)
+	VALUES (
+		NEW.id, 
+		NEW.created_at, 
+		NEW.updated_at
+	);
+	
+	RETURN NULL;
+END;
+$process_stocks$
+LANGUAGE plpgsql;
+
+-- 在庫テーブル作成トリガー --
+CREATE TRIGGER trigger_stocks AFTER INSERT ON items
+	FOR EACH ROW EXECUTE FUNCTION process_stocks();
 
 ---- 事前データ準備 ----
 -- 顧客データ --		

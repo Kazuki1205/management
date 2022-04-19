@@ -173,7 +173,6 @@
 		UPDATE
 			customers <!-- 顧客テーブル -->
 		SET
-			code = #{code}, 
 			name = #{name}, 
 			postal_code = #{postalCode}, 
 			first_address = #{firstAddress}, 

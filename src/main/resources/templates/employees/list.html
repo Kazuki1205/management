@@ -45,6 +45,7 @@
 								<th>権限</th>
 								<th>登録日時</th>
 								<th>更新日時</th>
+								<th>削除区分</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -64,6 +65,7 @@
 								<td th:text="*{authority}"></td>
 								<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>
 								<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}"></td>
+								<td th:text="*{invalid} == 0 ? '' : '済' "></td>
 							</tr>
 						</tbody>
 					</table>

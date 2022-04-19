@@ -8,7 +8,13 @@
 				<label for="code">商品コード</label>
 			</th>
 			<td>
-				<input type="text" th:field="*{code}" class="bg-secondary" readonly />
+				<th:block th:if="${editFlag} == null">
+					<input type="text" th:field="*{code}" class="bg-secondary" readonly />
+				</th:block>
+				<th:block th:if="${editFlag} == 1">
+					<input type="hidden" th:field="*{code}" />
+					<span th:text="*{code}"></span>
+				</th:block>
 			</td>
 		</tr>
 		<tr>

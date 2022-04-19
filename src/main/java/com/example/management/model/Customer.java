@@ -9,8 +9,6 @@ import lombok.Data;
  */
 @Data
 public class Customer {
-
-	public Customer () {} // コンストラクタ(MyBatisで使用)
 	
 	private Long id; // ID
 	

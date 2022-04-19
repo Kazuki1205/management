@@ -22,7 +22,7 @@ import com.example.management.service.ProductionService;
 import com.example.management.validation.ValidOrder;
 
 /**
- * 製作手配の編集コントローラー
+ * 製作の編集コントローラー
  */
 @Controller
 public class ProductionEditController {
@@ -54,7 +54,7 @@ public class ProductionEditController {
 	
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
-	 * 製作手配登録画面のセレクトボックスの商品一覧を取得する。
+	 * 製作登録画面のセレクトボックスの商品一覧を取得する。
 	 * ※modelに自動的にaddAttributeされる。
 	 * 
 	 * @return items 商品型のリスト
@@ -68,19 +68,34 @@ public class ProductionEditController {
 	}
 	
 	/**
+	 * 各ハンドラメソッド実行前に呼び出されるメソッド
+	 * 入力フォームを値に置き換える。
+	 * ※modelに自動的にaddAttributeされる。
+	 * 
+	 * @return 編集フラグ
+	 */
+	@ModelAttribute(name = "editFlag")
+	public Integer setEditFlag() {
+		
+		Integer editFlag = 1;
+		
+		return editFlag;
+	}
+	
+	/**
 	 * 製作履歴一覧から選んだID情報を基に
 	 * productionFormに詰め直して編集画面を表示する
 	 * 
 	 * @param id ID
 	 * @param model テンプレートへ渡す情報
 	 * 
-	 * @return 製作手配テンプレート
+	 * @return 製作テンプレート
 	 */
 	@GetMapping("/production/edit/{id}")
 	public String edit(@PathVariable("id") Long id, Model model) {
 		
-		// ID情報を基にDBから製作手配テーブルを検索し製作手配クラスとして取得、製作手配フォームへ詰め替える。
-		ProductionForm productionForm = modelMapper.map(productionMapper.findByIdExcludeInvalid(id), ProductionForm.class);
+		// ID情報を基にDBから製作テーブルを検索し製作クラスとして取得、製作フォームへ詰め替える。
+		ProductionForm productionForm = modelMapper.map(productionMapper.findByIdExcludeInvalidAndCompletion(id), ProductionForm.class);
 		
 		model.addAttribute("productionForm", productionForm);
 		
@@ -88,21 +103,21 @@ public class ProductionEditController {
 	}
 	
 	/**
-	 * 製作手配情報を受け取り、DBを更新するメソッド
+	 * 製作情報を受け取り、DBを更新するメソッド
 	 * 更新できたらリストにリダイレクト。
 	 * 
-	 * @param productionForm　製作手配フォーム
-	 * @param bindingResult 製作手配フォームのバリデーション結果
+	 * @param productionForm　製作フォーム
+	 * @param bindingResult 製作フォームのバリデーション結果
 	 * @param model テンプレートへ渡す情報
 	 * @param redirectAttributes リダイレクト先へ渡す情報
 	 * 
-	 * @return　製作手配編集テンプレート/製作手配履歴へリダイレクト
+	 * @return　製作編集テンプレート/製作履歴へリダイレクト
 	 */
 	@PostMapping("/production/edit/update")
 	public String update(@Validated(ValidOrder.class) @ModelAttribute("productionForm") ProductionForm productionForm, 
 						 BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 		
-		// 製作手配フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
+		// 製作フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 			
 			model.addAttribute("hasMessage", true);
@@ -123,7 +138,15 @@ public class ProductionEditController {
 		}
 	}
 	
-	
+	/**
+	 * 製作情報をDBから削除するメソッド(論理削除)
+	 * 削除が完了したらリストにリダイレクト。
+	 * 
+	 * @param redirectAttributes リダイレクト先へ渡す情報
+	 * @param productionForm 製作フォーム
+	 * 
+	 * @return　製作履歴へリダイレクト
+	 */
 	@PostMapping("/production/edit/delete")
 	public String delete(@ModelAttribute("productionForm") ProductionForm productionForm, 
 						 RedirectAttributes redirectAttributes) {

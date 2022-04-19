@@ -20,7 +20,7 @@ import com.example.management.service.ProductionService;
 import com.example.management.validation.ValidOrder;
 
 /**
- * 製作手配の新規登録コントローラー
+ * 製作の新規登録コントローラー
  */
 @Controller
 public class ProductionRegisterController {
@@ -49,7 +49,7 @@ public class ProductionRegisterController {
 	
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
-	 * 製作手配登録画面のセレクトボックスの商品一覧を取得する。
+	 * 製作登録画面のセレクトボックスの商品一覧を取得する。
 	 * ※modelに自動的にaddAttributeされる。
 	 * 
 	 * @return items 商品型のリスト
@@ -63,17 +63,17 @@ public class ProductionRegisterController {
 	}
 	
 	/**
-	 * 製作手配登録画面を表示
+	 * 製作登録画面を表示
 	 * 
-	 * @param productionForm 製作手配フォーム ※@ModelAttributeにより、無ければnewされる。
+	 * @param productionForm 製作フォーム ※@ModelAttributeにより、無ければnewされる。
 	 * @param model テンプレートへ渡す情報
 	 * 
-	 * @return 製作手配新規登録テンプレート
+	 * @return 製作新規登録テンプレート
 	 */
 	@GetMapping("/production/register")
 	public String register(@ModelAttribute("productionForm") ProductionForm productionForm, Model model) {
 		
-		// 製作手配フォームの製作番号に「2201-01-0001」形式のString型をセットする
+		// 製作フォームの製作番号に「2201-01-0001」形式のString型をセットする
 		productionForm.setLotNumber(productionService.getLotNumber());
 		
 		model.addAttribute("productionForm", productionForm);
@@ -82,14 +82,14 @@ public class ProductionRegisterController {
 	}
 	
 	/**
-	 * 製作手配新規登録メソッド
+	 * 製作新規登録メソッド
 	 * 
-	 * @param productionForm 製作手配フォーム
-	 * @param bindingResult 製作手配フォームのバリデーション結果
+	 * @param productionForm 製作フォーム
+	 * @param bindingResult 製作フォームのバリデーション結果
 	 * @param redirectAttributes リダイレクト先へ渡す情報
 	 * @param model テンプレートへ渡す情報
 	 * 
-	 * @return 製作手配新規登録テンプレート/リダイレクト
+	 * @return 製作新規登録テンプレート/リダイレクト
 	 */
 	@PostMapping("/production/register/new")
 	public String create(@Validated(ValidOrder.class) @ModelAttribute("productionForm") ProductionForm productionForm, 
@@ -99,7 +99,7 @@ public class ProductionRegisterController {
 		
 		model.addAttribute("hasMessage", true);
 		
-		// 製作手配フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
+		// 製作フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 			
 			model.addAttribute("class", "alert-danger");
@@ -125,7 +125,7 @@ public class ProductionRegisterController {
 
 		}
 		
-		// 製作手配フォームの製作番号に「2201-01-0001」形式のString型をセットする
+		// 製作フォームの製作番号に「2201-01-0001」形式のString型をセットする
 		productionForm.setLotNumber(productionService.getLotNumber());
 			
 		model.addAttribute("productionForm", productionForm);

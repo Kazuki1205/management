@@ -195,7 +195,6 @@
 		UPDATE 
 			employees
 		SET 
-			username = #{username}, 
 			name = #{name}, 
 			department_id = #{department.id},  
 			updated_at = #{updatedAt}, 

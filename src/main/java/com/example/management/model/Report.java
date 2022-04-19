@@ -5,14 +5,14 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
- * 日報入力クラス
+ * 日報クラス
  */
 @Data
 public class Report {
 
 	private Long id; // ID
 	
-	private Production production; // 製作手配クラス
+	private Production production; // 製作クラス
 	
 	private EmployeeHistory employeeHistory; // 社員履歴クラス
 	

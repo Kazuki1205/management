@@ -99,7 +99,7 @@ $(document).ready(function() {
 	});
 });
 
-// 日報入力時に製作番号を選択した際、それに紐づく商品名・製作数を非同期で取得
+// 日報入力時に製作番号を選択した際、それに紐づく商品コード・商品名・製作数・部署毎の完了数計・不良数計を非同期で取得
 $(function() {
 
 	// 日報入力画面の製作番号セレクトボックスの値変更時
@@ -110,27 +110,35 @@ $(function() {
 		
 			// urlのコントローラーにPOSTデータで、製作番号IDとトークンを渡す。
 			$.ajax({
-				url: '/report/register/ajax', 
+				url: '/production/ajax', 
 				type: 'POST', 
 				data: {
-					id: $('[name=productionId] option:selected').val(), 
+					productionId: $('[name=productionId] option:selected').val(), 
 					_csrf: $('*[name=_csrf]').val()
 				}, 
 				dataType: 'json' // レスポンスをJsonデータとして受け取る。
 			})
 			
-			// コントローラーから返された製作手配クラスのJsonデータから、商品名・製作数をそれぞれ取り出し、各フォームに入力する。
+			// コントローラーから返された製作手配クラスのJsonデータから、商品コード・商品名・製作数・部署毎の完了数計・不良数計をそれぞれ取り出し、各フォームに入力する。
 			.done(function(data) {
-	
+				
+				$('#ajax-itemCode').val(data.item.code);
 				$('#ajax-itemName').val(data.item.name);
 				$('#ajax-lotQuantity').val(data.lotQuantity);
+				$('#ajax-departmentCompletionQuantityTotal').val(data.departmentCompletionQuantityTotal);
+				$('#ajax-failureQuantityTotal').val(data.failureQuantityTotal);
+				$('#ajax-storingQuantityTotal').val(data.storingQuantityTotal);
 			})	
 			
 			// 「選択して下さい」を選ぶと、各入力欄に空白が入力される。
 		} else {
 			
+			$('#ajax-itemCode').val("");
 			$('#ajax-itemName').val("");
 			$('#ajax-lotQuantity').val("");
+			$('#ajax-departmentCompletionQuantityTotal').val("");
+			$('#ajax-failureQuantityTotal').val("");
+			$('#ajax-storingQuantityTotal').val("");
 		}
 	});
 });

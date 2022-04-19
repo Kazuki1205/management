@@ -20,8 +20,6 @@ public class Employee implements UserDetails {
 
 	private static final long serialVersionUID = 1L; // シリアルID
 	
-	public Employee () {} // コンストラクタ(MyBatisで使用)
-	
 	private Long id; // ID
 	
 	private String username; // 社員ID

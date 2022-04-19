@@ -134,7 +134,6 @@
 		UPDATE
 			items <!-- 商品テーブル -->
 		SET
-			code = #{code}, 
 			name = #{name}, 
 			unit_price = #{unitPrice}, 
 			updated_at = #{updatedAt}

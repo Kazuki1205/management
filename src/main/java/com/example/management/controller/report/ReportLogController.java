@@ -17,7 +17,7 @@ import com.example.management.model.Department;
 import com.example.management.model.Report;
 
 /**
- * 日報入力の履歴画面コントローラー
+ * 日報の履歴画面コントローラー
  */
 @Controller
 public class ReportLogController {
@@ -59,7 +59,7 @@ public class ReportLogController {
 	/**
 	 * 日報履歴一覧を表示
 	 * 
-	 * @param reportForm 日報入力フォーム
+	 * @param reportForm 日報フォーム
 	 * @param lotNumber 製作番号
 	 * @param itemCode 商品コード
 	 * @param itemName 商品名
@@ -67,7 +67,7 @@ public class ReportLogController {
 	 * @param employeeName 社員名
 	 * @param model テンプレートへ渡す情報
 	 * 
-	 * @return 日報入力詳細テンプレート
+	 * @return 日報詳細テンプレート
 	 */
 	@GetMapping("/report/log")
 	public String index(@ModelAttribute("reportForm") ReportForm reportForm, 
@@ -78,7 +78,7 @@ public class ReportLogController {
 						@RequestParam(name = "employeeName", defaultValue = "") String employeeName, 
 						Model model) {
 		
-		// 検索条件を基にDBから日報入力リストを取得する
+		// 検索条件を基にDBから日報リストを取得する
 		List<Report> reports = reportMapper.findByConditions(lotNumber, itemCode, itemName, departmentId, employeeName);
 		
 		model.addAttribute("reports", reports);
@@ -93,12 +93,12 @@ public class ReportLogController {
 	 * @param id ID
 	 * @param model テンプレートへ渡す情報
 	 * 
-	 * @return 日報入力詳細テンプレート
+	 * @return 日報詳細テンプレート
 	 */
 	@GetMapping("/report/log/{id}")
 	public String detail(@PathVariable("id") Long id, Model model) {
 		
-		// テンプレートへ渡す日報入力情報
+		// テンプレートへ渡す日報情報
 		model.addAttribute("report", reportMapper.findById(id));
 		
 		return "reports/detail";

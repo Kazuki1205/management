@@ -71,7 +71,7 @@ public class EmployeeEditController {
 	
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
-	 * employees/common.htmlのパスワード登録フォーム以外を表示。
+	 * 入力フォームを値に置き換える。
 	 * ※modelに自動的にaddAttributeされる。
 	 * 
 	 * @return 編集フラグ

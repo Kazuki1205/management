@@ -13,13 +13,13 @@
 						<option value="" selected>選択して下さい</option>
 						<option th:each="production : ${productions}" th:value="${production.id}" th:text="${production.lotNumber}" />
 					</select>
-					<span th:if="${#fields.hasErrors('productionId')}" th:errors="*{productionId}" class="text-danger"></span>
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
 					<input type="hidden" th:field="*{productionId}" />
 					<input type="hidden" th:field="*{lotNumber}" />
 					<span th:text="*{lotNumber}"></span>
 				</th:block>
+				<span th:if="${#fields.hasErrors('productionId')}" th:errors="*{productionId}" class="text-danger"></span>
 			</td>
 		</tr>
 		<tr>
@@ -59,6 +59,7 @@
 			<td>
 				<th:block th:if="${editFlag} == null">
 					<input type="number" th:field="*{lotQuantity}" class="bg-secondary" id="ajax-lotQuantity" readonly />
+					<span th:if="${#fields.hasErrors('lotQuantity')}" th:errors="*{lotQuantity}" class="text-danger"></span>
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
 					<input type="hidden" th:field="*{lotQuantity}" />
@@ -68,15 +69,16 @@
 		</tr>
 		<tr>
 			<th>
-				<label for="departmentCompletionQuantityTotal">部署毎の完了数計</label>
+				<label for="storingQuantityTotal">入庫済数</label>
 			</th>
 			<td>
 				<th:block th:if="${editFlag} == null">
-					<input type="number" th:field="*{departmentCompletionQuantityTotal}" class="bg-secondary" id="ajax-departmentCompletionQuantityTotal" readonly />
+					<input type="number" th:field="*{storingQuantityTotal}" class="bg-secondary" id="ajax-storingQuantityTotal" readonly />
+					<span th:if="${#fields.hasErrors('storingQuantityTotal')}" th:errors="*{storingQuantityTotal}" class="text-danger"></span>
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
-					<input type="hidden" th:field="*{departmentCompletionQuantityTotal}" />
-					<span th:text="*{departmentCompletionQuantityTotal}"></span>
+					<input type="hidden" th:field="*{storingQuantityTotal}" />
+					<span th:text="*{storingQuantityTotal}"></span>
 				</th:block>
 			</td>
 		</tr>
@@ -87,6 +89,7 @@
 			<td>
 				<th:block th:if="${editFlag} == null">
 					<input type="number" th:field="*{failureQuantityTotal}" class="bg-secondary" id="ajax-failureQuantityTotal" readonly />
+					<span th:if="${#fields.hasErrors('failureQuantityTotal')}" th:errors="*{failureQuantityTotal}" class="text-danger"></span>
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
 					<input type="hidden" th:field="*{failureQuantityTotal}" />
@@ -96,21 +99,28 @@
 		</tr>
 		<tr>
 			<th>
-				<label for="completionQuantity">完了数</label>
+				<label for="storingQuantity">入庫数</label>
 			</th>
 			<td>
-				<input type="number" th:field="*{completionQuantity}" min="0" />
-				<span th:if="${#fields.hasErrors('completionQuantity')}" th:errors="*{completionQuantity}" class="text-danger"></span>
-				<span th:if="${#fields.hasErrors('quantityValid')}" th:errors="*{quantityValid}" class="text-danger"></span>
+				<th:block th:if="${editFlag} == null">
+					<input type="number" th:field="*{storingQuantity}" min=1 />
+					<span th:if="${#fields.hasErrors('storingQuantity')}" th:errors="*{storingQuantity}" class="text-danger"></span>
+				</th:block>
+				<th:block th:if="${editFlag} == 1">
+					<input type="hidden" th:field="*{storingQuantity}" />
+					<span th:text="*{storingQuantity}"></span>
+				</th:block>
 			</td>
 		</tr>
 		<tr>
 			<th>
-				<label for="failureQuantity">不良数</label>
+				完了区分
 			</th>
 			<td>
-				<input type="number" th:field="*{failureQuantity}" min="0" />
-				<span th:if="${#fields.hasErrors('failureQuantity')}" th:errors="*{failureQuantity}" class="text-danger"></span>
+				<input type="radio" th:field="*{completionInput}" value=0 />
+				<label th:for="${#ids.prev('completionInput')}">未完了  </label>
+				<input type="radio" th:field="*{completionInput}" value=1 />
+				<label th:for="${#ids.prev('completionInput')}">完了済  </label>
 			</td>
 		</tr>
 	</table>

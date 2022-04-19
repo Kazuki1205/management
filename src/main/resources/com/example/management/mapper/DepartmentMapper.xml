@@ -176,7 +176,6 @@
 		UPDATE
 			departments <!-- 部署テーブル -->
 		SET
-			code = #{code}, 
 			name = #{name}, 
 			updated_at = #{updatedAt}
 		WHERE

@@ -45,7 +45,9 @@
 							</li>
 							
 							<th:block sec:authorize="hasRole('ADMIN') or hasRole('OFFICE')">
-								<li class="h5">入庫入力</li>
+								<li class="h5">
+									<a th:href="@{/storing/log}">入庫入力</a>
+								</li>
 							</th:block>
 							<th:block sec:authorize="hasRole('ADMIN') or hasRole('SALE')">
 								<li class="h5">受注入力</li>

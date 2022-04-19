@@ -66,6 +66,21 @@ public class ItemEditController {
 	}
 	
 	/**
+	 * 各ハンドラメソッド実行前に呼び出されるメソッド
+	 * 入力フォームを値に置き換える。
+	 * ※modelに自動的にaddAttributeされる。
+	 * 
+	 * @return 編集フラグ
+	 */
+	@ModelAttribute(name = "editFlag")
+	public Integer setEditFlag() {
+		
+		Integer editFlag = 1;
+		
+		return editFlag;
+	}
+	
+	/**
 	 * 商品情報を受け取り、DBを更新するメソッド
 	 * 更新できたらリストにリダイレクト。
 	 * 
@@ -101,7 +116,15 @@ public class ItemEditController {
 		}
 	}
 	
-	
+	/**
+	 * 商品情報をDBから削除するメソッド(論理削除)
+	 * 削除が完了したらリストにリダイレクト。
+	 * 
+	 * @param redirectAttributes リダイレクト先へ渡す情報
+	 * @param itemForm 商品フォーム
+	 * 
+	 * @return　商品マスタへリダイレクト
+	 */
 	@PostMapping("/item/edit/delete")
 	public String delete(@ModelAttribute("itemForm") ItemForm itemForm, RedirectAttributes redirectAttributes) {
 		

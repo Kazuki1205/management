@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	  layout:decorate="~{layouts/layout}">
+
+<body>
+	<div layout:fragment="contents">
+		<form method="post" th:action="@{/storing/edit/update}" th:object="${storingForm}">
+			<input type="hidden" th:field="*{id}" />
+		
+			<div layout:replace="~{storings/common :: table}"></div>
+			
+			<input type="submit" value="更新" id="form" />
+		</form>
+		<a th:href="@{/storing/log}">入庫履歴に戻る</a>
+	</div>
+</body>
+</html>

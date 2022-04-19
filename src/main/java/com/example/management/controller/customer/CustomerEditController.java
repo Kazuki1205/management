@@ -47,6 +47,21 @@ public class CustomerEditController {
 	}
 	
 	/**
+	 * 各ハンドラメソッド実行前に呼び出されるメソッド
+	 * 入力フォームを値に置き換える。
+	 * ※modelに自動的にaddAttributeされる。
+	 * 
+	 * @return 編集フラグ
+	 */
+	@ModelAttribute(name = "editFlag")
+	public Integer setEditFlag() {
+		
+		Integer editFlag = 1;
+		
+		return editFlag;
+	}
+	
+	/**
 	 * 顧客マスタ一覧から選んだID情報を基に
 	 * customerFormに詰め直して編集画面を表示する
 	 * 
@@ -106,7 +121,15 @@ public class CustomerEditController {
 		}
 	}
 	
-	
+	/**
+	 * 顧客情報をDBから削除するメソッド(論理削除)
+	 * 削除が完了したらリストにリダイレクト。
+	 * 
+	 * @param redirectAttributes リダイレクト先へ渡す情報
+	 * @param customerForm 顧客フォーム
+	 * 
+	 * @return　顧客マスタへリダイレクト
+	 */
 	@PostMapping("/customer/edit/delete")
 	public String delete(@ModelAttribute("customerForm") CustomerForm customerForm, RedirectAttributes redirectAttributes) {
 		

@@ -5,7 +5,7 @@
 	
 <mapper namespace="com.example.management.mapper.ProductionMapper">
 
-	<!-- SQL結果に対応した製作手配クラス -->
+	<!-- SQL結果に対応した製作クラス -->
 	<resultMap id="productionResult" type="Production">
 		<id property="id" column="pro_id" />
 		<result property="lotNumber" column="pro_lot_number" />
@@ -13,6 +13,7 @@
 		<result property="scheduledCompletionDate" column="pro_scheduled_completion_date" />
 		<result property="createdAt" column="pro_created_at" />
 		<result property="updatedAt" column="pro_updated_at" />
+		<result property="completionFlag" column="pro_completion_flag" />
 		<result property="invalid" column="pro_invalid" />
 		<association property="item" javaType="Item">
 			<id property="id" column="ite_id" />
@@ -20,8 +21,8 @@
 			<result property="name" column="ite_name" />
 		</association>
 	</resultMap>
-
-	<!-- 全てのレコードを取得※製作手配テーブルの削除済みを除く -->
+	
+	<!-- 全てのレコードを取得※製作テーブルの削除済みを除く -->
 	<select id="findAllExcludeInvalid" resultMap="productionResult">
 		SELECT
 			pro.id                          AS pro_id, 
@@ -30,18 +31,47 @@
 			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
 			pro.created_at                  AS pro_created_at, 
 			pro.updated_at                  AS pro_updated_at, 
+			pro.completion_flag             AS pro_completion_flag, 
 			pro.invalid                     AS pro_invalid, 
 			ite.id                          AS ite_id, 
 			ite.code                        AS ite_code, 
 			ite.name                        AS ite_name
 		FROM
-			productions pro <!-- 製作手配テーブル -->
+			productions pro <!-- 製作テーブル -->
 		INNER JOIN
 			items ite <!-- 商品テーブル -->
 		ON
 			pro.item_id = ite.id <!-- 商品IDで結合 -->
 		WHERE
 			pro.invalid = 0 <!-- 未削除のみ -->
+		ORDER BY
+			pro.id ASC <!-- IDの昇順 -->
+	</select>
+
+	<!-- 全てのレコードを取得※製作テーブルの削除済み・完了済みを除く -->
+	<select id="findAllExcludeInvalidAndCompletion" resultMap="productionResult">
+		SELECT
+			pro.id                          AS pro_id, 
+			pro.lot_number                  AS pro_lot_number, 
+			pro.lot_quantity                AS pro_lot_quantity, 
+			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
+			pro.created_at                  AS pro_created_at, 
+			pro.updated_at                  AS pro_updated_at, 
+			pro.completion_flag             AS pro_completion_flag, 
+			pro.invalid                     AS pro_invalid, 
+			ite.id                          AS ite_id, 
+			ite.code                        AS ite_code, 
+			ite.name                        AS ite_name
+		FROM
+			productions pro <!-- 製作テーブル -->
+		INNER JOIN
+			items ite <!-- 商品テーブル -->
+		ON
+			pro.item_id = ite.id <!-- 商品IDで結合 -->
+		WHERE
+			pro.invalid = 0 <!-- 未削除のみ -->
+		AND
+			pro.completion_flag = 0 <!-- 完了区分フラグが立っていない物のみ -->
 		ORDER BY
 			pro.id ASC <!-- IDの昇順 -->
 	</select>
@@ -55,12 +85,13 @@
 			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
 			pro.created_at                  AS pro_created_at, 
 			pro.updated_at                  AS pro_updated_at, 
+			pro.completion_flag             AS pro_completion_flag, 
 			pro.invalid                     AS pro_invalid, 
 			ite.id                          AS ite_id, 
 			ite.code                        AS ite_code, 
 			ite.name                        AS ite_name
 		FROM
-			productions pro <!-- 製作手配テーブル -->
+			productions pro <!-- 製作テーブル -->
 		INNER JOIN
 			items ite <!-- 商品テーブル -->
 		ON
@@ -87,12 +118,13 @@
 			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
 			pro.created_at                  AS pro_created_at, 
 			pro.updated_at                  AS pro_updated_at, 
+			pro.completion_flag             AS pro_completion_flag, 
 			pro.invalid                     AS pro_invalid, 
 			ite.id                          AS ite_id, 
 			ite.code                        AS ite_code, 
 			ite.name                        AS ite_name
 		FROM
-			productions pro <!-- 製作手配テーブル -->
+			productions pro <!-- 製作テーブル -->
 		INNER JOIN
 			items ite <!-- 商品テーブル -->
 		ON
@@ -103,7 +135,7 @@
 	
 	
 	
-	<!-- 引数で受け取った製作手配IDを基に、該当レコードを取得する。 -->
+	<!-- 引数で受け取った製作IDを基に、該当レコードを取得する。 -->
 	<select id="findById" parameterType="Long" resultMap="productionResult">
 		SELECT
 			pro.id                          AS pro_id, 
@@ -112,21 +144,22 @@
 			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
 			pro.created_at                  AS pro_created_at, 
 			pro.updated_at                  AS pro_updated_at, 
+			pro.completion_flag             AS pro_completion_flag, 
 			pro.invalid                     AS pro_invalid, 
 			ite.id                          AS ite_id, 
 			ite.code                        AS ite_code, 
 			ite.name                        AS ite_name
 		FROM
-			productions pro <!-- 製作手配テーブル -->
+			productions pro <!-- 製作テーブル -->
 		INNER JOIN
 			items ite <!-- 商品テーブル -->
 		ON
 			pro.item_id = ite.id <!-- 商品IDで結合 -->
 		WHERE
-			pro.id = #{id} <!-- 引数の製作手配IDと一致した場合 -->
+			pro.id = #{id} <!-- 引数の製作IDと一致した場合 -->
 	</select>
 	
-	<!-- 引数で受け取った製作手配IDを基に、該当レコードを取得する。※削除済みを除く -->
+	<!-- 引数で受け取った製作IDを基に、該当レコードを取得する。※削除済みを除く -->
 	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="productionResult">
 		SELECT
 			pro.id                          AS pro_id, 
@@ -135,28 +168,57 @@
 			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
 			pro.created_at                  AS pro_created_at, 
 			pro.updated_at                  AS pro_updated_at, 
+			pro.completion_flag             AS pro_completion_flag, 
 			pro.invalid                     AS pro_invalid, 
 			ite.id                          AS ite_id, 
 			ite.code                        AS ite_code, 
 			ite.name                        AS ite_name
 		FROM
-			productions pro <!-- 製作手配テーブル -->
+			productions pro <!-- 製作テーブル -->
 		INNER JOIN
 			items ite <!-- 商品テーブル -->
 		ON
 			pro.item_id = ite.id <!-- 商品IDで結合 -->
 		WHERE
-			pro.id = #{id} <!-- 引数の製作手配IDと一致した場合 -->
+			pro.id = #{id} <!-- 引数の製作IDと一致した場合 -->
 		AND
 			pro.invalid = 0 <!-- 未削除のみ -->
 	</select>
 	
-	<!-- 製作手配テーブルをIDの降順に並び替えた上で、最初の行の製作番号(通し番号の最大)を取得する。 -->
+	<!-- 引数で受け取った製作IDを基に、該当レコードを取得する。※削除済み・完了済みを除く -->
+	<select id="findByIdExcludeInvalidAndCompletion" parameterType="Long" resultMap="productionResult">
+		SELECT
+			pro.id                          AS pro_id, 
+			pro.lot_number                  AS pro_lot_number, 
+			pro.lot_quantity                AS pro_lot_quantity, 
+			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
+			pro.created_at                  AS pro_created_at, 
+			pro.updated_at                  AS pro_updated_at, 
+			pro.completion_flag             AS pro_completion_flag, 
+			pro.invalid                     AS pro_invalid, 
+			ite.id                          AS ite_id, 
+			ite.code                        AS ite_code, 
+			ite.name                        AS ite_name
+		FROM
+			productions pro <!-- 製作テーブル -->
+		INNER JOIN
+			items ite <!-- 商品テーブル -->
+		ON
+			pro.item_id = ite.id <!-- 商品IDで結合 -->
+		WHERE
+			pro.id = #{id} <!-- 引数の製作IDと一致した場合 -->
+		AND
+			pro.invalid = 0 <!-- 未削除のみ -->
+		AND
+			pro.completion_flag = 0 <!-- 完了区分フラグが立っていない物のみ -->
+	</select>
+	
+	<!-- 製作テーブルをIDの降順に並び替えた上で、最初の行の製作番号(通し番号の最大)を取得する。 -->
 	<select id="getLotNumberByLatest" resultType="String">
 		SELECT
 			lot_number 
 		FROM
-			productions <!-- 製作手配テーブル -->
+			productions <!-- 製作テーブル -->
 		ORDER BY 
 			id DESC <!-- IDの降順 -->
 		LIMIT 1 <!-- 最新の1行 -->
@@ -167,15 +229,15 @@
 		SELECT
 			lot_quantity
 		FROM
-			productions <!-- 製作手配テーブル -->
+			productions <!-- 製作テーブル -->
 		WHERE
 			id = #{id} <!-- 引数のIDと一致した場合 -->
 	</select>
 	
-	<!-- 製作手配テーブルに1件データを挿入する。 -->
+	<!-- 製作テーブルに1件データを挿入する。 -->
 	<insert id="create" parameterType="Production">
 		INSERT INTO
-			productions ( <!-- 製作手配テーブル -->
+			productions ( <!-- 製作テーブル -->
 				item_id, 
 				lot_number, 
 				lot_quantity, 
@@ -189,29 +251,37 @@
 		)
 	</insert>
 	
-	<!-- 引数で受け取った製作手配IDを基に、製作手配テーブルの1件のデータを更新する。 -->
+	<!-- 引数で受け取った製作IDを基に、製作テーブルの1件のデータを更新する。 -->
 	<update id="update" parameterType="Production">
 		UPDATE
-			productions <!-- 製作手配テーブル -->
+			productions <!-- 製作テーブル -->
 		SET
-			item_id = #{item.id}, 
-			lot_number = #{lotNumber}, 
 			lot_quantity = #{lotQuantity}, 
 			scheduled_completion_date = #{scheduledCompletionDate}, 
 			updated_at = #{updatedAt}
 		WHERE
-			id = #{id} <!-- 引数の製作手配IDと一致した場合 -->
+			id = #{id} <!-- 引数の製作IDと一致した場合 -->
 	</update>
 	
-	<!-- 引数で受け取った製作手配IDを基に、製作手配テーブルの1件のデータを削除(論理)する。-->
+	<!-- 引数で受け取った製作IDを基に、製作テーブルの1件のデータを削除(論理)する。-->
 	<update id="delete" parameterType="Production">
 		UPDATE
-			productions <!-- 製作手配テーブル -->
+			productions <!-- 製作テーブル -->
 		SET
 			invalid = 1, 
 			updated_at = #{updatedAt}
 		WHERE
-			id = #{id} <!-- 引数の製作手配IDと一致した場合 -->
+			id = #{id} <!-- 引数の製作IDと一致した場合 -->
+	</update>
+	
+	<update id="updateCompletion" parameterType="Production">
+		UPDATE
+			productions <!-- 製作テーブル -->
+		SET
+			completion_flag = #{completionFlag}, 
+			updated_at = #{updatedAt}
+		WHERE
+			id = #{id} <!-- 引数の製作IDと一致した場合 -->
 	</update>
 
 </mapper>

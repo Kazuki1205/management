@@ -1,6 +1,7 @@
 package com.example.management.mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.example.management.model.Customer;
 
@@ -8,6 +9,14 @@ import com.example.management.model.Customer;
  * MyBatisで使用するMapperクラス(@Mapperアノテーションは設定にて省略)
  */
 public interface CustomerMapper {
+	
+	/**
+	 * 顧客テーブルの全レコードのを取得する。
+	 * 削除済みを除く
+	 * 
+	 * @return
+	 */
+	public List<Customer> findAllExcludeInvalid();
 
 	/**
 	 * 顧客テーブルのレコードを、引数のあいまい検索で取得する。
@@ -51,9 +60,9 @@ public interface CustomerMapper {
 	/**
 	 * テーブルの全レコード数を取得する。
 	 * 
-	 * @return Integer レコード数
+	 * @return Optional<Integer> レコード数
 	 */
-	public Integer countAll();
+	public Optional<Integer> countAll();
 	
 	/**
 	 * 顧客テーブルに1件新規登録する。

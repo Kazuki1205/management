@@ -1,6 +1,7 @@
 package com.example.management.mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.example.management.model.Item;
 
@@ -58,9 +59,9 @@ public interface ItemMapper {
 	/**
 	 * 商品テーブルの全レコード数を取得する。
 	 * 
-	 * @return Integer レコード数
+	 * @return Optional<Integer> レコード数
 	 */
-	public Integer countAll();
+	public Optional<Integer> countAll();
 	
 	/**
 	 * 商品テーブルに1件新規登録する。

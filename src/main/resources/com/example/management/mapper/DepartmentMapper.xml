@@ -20,8 +20,8 @@
 		</collection>
 	</resultMap>
 	
-	<!-- 全てのレコードを取得※社員テーブル・部署テーブルの削除済みを除く -->
-	<select id="findAllExcludeInvalid" resultMap="departmentResult">
+	<!-- 共通SQL文 -->
+	<sql id="departmentSelect">
 		SELECT 
 			dep.id                  AS dep_id, 
 			dep.code                AS dep_code, 
@@ -40,6 +40,13 @@
 			dep.id = emp.department_id <!-- 部署IDで結合 -->
 		AND
 			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
+	</sql>
+	
+	<!-- 全てのレコードを取得※社員テーブル・部署テーブルの削除済みを除く -->
+	<select id="findAllExcludeInvalid" resultMap="departmentResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="departmentSelect"></include>
 		WHERE
 			dep.invalid = 0	<!-- 部署テーブルの未削除のみ -->
 		ORDER BY
@@ -48,24 +55,9 @@
 	
 	<!-- 引数で受け取った商品コード・商品名を基に、あいまい検索を掛ける -->
 	<select id="findByConditions" resultMap="departmentResult">
-		SELECT 
-			dep.id                  AS dep_id, 
-			dep.code                AS dep_code, 
-			dep.name                AS dep_name, 
-			dep.created_at          AS dep_created_at, 
-			dep.updated_at          AS dep_updated_at, 
-			dep.invalid             AS dep_invalid, 
-			emp.id                  AS emp_id, 
-			emp.username            AS emp_username, 
-			emp.name                AS emp_name 
-		FROM 
-			departments dep <!-- 部署テーブル -->
-		LEFT JOIN
-			employees emp <!-- 社員テーブル -->
-		ON
-			dep.id = emp.department_id <!-- 部署IDで結合 -->
-		AND
-			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="departmentSelect"></include>
 		<where>
 			<if test="code != null">
 				dep.code LIKE '%${code}%' <!-- 引数の部署コードがnullでない場合、あいまい検索 -->
@@ -78,48 +70,18 @@
 	
 	<!-- 引数で受け取ったIDを基に、該当レコードを取得する -->
 	<select id="findById" parameterType="Long" resultMap="departmentResult">
-		SELECT 
-			dep.id                  AS dep_id, 
-			dep.code                AS dep_code, 
-			dep.name                AS dep_name, 
-			dep.created_at          AS dep_created_at, 
-			dep.updated_at          AS dep_updated_at, 
-			dep.invalid             AS dep_invalid, 
-			emp.id                  AS emp_id, 
-			emp.username            AS emp_username, 
-			emp.name                AS emp_name 
-		FROM 
-			departments dep <!-- 部署テーブル -->
-		LEFT JOIN
-			employees emp <!-- 社員テーブル -->
-		ON
-			dep.id = emp.department_id <!-- 部署IDで結合 -->
-		AND
-			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="departmentSelect"></include>
 		WHERE
 			dep.id = #{id} <!-- 引数の部署IDと一致した場合 -->
 	</select>
 	
 	<!-- 引数で受け取ったIDを基に、該当レコードを取得する。※社員テーブルと部署テーブルの削除済みを除く -->
 	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="departmentResult">
-		SELECT 
-			dep.id                  AS dep_id, 
-			dep.code                AS dep_code, 
-			dep.name                AS dep_name, 
-			dep.created_at          AS dep_created_at, 
-			dep.updated_at          AS dep_updated_at, 
-			dep.invalid             AS dep_invalid, 
-			emp.id                  AS emp_id, 
-			emp.username            AS emp_username, 
-			emp.name                AS emp_name 
-		FROM 
-			departments dep <!-- 部署テーブル -->
-		LEFT JOIN
-			employees emp <!-- 社員テーブル -->
-		ON
-			dep.id = emp.department_id <!-- 部署IDで結合 -->
-		AND
-			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="departmentSelect"></include>
 		WHERE
 			dep.id = #{id} <!-- 引数の部署IDと一致した場合 -->
 		AND
@@ -128,24 +90,9 @@
 	
 	<!-- 引数で受け取った部署コードを基に、該当レコードを取得する。 -->
 	<select id="findByCode" parameterType="String" resultMap="departmentResult">
-		SELECT 
-			dep.id                  AS dep_id, 
-			dep.code                AS dep_code, 
-			dep.name                AS dep_name, 
-			dep.created_at          AS dep_created_at, 
-			dep.updated_at          AS dep_updated_at, 
-			dep.invalid             AS dep_invalid, 
-			emp.id                  AS emp_id, 
-			emp.username            AS emp_username, 
-			emp.name                AS emp_name 
-		FROM 
-			departments dep <!-- 部署テーブル -->
-		LEFT JOIN
-			employees emp <!-- 社員テーブル -->
-		ON
-			dep.id = emp.department_id <!-- 部署IDで結合 -->
-		AND
-			emp.invalid = 0 <!-- 社員テーブルの未削除のみ -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="departmentSelect"></include>
 		WHERE
 			dep.code = #{code} <!-- 引数の部署コードと一致した場合 -->
 	</select>

@@ -17,7 +17,7 @@
 			<id property="id" column="pro_id" />
 			<result property="lotNumber" column="pro_lot_number" />
 			<result property="lotQuantity" column="pro_lot_quantity" />
-			<result property="completionFlag" column="pro_completion_flag" />
+			<result property="completionDate" column="pro_completion_date" />
 			<result property="invalid" column="pro_invalid" />
 			<association property="item" javaType="Item">
 				<id property="id" column="ite_id" />
@@ -38,8 +38,8 @@
 		</association>
 	</resultMap>
 
-	<!-- 引数で受け取った製作番号・商品コード・商品名・部署ID・社員名を基に、あいまい検索を掛ける -->
-	<select id="findByConditions" resultMap="reportResult">
+	<!-- 共通SQL文 -->
+	<sql id="reportSelect">
 		SELECT
 			rep.id                    AS rep_id, 
 			rep.completion_quantity   AS rep_completion_quantity, 
@@ -50,7 +50,7 @@
 			pro.p_id                  AS pro_id, 
 			pro.p_lot_number          AS pro_lot_number, 
 			pro.p_lot_quantity        AS pro_lot_quantity, 
-			pro.p_completion_flag     AS pro_completion_flag, 
+			pro.p_completion_date     AS pro_completion_date, 
 			pro.p_invalid             AS pro_invalid, 
 			pro.i_id                  AS ite_id, 
 			pro.i_code                AS ite_code, 
@@ -69,158 +69,7 @@
 				p.id                  AS p_id, 
 				p.lot_number          AS p_lot_number, 
 				p.lot_quantity        AS p_lot_quantity, 
-				p.completion_flag     AS p_completion_flag, 
-				p.invalid             AS p_invalid, 
-				i.id                  AS i_id, 
-				i.code                AS i_code, 
-				i.name                AS i_name
-			FROM
-				productions p <!-- 製作テーブル -->
-			INNER JOIN
-				items i <!-- 商品テーブル -->
-			ON
-				p.item_id = i.id <!-- 商品IDで結合 -->	
-			) pro <!-- サブクエリの製作テーブル -->
-		ON
-			rep.production_id = pro.p_id <!-- 日報テーブルとサブクエリの製作テーブルを製作IDで結合 -->
-		INNER JOIN (
-			SELECT
-				e.id                  AS e_id, 
-				e.employee_id         AS e_employee_id, 
-				e.username            AS e_username, 
-				e.name                AS e_name, 
-				d.id                  AS d_id, 
-				d.code                AS d_code, 
-				d.name                AS d_name
-			FROM
-				employees_history e <!-- 社員履歴テーブル -->
-			INNER JOIN
-				departments d <!-- 部署テーブル -->
-			ON 
-				e.department_id = d.id <!-- 部署IDで結合 -->
-			) emp <!-- サブクエリの社員履歴テーブル -->
-		ON
-			rep.employee_history_id = emp.e_id <!-- 日報テーブルとサブクエリの社員履歴テーブルを社員履歴IDで結合 -->
-		<where>
-			<if test="lotNumber != null">
-				pro.p_lot_number LIKE '%${lotNumber}%' <!-- 引数の製作番号がnullでない場合、あいまい検索 -->
-			</if>
-			<if test="itemCode != null">
-				AND pro.i_code LIKE '%${itemCode}%' <!-- 引数の商品コードがnullでない場合、あいまい検索 -->
-			</if>
-			<if test="itemName != null">
-				AND pro.i_name LIKE '%${itemName}%' <!-- 引数の商品名がnullでない場合、あいまい検索 -->
-			</if>
-			<if test="departmentId != null">
-				AND emp.d_id = #{departmentId} <!-- 引数の部署IDがnullでない場合、一致するかどうか -->
-			</if>
-			<if test="employeeName != null">
-				AND emp.e_name LIKE '%${employeeName}%' <!-- 引数の社員名がnullでない場合、あいまい検索 -->
-			</if>
-		</where>
-		ORDER BY
-			rep.updated_at ASC
-	</select>
-	
-	<!-- 引数で受け取った日報IDを基に、該当レコードを取得 -->
-	<select id="findById" parameterType="Long" resultMap="reportResult">
-		SELECT
-			rep.id                    AS rep_id, 
-			rep.completion_quantity   AS rep_completion_quantity, 
-			rep.failure_quantity      AS rep_failure_quantity, 
-			rep.created_at            AS rep_created_at, 
-			rep.updated_at            AS rep_updated_at, 
-			rep.invalid     		  AS rep_invalid, 
-			pro.p_id                  AS pro_id, 
-			pro.p_lot_number          AS pro_lot_number, 
-			pro.p_lot_quantity        AS pro_lot_quantity, 
-			pro.p_completion_flag     AS pro_completion_flag, 
-			pro.p_invalid             AS pro_invalid, 
-			pro.i_id                  AS ite_id, 
-			pro.i_code                AS ite_code, 
-			pro.i_name                AS ite_name, 
-			emp.e_id                  AS emp_id, 
-			emp.e_employee_id         AS emp_employee_id, 
-			emp.e_username            AS emp_username, 
-			emp.e_name                AS emp_name, 
-			emp.d_id                  AS dep_id, 
-			emp.d_code                AS dep_code, 
-			emp.d_name                AS dep_name
-		FROM
-			reports rep <!-- 日報テーブル -->
-		INNER JOIN (
-			SELECT
-				p.id                  AS p_id, 
-				p.lot_number          AS p_lot_number, 
-				p.lot_quantity        AS p_lot_quantity, 
-				p.completion_flag     AS p_completion_flag, 
-				p.invalid             AS p_invalid, 
-				i.id                  AS i_id, 
-				i.code                AS i_code, 
-				i.name                AS i_name
-			FROM
-				productions p <!-- 製作テーブル -->
-			INNER JOIN
-				items i <!-- 商品テーブル -->
-			ON
-				p.item_id = i.id <!-- 商品IDで結合 -->	
-			) pro <!-- サブクエリの製作テーブル -->
-		ON
-			rep.production_id = pro.p_id <!-- 日報テーブルとサブクエリの製作テーブルを製作IDで結合 -->
-		INNER JOIN (
-			SELECT
-				e.id                  AS e_id, 
-				e.employee_id         AS e_employee_id, 
-				e.username            AS e_username, 
-				e.name                AS e_name, 
-				d.id                  AS d_id, 
-				d.code                AS d_code, 
-				d.name                AS d_name
-			FROM
-				employees_history e <!-- 社員履歴テーブル -->
-			INNER JOIN
-				departments d <!-- 部署テーブル -->
-			ON 
-				e.department_id = d.id <!-- 部署IDで結合 -->
-			) emp <!-- サブクエリの社員履歴テーブル -->
-		ON
-			rep.employee_history_id = emp.e_id <!-- 日報テーブルとサブクエリの社員履歴テーブルを社員履歴IDで結合 -->
-		WHERE
-			rep.id = #{id} <!-- 引数の日報IDと一致した場合 -->
-	</select>
-	
-	<!-- 引数で受け取った日報IDを基に、該当レコードを取得※日報レコード・製作レコードが削除されているものを除く。 -->
-	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="reportResult">
-		SELECT
-			rep.id                    AS rep_id, 
-			rep.completion_quantity   AS rep_completion_quantity, 
-			rep.failure_quantity      AS rep_failure_quantity, 
-			rep.created_at            AS rep_created_at, 
-			rep.updated_at            AS rep_updated_at, 
-			rep.invalid     		  AS rep_invalid, 
-			pro.p_id                  AS pro_id, 
-			pro.p_lot_number          AS pro_lot_number, 
-			pro.p_lot_quantity        AS pro_lot_quantity, 
-			pro.p_completion_flag     AS pro_completion_flag, 
-			pro.p_invalid             AS pro_invalid, 
-			pro.i_id                  AS ite_id, 
-			pro.i_code                AS ite_code, 
-			pro.i_name                AS ite_name, 
-			emp.e_id                  AS emp_id, 
-			emp.e_employee_id         AS emp_employee_id, 
-			emp.e_username            AS emp_username, 
-			emp.e_name                AS emp_name, 
-			emp.d_id                  AS dep_id, 
-			emp.d_code                AS dep_code, 
-			emp.d_name                AS dep_name
-		FROM
-			reports rep <!-- 日報テーブル -->
-		INNER JOIN (
-			SELECT
-				p.id                  AS p_id, 
-				p.lot_number          AS p_lot_number, 
-				p.lot_quantity        AS p_lot_quantity, 
-				p.completion_flag     AS p_completion_flag, 
+				p.completion_date     AS p_completion_date, 
 				p.invalid             AS p_invalid, 
 				i.id                  AS i_id, 
 				i.code                AS i_code, 
@@ -254,6 +103,48 @@
 			) emp <!-- サブクエリの社員履歴テーブル -->
 		ON
 			rep.employee_history_id = emp.e_id <!-- 日報テーブルとサブクエリの社員履歴テーブルを社員履歴IDで結合 -->
+	</sql>
+	
+	<!-- 引数で受け取った製作番号・商品コード・商品名・部署ID・社員名を基に、あいまい検索を掛ける -->
+	<select id="findByConditions" resultMap="reportResult">
+	
+		<!-- SQL文をインクルード -->
+		<include refid="reportSelect"></include>
+		<where>
+			<if test="lotNumber != null">
+				pro.p_lot_number LIKE '%${lotNumber}%' <!-- 引数の製作番号がnullでない場合、あいまい検索 -->
+			</if>
+			<if test="itemCode != null">
+				AND pro.i_code LIKE '%${itemCode}%' <!-- 引数の商品コードがnullでない場合、あいまい検索 -->
+			</if>
+			<if test="itemName != null">
+				AND pro.i_name LIKE '%${itemName}%' <!-- 引数の商品名がnullでない場合、あいまい検索 -->
+			</if>
+			<if test="departmentId != null">
+				AND emp.d_id = #{departmentId} <!-- 引数の部署IDがnullでない場合、一致するかどうか -->
+			</if>
+			<if test="employeeName != null">
+				AND emp.e_name LIKE '%${employeeName}%' <!-- 引数の社員名がnullでない場合、あいまい検索 -->
+			</if>
+		</where>
+		ORDER BY
+			rep.updated_at ASC
+	</select>
+	
+	<!-- 引数で受け取った日報IDを基に、該当レコードを取得 -->
+	<select id="findById" parameterType="Long" resultMap="reportResult">
+	
+		<!-- SQL文をインクルード -->
+		<include refid="reportSelect"></include>
+		WHERE
+			rep.id = #{id} <!-- 引数の日報IDと一致した場合 -->
+	</select>
+	
+	<!-- 引数で受け取った日報IDを基に、該当レコードを取得※日報レコード・製作レコードが削除されているものを除く。 -->
+	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="reportResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="reportSelect"></include>
 		WHERE
 			rep.id = #{id} <!-- 引数の日報IDと一致した場合 -->
 		AND

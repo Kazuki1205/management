@@ -22,10 +22,6 @@
 				<td th:text="*{storingQuantity}" />
 			</tr>
 			<tr>
-				<th>完了入力</th>
-				<td th:text="*{completionInput} == 0 ? '未完了' : '完了済' " />
-			</tr>
-			<tr>
 				<th>登録日時</th>
 				<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}" />
 			</tr>

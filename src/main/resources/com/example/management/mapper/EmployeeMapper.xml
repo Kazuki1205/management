@@ -20,9 +20,9 @@
 			<result property="name" column="dep_name" />
 		</association>
 	</resultMap>
-
-	<!-- 引数で受け取った社員ID(username)を基に、該当レコードを取得する。 -->
-	<select id="findByUsername" parameterType="String" resultMap="employeeResult">
+	
+	<!-- 共通SQL文 -->
+	<sql id="employeeSelect">
 		SELECT
 			emp.id               AS emp_id, 
 			emp.username         AS emp_username,  
@@ -41,30 +41,22 @@
 			departments dep <!-- 部署テーブル -->
 		ON 
 			emp.department_id = dep.id <!-- 部署IDで結合 -->
+	</sql>
+
+	<!-- 引数で受け取った社員ID(username)を基に、該当レコードを取得する。 -->
+	<select id="findByUsername" parameterType="String" resultMap="employeeResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="employeeSelect"></include>
 		WHERE
 			emp.username = #{username} <!-- 引数の社員ID(username)と一致した場合 -->
 	</select>
 	
 	<!-- 引数で受け取った社員ID(username)を基に、該当レコードを取得する。※削除済みを除く -->
 	<select id="findByUsernameExcludeInvalid" parameterType="String" resultMap="employeeResult">
-		SELECT
-			emp.id               AS emp_id, 
-			emp.username         AS emp_username,  
-			emp.password         AS emp_password,  
-			emp.name             AS emp_name,  
-			emp.department_id    AS emp_department_id,  
-			emp.authority        AS emp_authority,  
-			emp.created_at       AS emp_created_at,  
-			emp.updated_at       AS emp_updated_at,  
-			emp.invalid          AS emp_invalid,  
-			dep.id               AS dep_id,  
-			dep.name             AS dep_name      
-		FROM 
-			employees emp <!-- 社員テーブル -->
-		INNER JOIN 
-			departments dep <!-- 部署テーブル -->
-		ON 
-			emp.department_id = dep.id <!-- 部署IDで結合 -->
+
+		<!-- SQL文をインクルード -->
+		<include refid="employeeSelect"></include>
 		WHERE
 			emp.username = #{username} <!-- 社員ID(username)と一致した場合 -->
 		AND 
@@ -73,24 +65,9 @@
 	
 	<!-- 引数で受け取ったIDを基に、該当レコードを取得する。※削除済みを除く -->
 	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="employeeResult">
-		SELECT
-			emp.id               AS emp_id, 
-			emp.username         AS emp_username,  
-			emp.password         AS emp_password,  
-			emp.name             AS emp_name,  
-			emp.department_id    AS emp_department_id,  
-			emp.authority        AS emp_authority,  
-			emp.created_at       AS emp_created_at,  
-			emp.updated_at       AS emp_updated_at,  
-			emp.invalid          AS emp_invalid,  
-			dep.id               AS dep_id,  
-			dep.name             AS dep_name      
-		FROM 
-			employees emp <!-- 社員テーブル -->
-		INNER JOIN 
-			departments dep <!-- 部署テーブル -->
-		ON 
-			emp.department_id = dep.id <!-- 部署IDで結合 -->
+
+		<!-- SQL文をインクルード -->
+		<include refid="employeeSelect"></include>
 		WHERE
 			emp.id = #{id} <!-- 引数のIDと一致した場合 -->
 		AND 
@@ -99,47 +76,18 @@
 	
 	<!-- 引数で受け取ったIDを基に、該当レコードを取得する。 -->
 	<select id="findById" parameterType="Long" resultMap="employeeResult">
-		SELECT
-			emp.id               AS emp_id, 
-			emp.username         AS emp_username,  
-			emp.password         AS emp_password,  
-			emp.name             AS emp_name,  
-			emp.department_id    AS emp_department_id,  
-			emp.authority        AS emp_authority,  
-			emp.created_at       AS emp_created_at,  
-			emp.updated_at       AS emp_updated_at,  
-			emp.invalid          AS emp_invalid,  
-			dep.id               AS dep_id,  
-			dep.name             AS dep_name      
-		FROM 
-			employees emp <!-- 社員テーブル -->
-		INNER JOIN 
-			departments dep <!-- 部署テーブル -->
-		ON 
-			emp.department_id = dep.id <!-- 部署IDで結合 -->
+
+		<!-- SQL文をインクルード -->
+		<include refid="employeeSelect"></include>
 		WHERE
 			emp.id = #{id} <!-- 引数のIDと一致した場合 -->
 	</select>
 		
 	<!-- 引数で受け取った社員ID(username)・社員名・部署IDを基に、あいまい検索を掛ける -->
 	<select id="findByConditions" resultMap="employeeResult">
-		SELECT
-			emp.id               AS emp_id, 
-			emp.username         AS emp_username,  
-			emp.password         AS emp_password,  
-			emp.name             AS emp_name,    
-			emp.authority        AS emp_authority,  
-			emp.created_at       AS emp_created_at,  
-			emp.updated_at       AS emp_updated_at,  
-			emp.invalid          AS emp_invalid,  
-			dep.id               AS dep_id,  
-			dep.name             AS dep_name      
-		FROM 
-			employees emp <!-- 社員テーブル -->
-		INNER JOIN 
-			departments dep <!-- 部署テーブル -->
-		ON 
-			emp.department_id = dep.id <!-- 部署IDで結合 -->
+
+		<!-- SQL文をインクルード -->
+		<include refid="employeeSelect"></include>
 		<where>
 			<if test="username != null">
 				emp.username LIKE '%${username}%' <!-- 引数の社員ID(username)がnullでない場合、あいまい検索 -->

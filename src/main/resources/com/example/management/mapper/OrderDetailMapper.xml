@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.management.mapper.OrderDetailMapper">
+
+	<!-- SQL結果に対応した受注明細クラス -->
+	<resultMap id="orderDetailResult" type="OrderDetail">
+		<id property="orderNumber" column="ordD_order_number" />
+		<id property="detailId" column="ordD_detail_id" />
+		<result property="orderQuantity" column="ordD_order_quantity" />
+		<result property="completionDate" column="ordD_completion_date" />
+		<result property="createdAt" column="ordD_created_at" />
+		<result property="updatedAt" column="ordD_updated_at" />
+		<result property="invalid" column="ordD_invalid" />
+		<association property="itemHistory" javaType="ItemHistory">
+			<id property="id" column="iteH_id" />
+			<result property="itemId" column="iteH_item_id" />
+			<result property="code" column="iteH_code" />
+			<result property="name" column="iteH_name" />
+			<result property="unitPrice" column="iteH_unit_price" />
+		</association>
+	</resultMap>
+
+
+	<!-- 引数で受け取った受注番号と受注明細IDを基に、該当レコードを取得する。 -->
+	<select id="findByPrimaryKey" resultMap="orderDetailResult">
+		SELECT
+			ordD.order_number          AS ordD_order_number, 
+			ordD.detail_id             AS ordD_detail_id, 
+			ordD.order_quantity        AS ordD_order_quantity, 
+			ordD.completion_date       AS ordD_completion_date, 
+			ordD.created_at            AS ordD_created_at, 
+			ordD.updated_at            AS ordD_updated_at, 
+			ordD.invalid               AS ordD_invalid, 
+			iteH.id                    AS iteH_id, 
+			iteH.item_id               AS iteH_item_id, 
+			iteH.code                  AS iteH_code, 
+			iteH.name                  AS iteH_name, 
+			iteH.unit_price            AS iteH_unit_price
+		FROM
+			orders_details ordD <!-- 受注明細テーブル -->
+		INNER JOIN
+			items_history iteH <!-- 商品履歴テーブル -->
+		ON
+			ordD.item_history_id = iteH.id <!-- 受注履歴IDで結合 -->
+		WHERE
+			ordD.order_number = #{orderNumber} <!-- 引数の受注番号と一致した場合 -->
+		AND
+			ordD.detail_id = #{detailId} <!-- 引数の受注IDと一致した場合 -->
+	</select>
+
+	<!-- 引数で受け取った受注明細リストを全てinsertする。 -->
+	<insert id="createAll" parameterType="OrderDetail">
+		INSERT INTO
+			orders_details ( <!-- 受注明細テーブル -->
+				order_number, 
+				detail_id, 
+				item_history_id, 
+				order_quantity
+			)
+		VALUES
+			<foreach collection="orderDetails" item="orderDetail" separator=",">
+				(
+					#{orderDetail.orderNumber}, 
+					#{orderDetail.detailId}, 
+					#{orderDetail.itemHistory.id}, 
+					#{orderDetail.orderQuantity}
+				)
+			</foreach>
+	</insert>
+	
+	<!-- 引数で受け取った受注明細クラスで、更新の合ったレコードをupdateする。 -->
+	<update id="update" parameterType="OrderDetail">
+		UPDATE
+			orders_details <!-- 受注明細テーブル -->
+		SET
+			order_quantity = #{orderQuantity}, 
+			invalid = #{invalid}, 
+			updated_at = #{updatedAt}
+		WHERE
+			order_number = #{orderNumber}
+		AND
+			detail_id = #{detailId}
+	</update>
+
+</mapper>

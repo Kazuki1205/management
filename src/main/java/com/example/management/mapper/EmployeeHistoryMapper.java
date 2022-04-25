@@ -10,10 +10,10 @@ public interface EmployeeHistoryMapper {
 	/**
 	 * IDを基に、社員履歴テーブルの最新レコードを取得する。
 	 * 
-	 * @param userId 社員ID
+	 * @param employeeId 社員ID
 	 * 
 	 * @return 社員履歴クラス
 	 */
-	public EmployeeHistory findByUserIdByLatest(Long employeeId);
+	public EmployeeHistory findByEmployeeIdByLatest(Long employeeId);
 
 }

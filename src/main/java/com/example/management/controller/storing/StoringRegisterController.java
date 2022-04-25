@@ -14,7 +14,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.StoringForm;
 import com.example.management.mapper.ProductionMapper;
+import com.example.management.mapper.ReportMapper;
+import com.example.management.mapper.StoringMapper;
 import com.example.management.model.Production;
+import com.example.management.service.CommonService;
 import com.example.management.service.StoringService;
 
 /**
@@ -28,6 +31,15 @@ public class StoringRegisterController {
 	
 	@Autowired
 	private StoringService storingService;
+	
+	@Autowired
+	private ReportMapper reportMapper;
+	
+	@Autowired
+	private StoringMapper storingMapper;
+	
+	@Autowired
+	private CommonService commonService;
 
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -87,32 +99,36 @@ public class StoringRegisterController {
 						 BindingResult bindingResult, 
 						 RedirectAttributes redirectAttributes, Model model) {
 		
-		model.addAttribute("hasMessage", true);
-		
 		// 入庫フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 			
-			model.addAttribute("class", "alert-danger");
-			model.addAttribute("message", "登録に失敗しました。");
+			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "登録に失敗しました。"));
 		} else {
-			
-			// 製作テーブルから入庫フォームの製作IDを基に、1件レコードを取得する。
-			Production production = productionMapper.findById(storingForm.getProductionId());
-			
-			// 入庫フォームで入力された製作IDを基に、製作テーブルの情報を取得し、製作完了区分が「0」であれば新規登録。「1」であれば既に完了済みのため、エラーメッセージを表示。
-			if (production.getCompletionFlag() == 0) {
 				
-				storingService.create(storingForm, production);
+				// フォームで選択された製作IDを基に、製作テーブルの情報を取得する。
+				Production production = productionMapper.findByIdExcludeInvalidAndCompletion(storingForm.getProductionId());
 				
-				redirectAttributes.addFlashAttribute("hasMessage", true);
-				redirectAttributes.addFlashAttribute("class", "alert-info");
-				redirectAttributes.addFlashAttribute("message", "登録に成功しました。");
+				// 製作テーブルの製作数を取得する。
+				Integer lotQuantity = production.getLotQuantity();
+				
+				// 日報テーブルの不良数計(製作IDでグループ化したものの集計)を取得する。nullなら0とする。
+				Integer failureQuantityTotal = reportMapper.sumOfFailureQuantity(production.getId()).orElse(0);
+				
+				// 入庫テーブルの入庫数計(製作IDでグループ化したものの集計)を取得する。nullなら0とする。
+				Integer storingQuantityTotal = storingMapper.sumOfStoringQuantity(production.getId()).orElse(0);
+				
+				// 「製作数 - 不良数 - 入庫数計」より、フォームに入力された入庫数が上回った場合、エラーメッセージを表示。以内であれば入庫テーブルに挿入処理。
+				if (lotQuantity - failureQuantityTotal - storingQuantityTotal >= storingForm.getStoringQuantity()) {
+					
+					// 入庫テーブルに挿入処理。
+					storingService.create(storingForm, production, lotQuantity, failureQuantityTotal, storingQuantityTotal);
+				
+					redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "登録に成功しました。"));
 				
 				return "redirect:/storing/register";
-			} else {
+				} else {
 				
-				model.addAttribute("class", "alert-danger");
-				model.addAttribute("message", "登録に失敗しました。");
+				model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "仕掛数より多い入庫数が入力されています。"));
 			}
 		}
 		

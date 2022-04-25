@@ -25,8 +25,6 @@ public class StoringForm {
 	
 	private Integer failureQuantityTotal; // 日報テーブルを製作IDでグループ化した際の不良数集計結果
 	
-	private Short completionInput = 0; // 製番完了区分
-	
 	@NotNull(message = "製作番号を選択して下さい。")
 	private Long productionId; // 製作ID
 	

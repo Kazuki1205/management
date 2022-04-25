@@ -39,20 +39,20 @@
 								<th>商品名</th>
 								<th>製作数</th>
 								<th>完成予定日</th>
+								<th>完成日</th>
 								<th>登録日時</th>
 								<th>更新日時</th>
-								<th>完了区分</th>
 								<th>削除区分</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr th:each="production : ${productions}" th:object="${production}" 
-								th:class="*{invalid == 1 ? 'bg-secondary' : completionFlag == 1 ? 'bg-success' : '' }">
+								th:class="*{invalid == 1 ? 'bg-secondary' : completionDate != null ? 'bg-info' : '' }">
 								<td>
 									<a th:href="@{/production/log/{id}(id=*{id})}">■</a>
 								</td>
 								<td>
-									<th:block th:if="*{invalid == 0 && completionFlag == 0}">
+									<th:block th:if="*{invalid == 0 && completionDate == null}">
 										<a th:href="@{/production/edit/{id}(id=*{id})}">●</a>
 									</th:block>
 								</td>
@@ -61,9 +61,9 @@
 								<td th:text="*{item.name}"></td>
 								<td th:text="*{lotQuantity}"></td>
 								<td th:text="*{#temporals.format(scheduledCompletionDate, 'yy/MM/dd')}"></td>
+								<td th:text="*{completionDate != null ? #temporals.format(completionDate, 'yy/MM/dd') : '' }" />
 								<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>
 								<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}"></td>
-								<td th:text="*{completionFlag == 0 ? '' : '済' }"> </td>
 								<td th:text="*{invalid} == 0 ? '' : '済' "></td>
 							</tr>
 						</tbody>

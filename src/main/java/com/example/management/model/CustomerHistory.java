@@ -12,7 +12,7 @@ public class CustomerHistory {
 	
 	private Long id; // ID
 	
-	private Long customerId; // 顧客ID
+	private Long customerId; // 顧客ID(顧客テーブルの主キー)
 	
 	private String code; // 顧客コード
 	

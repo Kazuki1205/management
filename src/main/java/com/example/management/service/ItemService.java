@@ -29,7 +29,7 @@ public class ItemService {
 	public String getCode() {
 		
 		// 商品テーブルの全レコード数 + 1
-		Integer tempCode = itemMapper.countAll() + 1;
+		Integer tempCode = itemMapper.countAll().orElse(0) + 1;
 		
 		//　「00000000」の形の文字列に整形。
 		String code = String.format("%08d", tempCode);

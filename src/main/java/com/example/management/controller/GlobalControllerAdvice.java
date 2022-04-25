@@ -2,10 +2,13 @@ package com.example.management.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import com.example.management.service.CommonService;
 
 /**
  * エラーページコントローラー
@@ -13,6 +16,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 @Component
 public class GlobalControllerAdvice {
+	
+	@Autowired
+	private CommonService commonService;
 	
 	// ログ出力
 	protected static Logger log = LoggerFactory.getLogger(GlobalControllerAdvice.class);
@@ -30,9 +36,7 @@ public class GlobalControllerAdvice {
 		
 		log.error("Exception", e);
 		
-		model.addAttribute("hasMessage", true);
-		model.addAttribute("class", "alert-danger");
-		model.addAttribute("message", "ただいま利用できません。");
+		model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "ただいま利用できません。"));
 		
 		return "error";
 	}

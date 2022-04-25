@@ -6,7 +6,7 @@
 <mapper namespace="com.example.management.mapper.ItemMapper">
 
 	<!-- SQL結果に対応した商品クラス -->
-	<resultMap id="ItemResult" type="Item">
+	<resultMap id="itemResult" type="Item">
 		<id property="id" column="id" />
 		<result property="name" column="name" />
 		<result property="code" column="code" />
@@ -16,8 +16,8 @@
 		<result property="invalid" column="invalid" />
 	</resultMap>
 	
-	<!-- 全てのレコードを取得※削除済みを除く -->
-	<select id="findAllExcludeInvalid" resultMap="ItemResult">
+	<!-- 共通SQL文 -->
+	<sql id="itemSelect">
 		SELECT
 			id, 
 			code, 
@@ -28,6 +28,13 @@
 			invalid
 		FROM
 			items <!-- 商品テーブル -->
+	</sql>
+	
+	<!-- 全てのレコードを取得※削除済みを除く -->
+	<select id="findAllExcludeInvalid" resultMap="itemResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="itemSelect"></include>
 		WHERE
 			invalid = 0 <!-- 未削除のみ -->
 		ORDER BY
@@ -35,17 +42,10 @@
 	</select>
 	
 	<!-- 引数で受け取った商品コード・商品名を基に、あいまい検索を掛ける -->
-	<select id="findByConditions" parameterType="String" resultMap="ItemResult">
-		SELECT
-			id, 
-			code, 
-			name, 
-			unit_price, 
-			created_at, 
-			updated_at, 
-			invalid
-		FROM
-			items <!-- 商品テーブル -->
+	<select id="findByConditions" parameterType="String" resultMap="itemResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="itemSelect"></include>
 		<where>
 			<if test="code != null">
 				code LIKE '%${code}%' <!-- 引数の商品コードがnullでない場合、あいまい検索 -->
@@ -57,33 +57,19 @@
 	</select>
 	
 	<!-- 引数で受け取ったIDを基に、該当レコードを取得 -->
-	<select id="findById" parameterType="Long" resultMap="ItemResult">
-		SELECT
-			id, 
-			code, 
-			name, 
-			unit_price, 
-			created_at, 
-			updated_at, 
-			invalid
-		FROM
-			items <!-- 商品テーブル -->
+	<select id="findById" parameterType="Long" resultMap="itemResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="itemSelect"></include>
 		WHERE
 			id = #{id} <!-- 引数のIDと一致した場合 -->
 	</select>
 	
 	<!-- 引数で受け取ったIDを基に、該当レコードを取得※削除済みを除く -->
-	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="ItemResult">
-		SELECT
-			id, 
-			code, 
-			name, 
-			unit_price, 
-			created_at, 
-			updated_at, 
-			invalid
-		FROM
-			items <!-- 商品テーブル -->
+	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="itemResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="itemSelect"></include>
 		WHERE
 			id = #{id} <!-- 引数のIDと一致した場合 -->
 		AND
@@ -91,17 +77,10 @@
 	</select>
 	
 	<!-- 引数で受け取った商品コードを基に、該当レコードを取得する -->
-	<select id="findByCode" parameterType="String" resultMap="ItemResult">
-		SELECT
-			id, 
-			code, 
-			name, 
-			unit_price, 
-			created_at, 
-			updated_at, 
-			invalid
-		FROM
-			items <!-- 商品テーブル -->
+	<select id="findByCode" parameterType="String" resultMap="itemResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="itemSelect"></include>
 		WHERE
 			code = #{code} <!-- 引数の商品コードと一致した場合 -->
 	</select>

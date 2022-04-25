@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.management.form.CustomerForm;
 import com.example.management.mapper.CustomerMapper;
 import com.example.management.model.Customer;
+import com.example.management.service.CommonService;
 import com.example.management.service.CustomerService;
 import com.example.management.validation.ValidOrder;
 
@@ -32,6 +33,9 @@ public class CustomerEditController {
 	
 	@Autowired
 	private CustomerService customerService;
+	
+	@Autowired
+	private CommonService commonService;
 	
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -103,9 +107,7 @@ public class CustomerEditController {
 		// 顧客フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 			
-			model.addAttribute("hasMessage", true);
-			model.addAttribute("class", "alert-danger");
-			model.addAttribute("message", "更新に失敗しました。");
+			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "更新に失敗しました。"));
 			
 			return "customers/edit";
 		} else {
@@ -113,9 +115,7 @@ public class CustomerEditController {
 			// DBへINSERT処理、正常処理メッセージを表示。
 			customerService.update(customerForm);
 			
-			redirectAttributes.addFlashAttribute("hasMessage", true);
-			redirectAttributes.addFlashAttribute("class", "alert-info");
-			redirectAttributes.addFlashAttribute("message", "更新に成功しました。");
+			redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "更新に成功しました。"));
 			
 			return "redirect:/customer/list";
 		}
@@ -136,9 +136,7 @@ public class CustomerEditController {
 		// DBへDELETE処理
 		customerService.delete(customerForm);
 		
-		redirectAttributes.addFlashAttribute("hasMessage", true);
-		redirectAttributes.addFlashAttribute("class", "alert-info");
-		redirectAttributes.addFlashAttribute("message", "削除に成功しました。");
+		redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "削除に成功しました。"));
 		
 		return "redirect:/customer/list";
 	}

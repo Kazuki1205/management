@@ -1,15 +1,23 @@
 package com.example.management.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
+import com.example.management.model.Employee;
+import com.example.management.service.CommonService;
 
 /**
  * セッションコントローラー
  */
 @Controller
 public class SessionController {
+	
+	@Autowired
+	private CommonService commonService;
 	
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -26,13 +34,21 @@ public class SessionController {
 
 	/**
 	 * ログイン画面を表示する。
+	 * 既にログイン状態ならメニュー画面へ遷移する。
 	 * 
-	 * @return セッションテンプレート
+	 * @return セッションテンプレート/メニューへリダイレクト
 	 */
 	@GetMapping("/login")
-	public String index () {
+	public String index (@AuthenticationPrincipal Employee employee) {
 		
-		return "sessions/new";
+		// 既にログイン状態であれば、ログイン画面を表示せずメニュー画面へ遷移する。
+		if (employee == null) {
+		
+			return "sessions/new";
+		} else {
+			
+			return "redirect:/menu";
+		}
 	}
 	
 	/**
@@ -45,9 +61,7 @@ public class SessionController {
 	@GetMapping("/login-failure")
 	public String loginFailure(Model model) {
 		
-		model.addAttribute("hasMessage", true);
-		model.addAttribute("class", "alert-danger");
-		model.addAttribute("message", "Eメールまたはパスワードが正しくありません。");
+		model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "Eメールまたはパスワードが正しくありません。"));
 
 		return "sessions/new";
 	}
@@ -62,9 +76,7 @@ public class SessionController {
 	@GetMapping("/logout-complete")
 	public String logoutComplete(Model model) {
 		
-		model.addAttribute("hasMessage", true);
-		model.addAttribute("class", "alert-info");
-		model.addAttribute("message", "ログアウトしました。");
+		model.addAttribute("messageMap", commonService.getMessageMap("alert-info", "ログアウトしました。"));
 		model.addAttribute("navTitle", "生産管理システム");
 
 		return "pages/index";

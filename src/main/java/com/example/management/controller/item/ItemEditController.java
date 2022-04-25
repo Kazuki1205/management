@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.ItemForm;
 import com.example.management.mapper.ItemMapper;
+import com.example.management.service.CommonService;
 import com.example.management.service.ItemService;
 import com.example.management.validation.ValidOrder;
 
@@ -31,6 +32,9 @@ public class ItemEditController {
 	
 	@Autowired
 	private ItemService itemService;
+	
+	@Autowired
+	private CommonService commonService;
 	
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -98,9 +102,7 @@ public class ItemEditController {
 		// 商品フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 			
-			model.addAttribute("hasMessage", true);
-			model.addAttribute("class", "alert-danger");
-			model.addAttribute("message", "更新に失敗しました。");
+			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "更新に失敗しました。"));
 			
 			return "items/edit";
 		} else {
@@ -108,9 +110,7 @@ public class ItemEditController {
 			// DBへINSERT処理、正常処理メッセージを表示。
 			itemService.update(itemForm);
 			
-			redirectAttributes.addFlashAttribute("hasMessage", true);
-			redirectAttributes.addFlashAttribute("class", "alert-info");
-			redirectAttributes.addFlashAttribute("message", "更新に成功しました。");
+			redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "更新に成功しました。"));
 			
 			return "redirect:/item/list";
 		}
@@ -131,9 +131,7 @@ public class ItemEditController {
 		// DBへDELETE処理
 		itemService.delete(itemForm);
 		
-		redirectAttributes.addFlashAttribute("hasMessage", true);
-		redirectAttributes.addFlashAttribute("class", "alert-info");
-		redirectAttributes.addFlashAttribute("message", "削除に成功しました。");
+		redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "削除に成功しました。"));
 		
 		return "redirect:/item/list";
 	}

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.DepartmentForm;
 import com.example.management.mapper.DepartmentMapper;
+import com.example.management.service.CommonService;
 import com.example.management.service.DepartmentService;
 
 @Controller
@@ -27,6 +28,9 @@ public class DepartmentEditController {
 	
 	@Autowired
 	private DepartmentService departmentService;
+	
+	@Autowired
+	private CommonService commonService;
 
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -94,9 +98,7 @@ public class DepartmentEditController {
 		// 部署フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 			
-			model.addAttribute("hasMessage", true);
-			model.addAttribute("class", "alert-danger");
-			model.addAttribute("message", "更新に失敗しました。");
+			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "更新に失敗しました。"));
 			
 			return "departments/edit";
 		} else {
@@ -104,9 +106,7 @@ public class DepartmentEditController {
 			// DBへINSERT処理、正常処理メッセージを表示。
 			departmentService.update(departmentForm);
 			
-			redirectAttributes.addFlashAttribute("hasMessage", true);
-			redirectAttributes.addFlashAttribute("class", "alert-info");
-			redirectAttributes.addFlashAttribute("message", "更新に成功しました。");
+			redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "更新に成功しました。"));
 			
 			return "redirect:/department/list";
 		}
@@ -127,9 +127,7 @@ public class DepartmentEditController {
 		// DBへDELETE処理
 		departmentService.delete(departmentForm);
 		
-		redirectAttributes.addFlashAttribute("hasMessage", true);
-		redirectAttributes.addFlashAttribute("class", "alert-info");
-		redirectAttributes.addFlashAttribute("message", "削除に成功しました。");
+		redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "削除に成功しました。"));
 		
 		return "redirect:/department/list";
 	}

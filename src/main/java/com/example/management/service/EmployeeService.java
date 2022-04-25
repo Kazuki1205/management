@@ -100,7 +100,7 @@ public class EmployeeService {
 	public String getUsername() {
 		
 		// 社員テーブルの全レコード数 + 1
-		Integer tempUsername = employeeMapper.countAll() + 1;
+		Integer tempUsername = employeeMapper.countAll().orElse(0) + 1;
 		
 		//　「0000」の形の文字列に整形。
 		String username = String.format("%04d", tempUsername);

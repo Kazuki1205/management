@@ -1,5 +1,7 @@
 package com.example.management.service;
 
+import java.time.LocalDate;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,8 +41,8 @@ public class StoringService {
 	 * @param storingForm 入庫フォーム
 	 * @param production 製作クラス
 	 */
-	@Transactional(rollbackForClassName={"Exception"})
-	public void create(StoringForm storingForm, Production production) {
+	@Transactional(rollbackForClassName = {"Exception"})
+	public void create(StoringForm storingForm, Production production, Integer lotQuantity, Integer failureQuantityTotal, Integer storingQuantityTotal) {
 		
 		// 入庫フォームから入庫クラスへ値の詰め替え。
 		Storing storing = modelMapper.map(storingForm, Storing.class);
@@ -51,40 +53,17 @@ public class StoringService {
 		// 入庫テーブルへ挿入処理
 		storingMapper.create(storing);
 		
-		// 在庫テーブルの商品IDと合致したレコードの実在庫をマイナスする。
+		// 在庫テーブルの商品IDと合致したレコードの実在庫をプラスする。
 		stockMapper.updateStoring(storing);
 		
-		// 入庫フォームの完了区分「0」未完了・「1」完了済を、製作クラスにセットする。
-		production.setCompletionFlag(storingForm.getCompletionInput());
-	
-		// 製作テーブルの製作IDと合致したレコードの完了区分を更新する。
-		productionMapper.updateCompletion(production);
-	}
-	
-	/**
-	 * 製作テーブルに製番完了フラグ更新を行うメソッド。
-	 * 
-	 * DBへ登録
-	 * 
-	 * @param storingForm 入庫フォーム
-	 * @param production 製作クラス
-	 */
-	@Transactional(rollbackForClassName={"Exception"})
-	public void update(StoringForm storingForm, Production production) {
-		
-		// 入庫フォームから入庫クラスへ値の詰め替え。
-		Storing storing = modelMapper.map(storingForm, Storing.class);
-		
-		// 製作クラスを入庫クラスにセットする。
-		storing.setProduction(production);
-		
-		// 入庫テーブルの更新処理
-		storingMapper.update(storing);
-		
-		// 入庫フォームの完了区分「0」未完了・「1」完了済を、製作クラスにセットする。
-		production.setCompletionFlag(storingForm.getCompletionInput());
-	
-		// 製作テーブルの製作IDと合致したレコードの完了区分を更新する。
-		productionMapper.updateCompletion(production);
+		// 「製作数 - 不良数計 - 入庫数計」 = 「仕掛残数」と、フォームに入力された「入庫数」が一致した場合、製作完了とみなし製作テーブルの完了日を更新する。
+		if (lotQuantity == failureQuantityTotal + storingQuantityTotal + storingForm.getStoringQuantity()) {
+			
+			// 現在日付をセット。
+			production.setCompletionDate(LocalDate.now());
+			
+			// 製作テーブルの製作IDと合致したレコードの完了日を更新する。
+			productionMapper.updateCompletion(production);		
+		}
 	}
 }

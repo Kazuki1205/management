@@ -9,14 +9,13 @@
 	<resultMap id="storingResult" type="Storing">
 		<id property="id" column="sto_id" />
 		<result property="storingQuantity" column="sto_storing_quantity" />
-		<result property="completionInput" column="sto_completion_input" />
 		<result property="createdAt" column="sto_created_at" />
 		<result property="updatedAt" column="sto_updated_at" />
 		<association property="production" javaType="Production">
 			<id property="id" column="pro_id" />
 			<result property="lotNumber" column="pro_lot_number" />
 			<result property="lotQuantity" column="pro_lot_quantity" />
-			<result property="completionFlag" column="pro_completion_flag" />
+			<result property="completionDate" column="pro_completion_date" />
 			<result property="invalid" column="pro_invalid" />
 			<association property="item" javaType="Item">
 				<id property="id" column="ite_id" />
@@ -26,18 +25,17 @@
 		</association>
 	</resultMap>
 
-	
-	<select id="findById" parameterType="Long" resultMap="storingResult">
+	<!-- 共通SQL文 -->
+	<sql id="storingSelect">
 		SELECT
 			sto.id                    AS sto_id, 
 			sto.storing_quantity      AS sto_storing_quantity, 
-			sto.completion_input      AS sto_completion_input, 
 			sto.created_at            AS sto_created_at, 
 			sto.updated_at            AS sto_updated_at, 
 			pro.p_id                  AS pro_id, 
 			pro.p_lot_number          AS pro_lot_number, 
 			pro.p_lot_quantity        AS pro_lot_quantity, 
-			pro.p_completion_flag     AS pro_completion_flag, 
+			pro.p_completion_date     AS pro_completion_date, 
 			pro.p_invalid             AS pro_invalid, 
 			pro.i_id                  AS ite_id, 
 			pro.i_code                AS ite_code, 
@@ -50,7 +48,7 @@
 				p.item_id             AS p_item_id, 
 				p.lot_number          AS p_lot_number, 
 				p.lot_quantity        AS p_lot_quantity, 
-				p.completion_flag     AS p_completion_flag, 
+				p.completion_date     AS p_completion_date, 
 				p.invalid             AS p_invalid, 
 				i.id                  AS i_id, 
 				i.code                AS i_code, 
@@ -64,48 +62,22 @@
 		) pro <!-- サブクエリの製作テーブル -->
 		ON
 			sto.production_id = pro.p_id <!-- 入庫テーブルとサブクエリの製作テーブルを、製作IDで結合 -->
+	</sql>
+	
+	<!-- 引数で受け取ったIDを基に、該当レコードを取得 -->
+	<select id="findById" parameterType="Long" resultMap="storingResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="storingSelect"></include>
 		WHERE
 			sto.id = #{id} <!-- 引数の入庫IDと一致した場合 -->
 	</select>
 	
 	<!-- 引数で受け取った製作番号・商品コード・商品名を基に、あいまい検索を掛ける -->
 	<select id="findByConditions" resultMap="storingResult">
-		SELECT
-			sto.id                    AS sto_id, 
-			sto.storing_quantity      AS sto_storing_quantity, 
-			sto.completion_input      AS sto_completion_input, 
-			sto.created_at            AS sto_created_at, 
-			sto.updated_at            AS sto_updated_at, 
-			pro.p_id                  AS pro_id, 
-			pro.p_lot_number          AS pro_lot_number, 
-			pro.p_lot_quantity        AS pro_lot_quantity, 
-			pro.p_completion_flag     AS pro_completion_flag, 
-			pro.p_invalid             AS pro_invalid, 
-			pro.i_id                  AS ite_id, 
-			pro.i_code                AS ite_code, 
-			pro.i_name                AS ite_name
-		FROM
-			storings sto <!-- 入庫テーブル -->
-		INNER JOIN (
-			SELECT
-				p.id                  AS p_id, 
-				p.item_id             AS p_item_id, 
-				p.lot_number          AS p_lot_number, 
-				p.lot_quantity        AS p_lot_quantity, 
-				p.completion_flag     AS p_completion_flag, 
-				p.invalid             AS p_invalid, 
-				i.id                  AS i_id, 
-				i.code                AS i_code, 
-				i.name                AS i_name
-			FROM
-				productions p <!-- 製作テーブル -->
-			INNER JOIN
-				items i <!-- 商品テーブル -->
-			ON
-				p.item_id = i.id <!-- 商品IDで結合 -->
-		) pro <!-- サブクエリの製作テーブル -->
-		ON
-			sto.production_id = pro.p_id <!-- 入庫テーブルとサブクエリの製作テーブルを、製作IDで結合 -->
+
+		<!-- SQL文をインクルード -->
+		<include refid="storingSelect"></include>
 		<where>
 			<if test="lotNumber != null">
 				pro.p_lot_number LIKE '%${lotNumber}%' <!-- 引数の製作番号がnullでない場合、あいまい検索 -->
@@ -143,14 +115,5 @@
 			#{storingQuantity}
 		)
 	</insert>
-	
-	<!-- 引数で受け取った入庫IDを基に、入庫テーブルの1件のデータを更新する。 -->
-	<update id="update" parameterType="Storing">
-		UPDATE
-			storings <!-- 入庫テーブル -->
-		SET
-			completion_input = #{completionInput}, 
-			updated_at = #{updatedAt}
-	</update>
 
 </mapper>

@@ -5,14 +5,15 @@
 	
 <mapper namespace="com.example.management.mapper.StockMapper">
 
-	<update id="updateStoring" parameterType="Stock">
+	<!-- 引数の入庫クラスの入庫数を、商品IDと合致したレコードの実在庫に加算する。 -->
+	<update id="updateStoring" parameterType="Storing">
 		UPDATE
 			stocks <!-- 在庫テーブル -->
 		SET
 			actual_quantity = actual_quantity + #{storingQuantity}, 
 			updated_at = #{updatedAt}
 		WHERE
-			item_id = #{production.item.id}
+			item_id = #{production.item.id} <!-- 引数の商品IDと一致した場合 -->
 	</update>
 
 </mapper>

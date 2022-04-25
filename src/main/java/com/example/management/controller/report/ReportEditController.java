@@ -21,6 +21,7 @@ import com.example.management.mapper.ReportMapper;
 import com.example.management.model.Employee;
 import com.example.management.model.Production;
 import com.example.management.model.Report;
+import com.example.management.service.CommonService;
 import com.example.management.service.ReportService;
 
 /**
@@ -40,6 +41,9 @@ public class ReportEditController {
 	
 	@Autowired
 	private ReportService reportService;
+	
+	@Autowired
+	private CommonService commonService;
 
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -105,34 +109,14 @@ public class ReportEditController {
 			
 			// 該当レコードを登録した社員IDではない社員が編集ボタンを押した場合、履歴テンプレートへリダイレクト
 			if (employee.getId() == report.getEmployeeHistory().getEmployeeId()) {
-	
-				// 日報クラスから日報フォームへ詰め替える。
-				ReportForm reportForm = modelMapper.map(report, ReportForm.class);
 				
-				// 取得した日報クラスから製作クラスを取り出す。
-				Production production = report.getProduction();
-				
-				// フォームにそれぞれ製作ID・製作番号・・商品コード・商品名・製作数をセットする。
-				reportForm.setProductionId(production.getId());
-				reportForm.setLotNumber(production.getLotNumber());
-				reportForm.setItemCode(production.getItem().getCode());
-				reportForm.setItemName(production.getItem().getName());
-				reportForm.setLotQuantity(production.getLotQuantity());
-				
-				// フォームに日報テーブルの完了数計(製作IDと部署IDでグループ化したものの集計)をセットする。nullなら0とする。
-				reportForm.setDepartmentCompletionQuantityTotal(reportMapper.sumOfCompletionQuantity(production.getId(), employee.getDepartment().getId()).orElse(0));
-				
-				// フォームに日報テーブルの不良数計(製作IDでグループ化したものの集計)をセットする。nullなら0とする。
-				reportForm.setFailureQuantityTotal(reportMapper.sumOfFailureQuantity(production.getId()).orElse(0));
-				
-				model.addAttribute("reportForm", reportForm);
+				// 日報クラスから日報フォームへ必要な情報をマッピングする。				
+				model.addAttribute("reportForm", reportService.formMapping(report, employee));
 				
 				return "reports/edit";	
 			} else {
 				
-				redirectAttributes.addFlashAttribute("hasMessage", true);
-				redirectAttributes.addFlashAttribute("class", "alert-danger");
-				redirectAttributes.addFlashAttribute("message", "日報入力している担当者のみ編集可能です。");
+				redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-danger", "日報入力している担当者のみ編集可能です。"));
 				
 				return "redirect:/report/log";
 			}
@@ -154,13 +138,10 @@ public class ReportEditController {
 						 @AuthenticationPrincipal Employee employee, RedirectAttributes redirectAttributes, 
 						 Model model) {
 		
-		model.addAttribute("hasMessage", true);
-		
 		// 日報フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 			
-			model.addAttribute("class", "alert-danger");
-			model.addAttribute("message", "登録に失敗しました。");
+			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "登録に失敗しました。"));
 			
 			return "reports/edit";	
 		} else {
@@ -168,9 +149,7 @@ public class ReportEditController {
 				// DBへINSERT処理、正常処理メッセージを表示。
 				reportService.update(reportForm, employee.getId());
 				
-				redirectAttributes.addFlashAttribute("hasMessage", true);
-				redirectAttributes.addFlashAttribute("class", "alert-info");
-				redirectAttributes.addFlashAttribute("message", "登録に成功しました。");	
+				redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "登録に成功しました。"));
 				
 				return "redirect:/report/log";
 		}
@@ -191,9 +170,7 @@ public class ReportEditController {
 		// DBへDELETE処理
 		reportService.delete(reportForm);
 		
-		redirectAttributes.addFlashAttribute("hasMessage", true);
-		redirectAttributes.addFlashAttribute("class", "alert-info");
-		redirectAttributes.addFlashAttribute("message", "削除に成功しました。");
+		redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "削除に成功しました。"));
 		
 		return "redirect:/report/log";
 	}

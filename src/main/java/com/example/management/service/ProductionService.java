@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.example.management.form.ProductionForm;
 import com.example.management.mapper.ItemMapper;
 import com.example.management.mapper.ProductionMapper;
+import com.example.management.mapper.ReportMapper;
+import com.example.management.mapper.StoringMapper;
 import com.example.management.model.Production;
 
 /**
@@ -25,6 +27,12 @@ public class ProductionService {
 	
 	@Autowired
 	private ItemMapper itemMapper;
+	
+	@Autowired
+	private ReportMapper reportMapper;
+	
+	@Autowired
+	private StoringMapper storingMapper;
 	
 	/**
 	 * 「年4桁-月2桁-通し番号4桁」形式の製作番号で、
@@ -71,14 +79,39 @@ public class ProductionService {
 	
 	/**
 	 * 製作情報の更新メソッド
+	 * 製作数を変更した際に、「入庫数計 + 不良数計」以下になる場合は、
+	 * 製作が完了したとみなし、完了日も併せて更新する。
+	 * 
 	 * DBの更新
 	 * 
 	 * @param productionForm　製作フォーム	
 	 */
 	public void update(ProductionForm productionForm) {
 		
-		//　製作フォームから製作クラスに詰め替え、DBを更新する。
-		productionMapper.update(modelMapping(productionForm));
+		//　製作フォームから製作クラスに詰め替え。
+		Production production = modelMapping(productionForm);
+		
+		//　DBを更新する。
+		productionMapper.update(production);
+		
+		// 製作フォームの製作数を取得する。
+		Integer lotQuantity = productionForm.getLotQuantity();
+		
+		// 日報テーブルの不良数計(製作IDでグループ化したものの集計)を取得する。nullなら0とする。
+		Integer failureQuantityTotal = reportMapper.sumOfFailureQuantity(production.getId()).orElse(0);
+		
+		// 入庫テーブルの入庫数計(製作IDでグループ化したものの集計)を取得する。nullなら0とする。
+		Integer storingQuantityTotal = storingMapper.sumOfStoringQuantity(production.getId()).orElse(0);
+		
+		// 「入庫数計 + 不良数計 >= 変更した製作数」となった場合、製作完了として、該当レコードの完了日を更新する。
+		if (storingQuantityTotal + failureQuantityTotal >= lotQuantity) {
+			
+			// 現在日付をセット。
+			production.setCompletionDate(LocalDate.now());
+			
+			// 製作テーブルの製作IDと合致したレコードの完了日を更新する。
+			productionMapper.updateCompletion(production);
+		}
 	}
 	
 	/**

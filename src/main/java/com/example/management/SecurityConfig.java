@@ -70,8 +70,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	// ADMIN・FIELD権限のみ許可
         	.antMatchers("/report/register**", "/report/edit**").hasAnyRole("ADMIN", "FIELD")
         	
+        	// ADMIN・SALE権限のみ許可
+        	.antMatchers("/order/register**", "/order/edit**").hasAnyRole("ADMIN", "SALE")
+        	
         	// 指定したURL形式のみ全て許可。
-        	.antMatchers("/", "/login", "/login-failure", "/logout-complete").permitAll()
+        	.antMatchers("/", "/login", "/login-failure", "/logout-complete", "/ajax/**").permitAll()
         	
         	// その他リクエストは、ログイン状態でのみ許可。
         	.anyRequest().authenticated()

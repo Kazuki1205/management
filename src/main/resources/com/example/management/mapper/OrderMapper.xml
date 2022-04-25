@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.management.mapper.OrderMapper">
+
+	<!-- SQL結果に対応した受注クラス -->
+	<resultMap id="orderResult" type="Order">
+		<id property="id" column="ord_id" />
+		<result property="orderNumber" column="ord_order_number" />
+		<result property="completionDate" column="ord_completion_date" />
+		<result property="createdAt" column="ord_created_at" />
+		<result property="updatedAt" column="ord_updated_at" />
+		<result property="orderAmountTotal" column="order_amount_total" />
+		<result property="invalid" column="ord_invalid" />
+		<association property="customerHistory" javaType="CustomerHistory">
+			<id property="id" column="cus_id" />
+			<result property="customerId" column="cus_customer_id" />
+			<result property="code" column="cus_code" />
+			<result property="name" column="cus_name" />
+			<result property="postalCode" column="cus_postal_code" />
+			<result property="firstAddress" column="cus_first_address" />
+			<result property="secondAddress" column="cus_second_address" />
+			<result property="thirdAddress" column="cus_third_address" />
+			<result property="phoneNumber" column="cus_phone_number" />
+		</association>
+		<association property="employeeHistory" javaType="EmployeeHistory">
+			<id property="id" column="empH_id" />
+			<result property="employeeId" column="empH_id" />
+			<result property="username" column="empH_username" />
+			<result property="name" column="empH_name" />
+			<association property="department" javaType="Department">
+				<id property="id" column="dep_id" />
+				<result property="code" column="dep_code" />
+				<result property="name" column="dep_name" />
+				<result property="invalid" column="dep_invalid" />
+			</association>
+		</association>
+		<collection property="orderDetails" ofType="OrderDetail">
+			<id property="orderNumber" column="ordD_order_number" />
+			<id property="detailId" column="ordD_detail_id" />
+			<result property="orderQuantity" column="ordD_order_quantity" />
+			<result property="completionDate" column="ordD_completion_date" />
+			<result property="createdAt" column="ordD_created_at" />
+			<result property="updatedAt" column="ordD_updated_at" />
+			<result property="invalid" column="ordD_invalid" />
+			<association property="itemHistory" javaType="ItemHistory">
+				<id property="id" column="ite_id" />
+				<result property="itemId" column="ite_item_id" />
+				<result property="code" column="ite_code" />
+				<result property="name" column="ite_name" />
+				<result property="unitPrice" column="ite_unit_price" />
+			</association>
+		</collection>
+	</resultMap>
+	
+	<!-- 共通SQL文 -->
+	<sql id="orderSelect">
+		SELECT
+			ord.id                      AS ord_id, 
+			ord.order_number            AS ord_order_number, 
+			ord.completion_date         AS ord_completion_date, 
+			ord.created_at              AS ord_created_at, 
+			ord.updated_at              AS ord_updated_at, 
+			ord.invalid                 AS ord_invalid, 
+			cus.id                      AS cus_id, 
+			cus.customer_id             AS cus_customer_id, 
+			cus.code                    AS cus_code, 
+			cus.name                    AS cus_name, 
+			cus.postal_code             AS cus_postal_code, 
+			cus.first_address           AS cus_first_address, 
+			cus.second_address          AS cus_second_address, 
+			cus.third_address           AS cus_third_address, 
+			cus.phone_number            AS cus_phone_number, 
+			empH.e_id                   AS empH_id, 
+			empH.e_employee_id          AS empH_employee_id, 
+			empH.e_username             AS empH_username, 
+			empH.e_name                 AS empH_name, 
+			empH.d_id                   AS dep_id, 
+			empH.d_code                 AS dep_code, 
+			empH.d_name                 AS dep_name, 
+			empH.d_invalid              AS dep_invalid, 
+			ordD.o_order_number         AS ordD_order_number, 
+			ordD.o_detail_id            AS ordD_detail_id, 
+			ordD.o_order_quantity       AS ordD_order_quantity, 
+			ordD.o_completion_date      AS ordD_completion_date, 
+			ordD.o_created_at           AS ordD_created_at, 
+			ordD.o_updated_at           AS ordD_updated_at, 
+			ordD.o_invalid              AS ordD_invalid, 
+			ordD.i_id                   AS ite_id, 
+			ordD.i_item_id              AS ite_item_id, 
+			ordD.i_code                 AS ite_code, 
+			ordD.i_name                 AS ite_name, 
+			ordD.i_unit_price           AS ite_unit_price, 
+			amount.order_amount_total   AS order_amount_total
+		FROM
+			orders ord <!-- 受注テーブル -->
+		INNER JOIN
+			customers_history cus <!-- 顧客履歴テーブル -->
+		ON
+			ord.customer_history_id = cus.id <!-- 顧客履歴IDで結合 -->
+		INNER JOIN (
+			SELECT
+				e.id                     AS e_id, 
+				e.employee_id            AS e_employee_id, 
+				e.username               AS e_username, 
+				e.name                   AS e_name, 
+				d.id                     AS d_id, 
+				d.code                   AS d_code, 
+				d.name                   AS d_name, 
+				d.invalid                AS d_invalid
+			FROM
+				employees_history e <!-- 社員履歴テーブル -->
+			INNER JOIN
+				departments d <!-- 部署テーブル -->
+			ON
+				e.department_id = d.id <!-- 部署IDで結合 -->
+		) empH <!-- サブクエリの社員履歴テーブル -->
+		ON 
+			ord.employee_history_id = empH.e_id <!-- 受注テーブルとサブクエリの社員履歴を社員履歴IDで結合 -->
+		INNER JOIN (
+			SELECT
+				o.order_number                          AS order_number, 
+				SUM(i.unit_price * o.order_quantity)    AS order_amount_total <!-- 受注ID毎の受注金額合計 -->
+			FROM
+				orders_details o <!-- 受注明細テーブル -->
+			INNER JOIN
+				items_history i <!-- 商品履歴テーブル -->
+			ON
+				o.item_history_id = i.id <!-- 商品履歴IDで結合 -->
+			GROUP BY
+				o.order_number <!-- 受注IDでグループ化 -->
+		) amount <!-- 受注明細の受注金額集計結果 -->
+		ON
+			ord.order_number = amount.order_number <!-- 受注テーブルとサブクエリの受注明細テーブルを受注番号で結合 -->	
+		LEFT JOIN (
+			SELECT
+				o.order_number           AS o_order_number, 
+				o.detail_id              AS o_detail_id, 
+				o.order_quantity         AS o_order_quantity, 
+				o.completion_date        AS o_completion_date, 
+				o.created_at             AS o_created_at, 
+				o.updated_at             AS o_updated_at, 
+				o.invalid                AS o_invalid, 
+				i.id                     AS i_id, 
+				i.item_id                AS i_item_id, 
+				i.code                   AS i_code, 
+				i.name                   AS i_name, 
+				i.unit_price             AS i_unit_price
+			FROM
+				orders_details o <!-- 受注明細テーブル -->
+			INNER JOIN
+				items_history i <!-- 商品履歴テーブル -->
+			ON
+				o.item_history_id = i.id <!-- 商品履歴IDで結合 -->
+		) ordD <!-- サブクエリの受注明細テーブル -->
+		ON
+			ord.order_number = ordD.o_order_number <!-- 受注番号で結合 -->
+	</sql>
+	
+	<!-- 引数で受け取った受注番号を基に、該当レコードを取得する。 -->
+	<select id="findByOrderNumber" parameterType="String" resultMap="orderResult">
+	
+		<!-- SQL文をインクルード -->
+		<include refid="orderSelect"></include>
+		WHERE
+			ord.order_number = #{orderNumber}
+	</select>
+
+	<!-- 引数で受け取った製作番号・商品コード・商品名を基に、あいまい検索を掛ける -->
+	<select id="findByConditions" resultMap="orderResult">
+	
+		<!-- SQL文をインクルード -->
+		<include refid="orderSelect"></include>
+		<where>
+			<if test="orderNumber != null">
+				ord.order_number LIKE '%${orderNumber}%'
+			</if>
+			<if test="customerCode != null">
+				AND cus.code LIKE '%${customerCode}%'
+			</if>
+			<if test="customerName != null">
+				AND cus.name LIKE '%${customerName}%'
+			</if>
+			<if test="departmentId != null">
+				AND empH.d_id = #{departmentId}
+			</if>
+			<if test="employeeName != null">
+				AND empH.e_name LIKE '%${employeeName}%'
+			</if>
+		</where>
+			
+	</select>
+	
+	<!-- 引数で受け取ったIDを基に、該当レコードを取得。 -->
+	<select id="findById" parameterType="Long" resultMap="orderResult">
+	
+		<!-- SQL文をインクルード -->
+		<include refid="orderSelect"></include>
+		WHERE
+			ord.id = #{id}
+	</select>
+	
+	<!-- 引数で受け取ったIDを基に、該当レコードを取得。削除済みを除く -->
+	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="orderResult">
+	
+		<!-- SQL文をインクルード -->
+		<include refid="orderSelect"></include>
+		WHERE
+			ord.id = #{id}
+		AND
+			ord.invalid = 0
+	</select>
+	
+	<select id="countAll" resultType="Integer">
+		SELECT COUNT
+			(*)
+		FROM
+			orders
+	</select>
+	
+	<select id="getOrderIdByLatest" resultType="Long">
+		SELECT
+			MAX(id)
+		FROM
+			orders <!-- 受注テーブル -->
+		GROUP BY
+			id
+	</select>
+	
+	<!-- 引数で受け取った受注クラスを基にレコードを挿入する。 -->
+	<insert id="create" parameterType="Order">
+		INSERT INTO
+			orders ( <!-- 受注テーブル -->
+				order_number, 
+				customer_history_id, 
+				employee_history_id
+			)
+		VALUES (
+			#{orderNumber}, 
+			#{customerHistory.id}, 
+			#{employeeHistory.id}
+		)
+	</insert>
+	
+	<!-- 引数で受け取った受注クラスを基に、該当行の削除フラグを立てる。 -->
+	<update id="updateInvalid" parameterType="Order">
+		UPDATE
+			orders <!-- 受注テーブル -->
+		SET
+			invalid = 1, 
+			updated_at = #{updatedAt}
+		WHERE
+			id = #{id}
+	</update>
+
+</mapper>

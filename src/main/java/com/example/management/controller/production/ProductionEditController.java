@@ -18,6 +18,7 @@ import com.example.management.form.ProductionForm;
 import com.example.management.mapper.ItemMapper;
 import com.example.management.mapper.ProductionMapper;
 import com.example.management.model.Item;
+import com.example.management.service.CommonService;
 import com.example.management.service.ProductionService;
 import com.example.management.validation.ValidOrder;
 
@@ -38,6 +39,9 @@ public class ProductionEditController {
 	
 	@Autowired
 	private ProductionService productionService;
+	
+	@Autowired
+	private CommonService commonService;
 	
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -120,9 +124,7 @@ public class ProductionEditController {
 		// 製作フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 			
-			model.addAttribute("hasMessage", true);
-			model.addAttribute("class", "alert-danger");
-			model.addAttribute("message", "登録に失敗しました。");
+			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "登録に失敗しました。"));
 			
 			return "productions/edit";
 		} else {
@@ -130,9 +132,7 @@ public class ProductionEditController {
 			// DBへINSERT処理、正常処理メッセージを表示。
 			productionService.update(productionForm);
 			
-			redirectAttributes.addFlashAttribute("hasMessage", true);
-			redirectAttributes.addFlashAttribute("class", "alert-info");
-			redirectAttributes.addFlashAttribute("message", "登録に成功しました。");
+			redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "登録に成功しました。"));
 				
 			return "redirect:/production/log";
 		}
@@ -154,9 +154,7 @@ public class ProductionEditController {
 		// DBへDELETE処理
 		productionService.delete(productionForm);
 		
-		redirectAttributes.addFlashAttribute("hasMessage", true);
-		redirectAttributes.addFlashAttribute("class", "alert-info");
-		redirectAttributes.addFlashAttribute("message", "削除に成功しました。");
+		redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "削除に成功しました。"));
 		
 		return "redirect:/production/log";
 	}

@@ -89,6 +89,21 @@ $(function(){
     });
 });
 
+// 受注明細フォーム削除時メッセージ
+$(function(){
+	
+    $(".form-remove").on("click", function(){
+	
+        if(window.confirm('選択した明細行を削除しますか？')) {
+	
+            return true;
+        } else {
+	
+            return false;
+        }
+    });
+});
+
 // セレクトボックスに検索機能を追加するライブラリ
 $(document).ready(function() {
 	
@@ -105,12 +120,12 @@ $(function() {
 	// 日報入力画面の製作番号セレクトボックスの値変更時
 	$('#ajax-productionId').change(function() {
 		
-		// セレクトボックスのValueが「""」(選択して下さい)の場合、非同期通信は行わない。
+		// セレクトボックスのvalueが「""」(選択して下さい)の場合、非同期通信は行わない。
 		if ($('[name=productionId] option:selected').val()) {
 		
 			// urlのコントローラーにPOSTデータで、製作番号IDとトークンを渡す。
 			$.ajax({
-				url: '/production/ajax', 
+				url: '/ajax/production', 
 				type: 'POST', 
 				data: {
 					productionId: $('[name=productionId] option:selected').val(), 
@@ -139,6 +154,105 @@ $(function() {
 			$('#ajax-departmentCompletionQuantityTotal').val("");
 			$('#ajax-failureQuantityTotal').val("");
 			$('#ajax-storingQuantityTotal').val("");
+		}
+	});
+});
+
+// 受注明細入力時に商品を選択した際、それに紐づく単価を非同期で取得、数量が入力されていれば小計を計算する。
+$(function() {
+
+	// 受注明細入力画面の商品セレクトボックスの値変更時
+	$('.ajax-itemId').change(function() {
+		
+		// 選択されたオプション要素を変数に代入する。
+		let itemIdElement = $('option:selected', this);
+		
+		// 選択されたオプション要素の親要素のセレクトボックスのインデックスを取得する。
+		let index = itemIdElement.parent().attr('data-item-id');
+		
+		// 受注数を変数に代入
+		let orderQuantity = $('[data-order-quantity=' + index + ']').val();
+		
+		// 通貨フォーマッターを設定
+		const formatter = new Intl.NumberFormat('ja', {
+			style: 'currency', 
+			currency: 'JPY'
+		});
+		
+		// セレクトボックスのvalueが「""」(選択して下さい)の場合、非同期通信は行わない。
+		if (itemIdElement.val()) {
+		
+			// urlのコントローラーにPOSTデータで、商品IDとトークンを渡す。
+			$.ajax({
+				url: '/ajax/item', 
+				type: 'POST', 
+				data: {
+					itemId: itemIdElement.val(), 
+					_csrf: $('*[name=_csrf]').val()
+				}, 
+				dataType: 'json' // レスポンスをJsonデータとして受け取る。
+			})
+			
+			// コントローラーから返された商品クラスのJsonデータから、単価を取り出し、フォームに入力する。
+			.done(function(data) {
+				
+				// フォームに単価を入力。
+				$('[data-unit-price=' + index + ']').val(data.unitPrice);
+				
+				// 受注数が入力されていれば、小計を計算しフォームにセットする。無ければ空をセットする。
+				if (orderQuantity) {
+					
+					$("[data-order-amount=" + index + "]").val(formatter.format(data.unitPrice * orderQuantity));
+				} else {
+					
+					$("[data-order-amount=" + index + "]").val('');
+				}
+			})	
+			
+		// 「選択して下さい」を選ぶと、単価・小計に空白が入力される。
+		} else {
+			
+			$("[data-unit-price=" + index + "]").val("");
+			$("[data-order-amount=" + index + "]").val("");
+		}
+	});
+});
+
+// 受注明細入力時に受注数を入力した際、単価が入力されていれば小計を計算する。
+$(function() {
+	
+	// 受注明細入力画面の受注数の値変更時
+	$('.dom-orderQuantity').change(function () {
+		
+		// 入力された受注数フォームのインデックスを取得し変数へ代入する。
+		let index = $(this).attr('data-order-quantity')
+		
+		// 入力フォームのvalueが「""」の場合、フォームの値書き換えは行わない。
+		if ($(this).val()) {
+			
+			// 通貨フォーマッターを設定
+			const formatter = new Intl.NumberFormat('ja', {
+				style: 'currency', 
+				currency: 'JPY'
+			});
+			
+			// 受注数・単価を変数に代入
+			let orderQuantity = $(this).val();
+			let unitPrice = $('[data-unit-price=' + index + ']').val();
+			
+			// 単価が入力されていれば、小計を計算しフォームにセットする。無ければ空をセットする。
+			if (unitPrice) {
+				
+				$('[data-order-amount=' + index + ']').val(formatter.format(unitPrice * orderQuantity));
+			} else {
+				
+				$('[data-order-amount=' + index + ']').val('');		
+			}
+			
+		// 入力フォームが空だった場合、計算は行わず、小計には空を入力する。
+		} else {
+			
+			$('[data-order-amount=' + index + ']').val('');		
 		}
 	});
 });

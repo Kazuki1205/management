@@ -8,6 +8,8 @@ import com.example.management.form.ReportForm;
 import com.example.management.mapper.EmployeeHistoryMapper;
 import com.example.management.mapper.ProductionMapper;
 import com.example.management.mapper.ReportMapper;
+import com.example.management.model.Employee;
+import com.example.management.model.Production;
 import com.example.management.model.Report;
 
 /**
@@ -83,8 +85,33 @@ public class ReportService {
 		report.setProduction(productionMapper.findByIdExcludeInvalidAndCompletion(reportForm.getProductionId()));	
 		
 		// 社員履歴クラスをセットする。
-		report.setEmployeeHistory(employeeHistoryMapper.findByUserIdByLatest(employeeId));
+		report.setEmployeeHistory(employeeHistoryMapper.findByEmployeeIdByLatest(employeeId));
 		
 		return report;
+	}
+	
+	
+	public ReportForm formMapping(Report report, Employee employee) {
+		
+		// 日報クラスから日報フォームへ詰め替える。
+		ReportForm reportForm = modelMapper.map(report, ReportForm.class);
+		
+		// 取得した日報クラスから製作クラスを取り出す。
+		Production production = report.getProduction();
+		
+		// フォームにそれぞれ製作ID・製作番号・・商品コード・商品名・製作数をセットする。
+		reportForm.setProductionId(production.getId());
+		reportForm.setLotNumber(production.getLotNumber());
+		reportForm.setItemCode(production.getItem().getCode());
+		reportForm.setItemName(production.getItem().getName());
+		reportForm.setLotQuantity(production.getLotQuantity());
+		
+		// フォームに日報テーブルの完了数計(製作IDと部署IDでグループ化したものの集計)をセットする。nullなら0とする。
+		reportForm.setDepartmentCompletionQuantityTotal(reportMapper.sumOfCompletionQuantity(production.getId(), employee.getDepartment().getId()).orElse(0));
+		
+		// フォームに日報テーブルの不良数計(製作IDでグループ化したものの集計)をセットする。nullなら0とする。
+		reportForm.setFailureQuantityTotal(reportMapper.sumOfFailureQuantity(production.getId()).orElse(0));
+		
+		return reportForm;
 	}
 }

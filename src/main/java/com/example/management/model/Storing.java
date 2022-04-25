@@ -14,9 +14,7 @@ public class Storing {
 	
 	private Production production; // 製作クラス
 	
-	private Integer storingQuantity; // 入庫
-
-	private Short completionInput; // 入庫完了入力 「0」未完了、「1」完了。
+	private Integer storingQuantity; // 入庫数
 	
 	private Integer storingQuantityTotal; // 入庫テーブルを製作IDでグループ化した際の入庫数集計結果
 	

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="table">
+	<table class="table table-bordered">
+		<tr>
+			<th>
+				<label for="orderNumber">受注番号</label>
+			</th>
+			<td>
+				<th:block th:if="${editFlag} == null">
+					<input type="text" th:field="*{orderNumber}" class="bg-secondary" readonly />
+				</th:block>
+				<th:block th:if="${editFlag} == 1">
+					<input type="hidden" th:field="*{orderNumber}" />
+					<span th:text="*{orderNumber}"></span>
+				</th:block>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<label for="customerId">顧客名</label>
+			</th>
+			<td>
+				<th:block th:if="${editFlag} == null">
+					<select th:field="*{customerId}" class="select">
+						<option value="" selected>選択して下さい</option>
+						<option th:each="customer : ${customers}" th:value="${customer.id}" th:text="|顧客コード:${customer.code} 顧客名:${customer.name}|"></option>
+					</select>
+					<span th:if="${#fields.hasErrors('customerId')}" th:errors="*{customerId}" class="text-danger"></span>
+				</th:block>
+				<th:block th:if="${editFlag} == 1">
+					<input type="hidden" th:field="*{customerId}">
+					<input type="hidden" th:field="*{customerName}">
+					<span th:text="*{customerName}"></span>
+				</th:block>
+			</td>
+		</tr>
+	</table>
+	<hr>
+	<table class="table table-bordered">
+		<thead>
+		 	<tr>
+		 		<th>明細番号</th>
+		 		<th>商品名</th>
+		 		<th>単価</th>
+		 		<th>受注数</th>
+		 		<th:block th:if="${editFlag} == 1">
+		 			<th>出荷数計</th>
+		 		</th:block>
+		 		<th>小計</th>
+		 		<th></th>
+		 	</tr>
+		</thead>
+		<tbody>
+			<tr th:each="orderDetailForm, stat : *{orderDetailForms}" th:class="*{orderDetailForms[__${stat.index}__].invalid} == 1 ? 'bg-secondary' : '' ">
+				<td>
+					<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].detailId}"/>
+					<span th:text="${stat.count}"></span>
+				</td>
+				<td>
+					<th:block th:if="${editFlag} == null">
+						<select th:field="*{orderDetailForms[__${stat.index}__].itemId}" class="select ajax-itemId" th:data-item-id="${stat.index}">
+							<option value="" selected>選択して下さい</option>
+							<option th:each="item : ${items}" th:value="${item.id}" th:text="|商品コード:${item.code} 商品名:${item.name}|"></option>
+						</select>
+						<span th:if="${#fields.hasErrors('orderDetailForms[__${stat.index}__].itemId')}" th:errors="*{orderDetailForms[__${stat.index}__].itemId}" class="text-danger"></span>
+					</th:block>
+					<th:block th:if="${editFlag} == 1">
+						<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].itemId}" />
+						<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].itemName}" />
+						<span th:text="*{orderDetailForms[__${stat.index}__].itemName}"></span>
+					</th:block>
+				</td>
+				<td>
+					<input type="number" th:field="*{orderDetailForms[__${stat.index}__].unitPrice}" class="bg-secondary" th:data-unit-price="${stat.index}" readonly />
+				</td>
+				<td>
+					<input type="number" th:field="*{orderDetailForms[__${stat.index}__].orderQuantity}" class="dom-orderQuantity" th:data-order-quantity="${stat.index}" min=1 
+						th:classappend="*{orderDetailForms[__${stat.index}__].invalid} == 1 ? 'bg-secondary' : '' " th:readonly="*{orderDetailForms[__${stat.index}__].invalid} == 1" />
+					<span th:if="${#fields.hasErrors('orderDetailForms[__${stat.index}__].orderQuantity')}" th:errors="*{orderDetailForms[__${stat.index}__].orderQuantity}" class="text-danger"></span>
+				</td>
+				<th:block th:if="${editFlag} == 1">
+					<td>
+						<span th:text="*{orderDetailForms[__${stat.index}__].shippingQuantityTotal}"></span>
+					</td>
+				</th:block>
+				<td>
+					<input type="text" th:field="*{orderDetailForms[__${stat.index}__].orderAmount}" class="bg-secondary" th:data-order-amount="${stat.index}" readonly />
+				</td>
+				<td>
+					<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].invalid}" />
+					<th:block th:if="${editFlag} == null">
+						<button name="remove" th:value="${stat.index}" th:formaction="@{/order/register}" class="form-remove">削除</button>
+					</th:block>
+					<th:block th:if="*{__${editFlag}__ == 1 && orderDetailForms[__${stat.index}__].invalid == 0}">
+						<button name="remove" th:value="${stat.index}" th:formaction="@{/order/edit}" class="form-remove">削除</button>
+					</th:block>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<th:block th:if="${editFlag} == null">
+		<button type="submit" name="add" th:formaction="@{/order/register}">追加</button>
+	</th:block>
+</div>
+</html>

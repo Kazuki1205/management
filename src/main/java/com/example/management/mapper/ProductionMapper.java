@@ -106,7 +106,7 @@ public interface ProductionMapper {
 	
 	/**
 	 * 製作テーブルを1件更新する。
-	 * 製番完了のフラグを立てる。
+	 * 完了日を更新する。
 	 * 
 	 * @param production 製作クラス
 	 */

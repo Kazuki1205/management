@@ -20,6 +20,7 @@ import com.example.management.mapper.DepartmentMapper;
 import com.example.management.mapper.EmployeeMapper;
 import com.example.management.model.Department;
 import com.example.management.model.Employee;
+import com.example.management.service.CommonService;
 import com.example.management.service.EmployeeService;
 import com.example.management.validation.ValidOrder;
 
@@ -40,6 +41,9 @@ public class EmployeeEditController {
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private CommonService commonService;
 	
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -123,9 +127,7 @@ public class EmployeeEditController {
 		// 社員フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasFieldErrors("name") || bindingResult.hasFieldErrors("departmentId")) {
 			
-			model.addAttribute("hasMessage", true);
-			model.addAttribute("class", "alert-danger");
-			model.addAttribute("message", "更新に失敗しました。");
+			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "更新に失敗しました。"));
 			
 			return "employees/edit";
 		} else {
@@ -133,9 +135,7 @@ public class EmployeeEditController {
 			// DBへINSERT処理、正常処理メッセージを表示。
 			employeeService.update(employeeForm);
 			
-			redirectAttributes.addFlashAttribute("hasMessage", true);
-			redirectAttributes.addFlashAttribute("class", "alert-info");
-			redirectAttributes.addFlashAttribute("message", "更新に成功しました。");
+			redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "更新に成功しました。"));
 			
 			return "redirect:/employee/list";
 		}
@@ -156,9 +156,7 @@ public class EmployeeEditController {
 		// DBへDELETE処理
 		employeeService.delete(employeeForm);
 		
-		redirectAttributes.addFlashAttribute("hasMessage", true);
-		redirectAttributes.addFlashAttribute("class", "alert-info");
-		redirectAttributes.addFlashAttribute("message", "削除に成功しました。");
+		redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "削除に成功しました。"));
 		
 		return "redirect:/employee/list";
 	}
@@ -217,9 +215,7 @@ public class EmployeeEditController {
 			model.addAttribute("editFlag", null);
 			model.addAttribute("changePasswordFlag", 1);
 			
-			model.addAttribute("hasMessage", true);
-			model.addAttribute("class", "alert-danger");
-			model.addAttribute("message", "更新に失敗しました。");
+			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "更新に失敗しました。"));
 			
 			return "employees/changePassword";
 		} else {
@@ -227,9 +223,7 @@ public class EmployeeEditController {
 			// フォームで受け取ったパスワードをエンコードしてDBへ更新。
 			employeeService.updatePassword(employeeForm);
 			
-			redirectAttributes.addFlashAttribute("hasMessage", true);
-			redirectAttributes.addFlashAttribute("class", "alert-info");
-			redirectAttributes.addFlashAttribute("message", "更新に成功しました。");
+			redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "更新に成功しました。"));
 			
 			return "redirect:/employee/list";
 		}

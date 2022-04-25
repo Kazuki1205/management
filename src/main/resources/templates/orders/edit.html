@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	  layout:decorate="~{layouts/layout}">
+
+<body>
+	<div layout:fragment="contents">
+		<form method="post" th:object="${orderForm}">
+			<input type="hidden" th:field="*{id}" />
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+		
+			<div layout:replace="~{orders/common :: table}"></div>
+			
+			<button type="submit" th:formaction="@{/order/edit/update}" id="form">更新</button>
+		</form>
+		<form method="post" th:action="@{/order/edit/delete}" th:object="${orderForm}">
+			<input type="hidden" th:field="*{id}" />
+			<button type="submit" id="form-delete">削除</button>
+		</form>
+		<a th:href="@{/order/log}">受注履歴に戻る</a>
+	</div>
+</body>
+</html>

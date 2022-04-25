@@ -13,7 +13,7 @@
 		<result property="scheduledCompletionDate" column="pro_scheduled_completion_date" />
 		<result property="createdAt" column="pro_created_at" />
 		<result property="updatedAt" column="pro_updated_at" />
-		<result property="completionFlag" column="pro_completion_flag" />
+		<result property="completionDate" column="pro_completion_date" />
 		<result property="invalid" column="pro_invalid" />
 		<association property="item" javaType="Item">
 			<id property="id" column="ite_id" />
@@ -22,8 +22,8 @@
 		</association>
 	</resultMap>
 	
-	<!-- 全てのレコードを取得※製作テーブルの削除済みを除く -->
-	<select id="findAllExcludeInvalid" resultMap="productionResult">
+	<!-- 共通SQL文 -->
+	<sql id="productionSelect">
 		SELECT
 			pro.id                          AS pro_id, 
 			pro.lot_number                  AS pro_lot_number, 
@@ -31,7 +31,7 @@
 			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
 			pro.created_at                  AS pro_created_at, 
 			pro.updated_at                  AS pro_updated_at, 
-			pro.completion_flag             AS pro_completion_flag, 
+			pro.completion_date             AS pro_completion_date, 
 			pro.invalid                     AS pro_invalid, 
 			ite.id                          AS ite_id, 
 			ite.code                        AS ite_code, 
@@ -42,6 +42,13 @@
 			items ite <!-- 商品テーブル -->
 		ON
 			pro.item_id = ite.id <!-- 商品IDで結合 -->
+	</sql>
+	
+	<!-- 全てのレコードを取得※製作テーブルの削除済みを除く -->
+	<select id="findAllExcludeInvalid" resultMap="productionResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="productionSelect"></include>
 		WHERE
 			pro.invalid = 0 <!-- 未削除のみ -->
 		ORDER BY
@@ -50,52 +57,22 @@
 
 	<!-- 全てのレコードを取得※製作テーブルの削除済み・完了済みを除く -->
 	<select id="findAllExcludeInvalidAndCompletion" resultMap="productionResult">
-		SELECT
-			pro.id                          AS pro_id, 
-			pro.lot_number                  AS pro_lot_number, 
-			pro.lot_quantity                AS pro_lot_quantity, 
-			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
-			pro.created_at                  AS pro_created_at, 
-			pro.updated_at                  AS pro_updated_at, 
-			pro.completion_flag             AS pro_completion_flag, 
-			pro.invalid                     AS pro_invalid, 
-			ite.id                          AS ite_id, 
-			ite.code                        AS ite_code, 
-			ite.name                        AS ite_name
-		FROM
-			productions pro <!-- 製作テーブル -->
-		INNER JOIN
-			items ite <!-- 商品テーブル -->
-		ON
-			pro.item_id = ite.id <!-- 商品IDで結合 -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="productionSelect"></include>
 		WHERE
 			pro.invalid = 0 <!-- 未削除のみ -->
 		AND
-			pro.completion_flag = 0 <!-- 完了区分フラグが立っていない物のみ -->
+			pro.completion_date is null <!-- 完了日がnullのみ -->
 		ORDER BY
 			pro.id ASC <!-- IDの昇順 -->
 	</select>
 	
 	<!-- 引数で受け取った製作番号・商品コード・商品名を基に、あいまい検索を掛ける -->
 	<select id="findByConditions" resultMap="productionResult">
-		SELECT
-			pro.id                          AS pro_id, 
-			pro.lot_number                  AS pro_lot_number, 
-			pro.lot_quantity                AS pro_lot_quantity, 
-			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
-			pro.created_at                  AS pro_created_at, 
-			pro.updated_at                  AS pro_updated_at, 
-			pro.completion_flag             AS pro_completion_flag, 
-			pro.invalid                     AS pro_invalid, 
-			ite.id                          AS ite_id, 
-			ite.code                        AS ite_code, 
-			ite.name                        AS ite_name
-		FROM
-			productions pro <!-- 製作テーブル -->
-		INNER JOIN
-			items ite <!-- 商品テーブル -->
-		ON
-			pro.item_id = ite.id <!-- 商品IDで結合 -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="productionSelect"></include>
 		<where>
 			<if test="lotNumber != null">
 				pro.lot_number LIKE '%${lotNumber}%' <!-- 引数の製作番号がnullでない場合、あいまい検索 -->
@@ -111,24 +88,9 @@
 	
 	<!-- 引数で受け取った製作番号を基に、該当レコードを取得する。 -->
 	<select id="findByLotNumber" resultMap="productionResult">
-		SELECT
-			pro.id                          AS pro_id, 
-			pro.lot_number                  AS pro_lot_number, 
-			pro.lot_quantity                AS pro_lot_quantity, 
-			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
-			pro.created_at                  AS pro_created_at, 
-			pro.updated_at                  AS pro_updated_at, 
-			pro.completion_flag             AS pro_completion_flag, 
-			pro.invalid                     AS pro_invalid, 
-			ite.id                          AS ite_id, 
-			ite.code                        AS ite_code, 
-			ite.name                        AS ite_name
-		FROM
-			productions pro <!-- 製作テーブル -->
-		INNER JOIN
-			items ite <!-- 商品テーブル -->
-		ON
-			pro.item_id = ite.id <!-- 商品IDで結合 -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="productionSelect"></include>
 		WHERE
 			pro.lot_number = #{lotNumber} <!-- 引数の製作番号と一致した場合 -->
 	</select>
@@ -137,48 +99,18 @@
 	
 	<!-- 引数で受け取った製作IDを基に、該当レコードを取得する。 -->
 	<select id="findById" parameterType="Long" resultMap="productionResult">
-		SELECT
-			pro.id                          AS pro_id, 
-			pro.lot_number                  AS pro_lot_number, 
-			pro.lot_quantity                AS pro_lot_quantity, 
-			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
-			pro.created_at                  AS pro_created_at, 
-			pro.updated_at                  AS pro_updated_at, 
-			pro.completion_flag             AS pro_completion_flag, 
-			pro.invalid                     AS pro_invalid, 
-			ite.id                          AS ite_id, 
-			ite.code                        AS ite_code, 
-			ite.name                        AS ite_name
-		FROM
-			productions pro <!-- 製作テーブル -->
-		INNER JOIN
-			items ite <!-- 商品テーブル -->
-		ON
-			pro.item_id = ite.id <!-- 商品IDで結合 -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="productionSelect"></include>
 		WHERE
 			pro.id = #{id} <!-- 引数の製作IDと一致した場合 -->
 	</select>
 	
 	<!-- 引数で受け取った製作IDを基に、該当レコードを取得する。※削除済みを除く -->
 	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="productionResult">
-		SELECT
-			pro.id                          AS pro_id, 
-			pro.lot_number                  AS pro_lot_number, 
-			pro.lot_quantity                AS pro_lot_quantity, 
-			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
-			pro.created_at                  AS pro_created_at, 
-			pro.updated_at                  AS pro_updated_at, 
-			pro.completion_flag             AS pro_completion_flag, 
-			pro.invalid                     AS pro_invalid, 
-			ite.id                          AS ite_id, 
-			ite.code                        AS ite_code, 
-			ite.name                        AS ite_name
-		FROM
-			productions pro <!-- 製作テーブル -->
-		INNER JOIN
-			items ite <!-- 商品テーブル -->
-		ON
-			pro.item_id = ite.id <!-- 商品IDで結合 -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="productionSelect"></include>
 		WHERE
 			pro.id = #{id} <!-- 引数の製作IDと一致した場合 -->
 		AND
@@ -187,30 +119,15 @@
 	
 	<!-- 引数で受け取った製作IDを基に、該当レコードを取得する。※削除済み・完了済みを除く -->
 	<select id="findByIdExcludeInvalidAndCompletion" parameterType="Long" resultMap="productionResult">
-		SELECT
-			pro.id                          AS pro_id, 
-			pro.lot_number                  AS pro_lot_number, 
-			pro.lot_quantity                AS pro_lot_quantity, 
-			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
-			pro.created_at                  AS pro_created_at, 
-			pro.updated_at                  AS pro_updated_at, 
-			pro.completion_flag             AS pro_completion_flag, 
-			pro.invalid                     AS pro_invalid, 
-			ite.id                          AS ite_id, 
-			ite.code                        AS ite_code, 
-			ite.name                        AS ite_name
-		FROM
-			productions pro <!-- 製作テーブル -->
-		INNER JOIN
-			items ite <!-- 商品テーブル -->
-		ON
-			pro.item_id = ite.id <!-- 商品IDで結合 -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="productionSelect"></include>
 		WHERE
 			pro.id = #{id} <!-- 引数の製作IDと一致した場合 -->
 		AND
 			pro.invalid = 0 <!-- 未削除のみ -->
 		AND
-			pro.completion_flag = 0 <!-- 完了区分フラグが立っていない物のみ -->
+			pro.completion_date is null <!-- 完了日がnullのみ -->
 	</select>
 	
 	<!-- 製作テーブルをIDの降順に並び替えた上で、最初の行の製作番号(通し番号の最大)を取得する。 -->
@@ -278,7 +195,7 @@
 		UPDATE
 			productions <!-- 製作テーブル -->
 		SET
-			completion_flag = #{completionFlag}, 
+			completion_date = #{completionDate}, 
 			updated_at = #{updatedAt}
 		WHERE
 			id = #{id} <!-- 引数の製作IDと一致した場合 -->

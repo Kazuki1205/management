@@ -17,6 +17,7 @@ import com.example.management.form.ReportForm;
 import com.example.management.mapper.ProductionMapper;
 import com.example.management.model.Employee;
 import com.example.management.model.Production;
+import com.example.management.service.CommonService;
 import com.example.management.service.ReportService;
 
 /**
@@ -30,6 +31,9 @@ public class ReportRegisterController {
 	
 	@Autowired
 	private ReportService reportService;
+	
+	@Autowired
+	private CommonService commonService;
 	
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -93,22 +97,17 @@ public class ReportRegisterController {
 						 RedirectAttributes redirectAttributes, 
 						 Model model) {
 		
-		model.addAttribute("hasMessage", true);
-		
 		// 日報フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 			
-			model.addAttribute("class", "alert-danger");
-			model.addAttribute("message", "登録に失敗しました。");	
+			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "登録に失敗しました。"));
 		} else {
 			
 			// 日報フォームと社員IDでDBへinsert処理
 			reportService.create(reportForm, employee.getId());
 			
 			// フォーム再送を防ぐ為、リダイレクト。
-			redirectAttributes.addFlashAttribute("hasMessage", true);
-			redirectAttributes.addFlashAttribute("class", "alert-info");
-			redirectAttributes.addFlashAttribute("message", "登録に成功しました。");
+			redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "登録に成功しました。"));
 			
 			return "redirect:/report/register";		
 		}

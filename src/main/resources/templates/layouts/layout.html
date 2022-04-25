@@ -15,16 +15,16 @@
 </head>
 <body>
 	<header>
-		<div th:if="${hasMessage}" class="alert alert-dismissible fade show" th:classappend="${class}" role='alert'>
+ 		<div th:if="${messageMap != null}" class="alert alert-dismissible fade show" th:classappend="${messageMap.class}" role='alert'>
 			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
-			<span th:text="${message}"></span>
-		</div>
+			<span th:text="${messageMap.message}"></span>
+		</div> 
 		
 		<nav layout:replace="~{layouts/navbar :: nav}"></nav>
 		
 	</header>
 	<main>
-	
+
 		<div layout:fragment="contents"></div>
 		
 	</main>
@@ -34,6 +34,6 @@
 	<script src="https://ajaxzip3.github.io/ajaxzip3.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/i18n/ja.js"></script>
-	<script th:src="@{/scripts/script.js}"></script>
+	<script th:inline="javascript" th:src="@{/scripts/script.js}"></script>
 </body>
 </html>

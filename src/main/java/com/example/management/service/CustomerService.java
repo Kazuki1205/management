@@ -29,7 +29,7 @@ public class CustomerService {
 	public String getCode() {
 		
 		// 顧客テーブルの全レコード数 + 1
-		Integer tempCode = customerMapper.countAll() + 1;
+		Integer tempCode = customerMapper.countAll().orElse(0) + 1;
 		
 		//　「0000」の形の文字列に整形。
 		String code = String.format("%04d", tempCode);

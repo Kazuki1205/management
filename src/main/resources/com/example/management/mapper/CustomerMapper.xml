@@ -20,8 +20,8 @@
 		<result property="invalid" column="invalid" />
 	</resultMap>
 	
-	<!-- 引数で受け取った顧客コード・顧客名・住所を基に、あいまい検索を掛ける -->
-	<select id="findByConditions" resultMap="customerResult">
+	<!-- 共通SQL文 -->
+	<sql id="customerSelect">
 		SELECT
 			id, 
 			code, 
@@ -36,6 +36,23 @@
 			invalid
 		FROM
 			customers <!-- 顧客テーブル -->
+	</sql>
+	
+	
+	<!-- 顧客テーブルの全てのレコード情報を取得する。※削除済みを除く -->
+	<select id="findAllExcludeInvalid" resultMap="customerResult">
+		
+		<!-- SQL文をインクルード -->
+		<include refid="customerSelect"></include>
+		WHERE
+			invalid = 0
+	</select>
+	
+	<!-- 引数で受け取った顧客コード・顧客名・住所を基に、あいまい検索を掛ける -->
+	<select id="findByConditions" resultMap="customerResult">
+	
+		<!-- SQL文をインクルード -->
+		<include refid="customerSelect"></include>
 		<where>
 			<if test="code != null">
 				code LIKE '%${code}%' <!-- 引数の顧客コードがnullでない場合、あいまい検索 -->
@@ -57,60 +74,27 @@
 	
 	<!-- 引数で受け取ったIDを基に、該当レコードを取得する。 -->
 	<select id="findById" parameterType="Long" resultMap="customerResult">
-		SELECT
-			id, 
-			code, 
-			name, 
-			postal_code, 
-			first_address, 
-			second_address, 
-			third_address, 
-			phone_number, 
-			created_at, 
-			updated_at, 
-			invalid
-		FROM
-			customers <!-- 顧客テーブル -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="customerSelect"></include>
 		WHERE
 			id = #{id} <!-- 引数の顧客IDと一致した場合 -->
 	</select>
 	
 	<!-- 引数で受け取った顧客コードを基に、該当レコードを取得する -->
 	<select id="findByCode" parameterType="String" resultMap="customerResult">
-		SELECT
-			id, 
-			code, 
-			name, 
-			postal_code, 
-			first_address, 
-			second_address, 
-			third_address, 
-			phone_number, 
-			created_at, 
-			updated_at, 
-			invalid
-		FROM
-			customers <!-- 顧客テーブル -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="customerSelect"></include>
 		WHERE
 			code = #{code} <!-- 引数の顧客コードと一致した場合 -->
 	</select>
 	
 	<!-- 引数で受け取った顧客IDを基に、該当レコードを取得する※削除済みを除く -->
 	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="customerResult">
-		SELECT
-			id, 
-			code, 
-			name, 
-			postal_code, 
-			first_address, 
-			second_address, 
-			third_address, 
-			phone_number, 
-			created_at, 
-			updated_at, 
-			invalid
-		FROM
-			customers <!-- 顧客テーブル -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="customerSelect"></include>
 		WHERE
 			id = #{id} <!-- 引数の顧客IDと一致した場合 -->
 		AND
@@ -119,20 +103,9 @@
 	
 	<!-- 引数で受け取った顧客コードを基に、該当レコードを取得する。 -->
 	<select id="findByCustomerCode" parameterType="String" resultMap="customerResult">
-		SELECT
-			id, 
-			code, 
-			name, 
-			postal_code, 
-			first_address, 
-			second_address, 
-			third_address, 
-			phone_number, 
-			created_at, 
-			updated_at, 
-			invalid
-		FROM
-			customers <!-- 顧客テーブル -->
+	
+		<!-- SQL文をインクルード -->
+		<include refid="customerSelect"></include>
 		WHERE
 			code = #{code} <!-- 引数の顧客コードと一致した場合 -->
 	</select>

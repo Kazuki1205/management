@@ -16,6 +16,7 @@ import com.example.management.form.EmployeeForm;
 import com.example.management.mapper.DepartmentMapper;
 import com.example.management.mapper.EmployeeMapper;
 import com.example.management.model.Department;
+import com.example.management.service.CommonService;
 import com.example.management.service.EmployeeService;
 import com.example.management.validation.ValidOrder;
 
@@ -33,6 +34,9 @@ public class EmployeeRegisterController {
 	
 	@Autowired
 	private DepartmentMapper departmentMapper;
+	
+	@Autowired
+	private CommonService commonService;
 	
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -98,13 +102,10 @@ public class EmployeeRegisterController {
 						 RedirectAttributes redirectAttributes, 
 						 Model model) {
 		
-		model.addAttribute("hasMessage", true);
-		
 		// 社員フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 			
-			model.addAttribute("class", "alert-danger");
-			model.addAttribute("message", "登録に失敗しました。");
+			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "登録に失敗しました。"));
 
 		} else {
 			
@@ -114,15 +115,12 @@ public class EmployeeRegisterController {
 				employeeService.create(employeeForm);
 				
 				// フォーム再送を防ぐ為、リダイレクト。
-				redirectAttributes.addFlashAttribute("hasMessage", true);
-				redirectAttributes.addFlashAttribute("class", "alert-info");
-				redirectAttributes.addFlashAttribute("message", "登録に成功しました。");	
+				redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "登録に成功しました。"));
 				
 				return "redirect:/employee/register";
 			} else {
 				
-				model.addAttribute("class", "alert-danger");
-				model.addAttribute("message", "その社員IDはすでに使用されています。");
+				model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "その社員IDはすでに使用されています。"));
 			}
 		}
 		

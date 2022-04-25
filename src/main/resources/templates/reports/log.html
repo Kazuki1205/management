@@ -83,7 +83,7 @@
 								<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>
 								<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}"></td>
 								<td th:text="*{invalid} == 0 ? '' : '済' "></td>
-								<td th:text="*{production.completionFlag == 1 ? '製作完了' : production.invalid == 1 ? '製作中止' : '製作中' }"></td>
+								<td th:text="*{production.completionDate != null ? '製作完了' : production.invalid == 1 ? '製作中止' : '製作中' }"></td>
 							</tr>
 						</tbody>
 					</table>

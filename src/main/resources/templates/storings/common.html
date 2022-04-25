@@ -112,17 +112,6 @@
 				</th:block>
 			</td>
 		</tr>
-		<tr>
-			<th>
-				完了区分
-			</th>
-			<td>
-				<input type="radio" th:field="*{completionInput}" value=0 />
-				<label th:for="${#ids.prev('completionInput')}">未完了  </label>
-				<input type="radio" th:field="*{completionInput}" value=1 />
-				<label th:for="${#ids.prev('completionInput')}">完了済  </label>
-			</td>
-		</tr>
 	</table>
 </div>
 </html>

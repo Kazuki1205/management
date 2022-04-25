@@ -33,14 +33,13 @@
 						<thead>
 							<tr class="border-3">
 								<th>詳細</th>
-								<th>編集</th>
 								<th>製作番号</th>
 								<th>商品コード</th>
 								<th>商品名</th>
 								<th>入庫数</th>
 								<th>登録日時</th>
 								<th>更新日時</th>
-								<th>完了入力</th>
+								<th>備考</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -48,18 +47,13 @@
 								<td>
 									<a th:href="@{/storing/log/{id}(id=*{id})}">■</a>
 								</td>
-								<td>
-									<th:block th:if="*{production.invalid} == 0">
-										<a th:href="@{/storing/edit/{id}(id=*{id})}">●</a>
-									</th:block>
-								</td>
 								<td th:text="*{production.lotNumber}"></td>
 								<td th:text="*{production.item.code}"></td>
 								<td th:text="*{production.item.name}"></td>
 								<td th:text="*{storingQuantity}"></td>
 								<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>
 								<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}"></td>
-								<td th:text="*{completionInput} == 1 ? '完了' : '' "></td>
+								<td th:text="*{production.completionDate != null ? '製作完了' : production.invalid == 1 ? '製作中止' : '製作中' }"></td>
 							</tr>
 						</tbody>
 					</table>

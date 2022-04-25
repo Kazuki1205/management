@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.CustomerForm;
 import com.example.management.mapper.CustomerMapper;
+import com.example.management.service.CommonService;
 import com.example.management.service.CustomerService;
 import com.example.management.validation.ValidOrder;
 
@@ -26,6 +27,9 @@ public class CustomerRegisterController {
 	
 	@Autowired
 	private CustomerMapper customerMapper;
+	
+	@Autowired
+	private CommonService commonService;
 
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -74,13 +78,11 @@ public class CustomerRegisterController {
 						 RedirectAttributes redirectAttributes, 
 						 Model model) {
 		
-		model.addAttribute("hasMessage", true);
-		
 		// 顧客フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。
 		if (bindingResult.hasErrors()) {
 				
-			model.addAttribute("class", "alert-danger");
-			model.addAttribute("message", "登録に失敗しました。");
+			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "登録に失敗しました。"));
+
 		} else {
 			
 			// 顧客コードが既に使用されている場合、エラーメッセージを表示。使用されていなければDBへINSERT処理、正常処理メッセージを表示。
@@ -89,15 +91,12 @@ public class CustomerRegisterController {
 			customerService.create(customerForm);
 			
 			// フォーム再送を防ぐ為、リダイレクト。
-			redirectAttributes.addFlashAttribute("hasMessage", true);
-			redirectAttributes.addFlashAttribute("class", "alert-info");
-			redirectAttributes.addFlashAttribute("message", "登録に成功しました。");	
+			redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "登録に成功しました。"));
 			
 			return "redirect:/customer/register";
 			} else {
 				
-				model.addAttribute("class", "alert-danger");
-				model.addAttribute("message", "その顧客コードはすでに使用されています。");
+				model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "その顧客コードはすでに使用されています。"));
 			}
 		}
 		

@@ -5,6 +5,50 @@
 	
 <mapper namespace="com.example.management.mapper.CustomerHistoryMapper">
 
+	<!-- SQL結果に対応した顧客履歴クラス -->
+	<resultMap id="customerHistoryResult" type="CustomerHistory">
+		<id property="id" column="id" />
+		<result property="customerId" column="customer_id" />
+		<result property="code" column="code" />
+		<result property="name" column="name" />
+		<result property="postalCode" column="postal_code" />
+		<result property="firstAddress" column="first_address" />
+		<result property="secondAddress" column="second_address" />
+		<result property="thirdAddress" column="third_address" />
+		<result property="phoneNumber" column="phoneNumber" />
+		<result property="updatedAt" column="updated_at" />
+	</resultMap>
 
-
+	<!-- 顧客履歴テーブルを顧客IDでグループ化し、更新日時の最も新しいレコードに絞り込み、その最新レコードを取得する。 -->
+	<select id="findByCustomerIdByLatest" parameterType="Long" resultMap="customerHistoryResult">
+		SELECT
+			a.id                AS id, 
+			a.customer_id       AS customer_id, 
+			a.code              AS code, 
+			a.name              AS name, 
+			a.postal_code       AS postal_code, 
+			a.first_address     AS first_address, 
+			a.second_address    AS second_address, 
+			a.third_address     AS third_address, 
+			a.phone_number      AS phone_number, 
+			a.updated_at        AS updated_at
+		FROM
+			customers_history a <!-- 顧客履歴テーブル -->
+		INNER JOIN (
+			SELECT
+				customer_id, 
+				MAX(updated_at) AS max_updated_at
+			FROM
+				customers_history <!-- 顧客履歴テーブル -->
+			GROUP BY
+				customer_id <!-- 顧客IDでグループ化 -->
+		) b <!-- サブクエリの顧客履歴テーブル -->
+		ON
+			a.customer_id = b.customer_id <!-- メインクエリとサブクエリの顧客履歴テーブルを、顧客IDで結合 -->
+		AND
+			a.updated_at = b.max_updated_at <!-- メインクエリとサブクエリの顧客履歴テーブルを、最新更新日時で結合 -->
+		WHERE
+			a.customer_id = #{customerId} <!-- 引数の顧客IDで結合 -->
+	</select>
+	
 </mapper>

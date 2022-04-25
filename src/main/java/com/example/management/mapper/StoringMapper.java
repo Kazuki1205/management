@@ -47,11 +47,4 @@ public interface StoringMapper {
 	 * @param storing 入庫クラス
 	 */
 	public void create(Storing storing);
-	
-	/**
-	 * 入庫テーブルの1件データを更新する。
-	 * 
-	 * @param storing 入庫クラス
-	 */
-	public void update(Storing storing);
 }

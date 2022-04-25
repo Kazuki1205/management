@@ -10,6 +10,9 @@ DROP TABLE IF EXISTS employees_history CASCADE;
 DROP TABLE IF EXISTS reports CASCADE;
 DROP TABLE IF EXISTS stocks CASCADE;
 DROP TABLE IF EXISTS storings CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS orders_details CASCADE;
+DROP TABLE IF EXISTS shippings CASCADE;
 DROP FUNCTION IF EXISTS process_employees_history CASCADE; 
 DROP FUNCTION IF EXISTS process_items_history CASCADE; 
 DROP FUNCTION IF EXISTS process_customers_history CASCADE; 
@@ -122,9 +125,10 @@ CREATE TABLE IF NOT EXISTS productions (
 	lot_number VARCHAR(16) UNIQUE NOT NULL, 
 	lot_quantity INT NOT NULL, 
 	scheduled_completion_date DATE NOT NULL, 
+	completion_date DATE DEFAULT NULL, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-	completion_flag SMALLINT DEFAULT 0, 
+
 	invalid SMALLINT DEFAULT 0, 
 	PRIMARY KEY (id)
 );
@@ -158,9 +162,44 @@ CREATE TABLE IF NOT EXISTS storings (
 	id BIGSERIAL NOT NULL, 
 	production_id BIGINT NOT NULL, 
 	storing_quantity INT NOT NULL, 
-	completion_input SMALLINT DEFAULT 0, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	PRIMARY KEY (id)
+);
+
+-- 受注テーブル --
+CREATE TABLE IF NOT EXISTS orders (
+	id BIGSERIAL NOT NULL, 
+	order_number VARCHAR(8) UNIQUE NOT NULL, 
+	customer_history_id BIGINT NOT NULL, 
+	employee_history_id BIGINT NOT NULL, 
+	completion_date DATE DEFAULT NULL,  
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	invalid SMALLINT DEFAULT 0, 
+	PRIMARY KEY (id)
+);
+
+-- 受注明細テーブル --
+CREATE TABLE IF NOT EXISTS orders_details (
+	order_number VARCHAR(8) NOT NULL, 
+	detail_id BIGINT NOT NULL, 
+	item_history_id BIGINT NOT NULL, 
+	order_quantity INT NOT NULL, 
+	completion_date DATE DEFAULT NULL, 
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	invalid SMALLINT DEFAULT 0, 
+	PRIMARY KEY (order_number, detail_id)
+);
+
+-- 出荷テーブル --
+CREATE TABLE IF NOT EXISTS shippings (
+	id BIGSERIAL NOT NULL, 
+	order_number BIGINT NOT NULL, 
+	detail_id INT NOT NULL, 
+	shipping_quantity INT NOT NULL, 
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	PRIMARY KEY (id)
 );
 

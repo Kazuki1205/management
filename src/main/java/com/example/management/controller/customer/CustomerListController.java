@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.management.form.CustomerForm;
 import com.example.management.mapper.CustomerMapper;
 import com.example.management.model.Customer;
+import com.example.management.service.CommonService;
 
 /**
  * 顧客マスタの一覧画面コントローラー

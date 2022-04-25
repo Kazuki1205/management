@@ -19,7 +19,7 @@
 	</resultMap>
 
 	<!--　社員履歴テーブルを社員IDで内部結合(社員IDでグループ化、更新日時が最大のレコードと結合)し、引数で受け取った社員IDを基に、該当レコードを取得する。 -->
-	<select id="findByUserIdByLatest" parameterType="Long" resultMap="employeeHistoryResult">
+	<select id="findByEmployeeIdByLatest" parameterType="Long" resultMap="employeeHistoryResult">
 		SELECT
 			emp.id                     AS emp_id, 
 			emp.employee_id            AS emp_employee_id, 

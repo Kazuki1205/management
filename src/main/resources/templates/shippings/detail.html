@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	  layout:decorate="~{layouts/layout}">
+<body>
+	<div layout:fragment="contents">
+		<table class="table table-borderd" th:object="${shipping}">
+			<tr>
+				<th>受注番号</th>
+				<td th:text="*{order.orderNumber}"></td>
+			</tr>
+			<tr>
+				<th>明細番号</th>
+				<td th:text="*{orderDetail.detailId}"></td>
+			</tr>
+			<tr>
+				<th>顧客コード</th>
+				<td th:text="*{order.customerHistory.code}"></td>
+			</tr>
+			<tr>
+				<th>顧客名</th>
+				<td th:text="*{order.customerHistory.name}"></td>
+			</tr>
+			<tr>
+				<th>郵便番号</th>
+				<td th:text="*{order.customerHistory.postalCode}"></td>
+			</tr>
+			<tr>
+				<th>発送先住所</th>
+				<td th:text="|*{order.customerHistory.firstAddress} *{order.customerHistory.secondAddress} *{order.customerHistory.thirdAddress}|"></td>
+			</tr>
+			<tr>
+				<th>電話番号</th>
+				<td th:text="*{order.customerHistory.phoneNumber}"></td>
+			</tr>
+			<tr>
+				<th>商品コード</th>
+				<td th:text="*{orderDetail.itemHistory.code}"></td>
+			</tr>
+			<tr>
+				<th>商品名</th>
+				<td th:text="*{orderDetail.itemHistory.name}"></td>
+			</tr>
+			<tr>
+				<th>単価</th>
+				<td th:text="|&yen;*{#numbers.formatInteger(orderDetail.itemHistory.unitPrice, 3, 'COMMA')}|"></td>
+			</tr>
+			<tr>
+				<th>出荷数</th>
+				<td th:text="*{shippingQuantity}"></td>
+			</tr>
+			<tr>
+				<th>出荷金額</th>
+				<td th:text="|&yen;*{#numbers.formatInteger(orderDetail.itemHistory.unitPrice * shippingQuantity, 3, 'COMMA')}|"></td>
+			</tr>
+			<tr>
+				<th>登録日時</th>
+				<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>
+			</tr>
+		</table>
+		<a th:href="@{/shipping/log}">出荷履歴に戻る</a>
+	</div>
+</body>
+</html>

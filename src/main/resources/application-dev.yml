@@ -14,13 +14,13 @@ spring:
     console:
       enabled: true
 debug: true
-#logging:
-#  level:
-#    org:
-#      springframework: WARN
-#    com:
-#      example:
-#        management:
-#          mapper:
-#            ReportMapper: DEBUG
+logging:
+  level:
+    org:
+      springframework: WARN
+    com:
+      example:
+        management:
+          mapper:
+            ShippingMapper: DEBUG
     

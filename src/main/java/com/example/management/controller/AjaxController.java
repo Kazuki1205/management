@@ -2,6 +2,7 @@ package com.example.management.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import com.example.management.mapper.StoringMapper;
 import com.example.management.model.Employee;
 import com.example.management.model.Item;
 import com.example.management.model.Production;
+import com.example.management.service.CommonService;
 
 /**
  * 各フォームの値を非同期で書き換えるコントローラー

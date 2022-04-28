@@ -57,12 +57,13 @@
 						<th>単価</th>
 						<th>受注数</th>
 						<th>出荷数計</th>
+						<th>出荷完了日</th>
 						<th>小計</th>
 						<th>削除区分</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="orderDetail, stat : *{orderDetails}" th:class="*{orderDetails[__${stat.index}__].invalid} == 1 ? 'bg-secondary' : '' ">
+					<tr th:each="orderDetail, stat : *{orderDetails}" th:classappend="*{orderDetails[__${stat.index}__].invalid == 1 ? 'bg-secondary' : orderDetails[__${stat.index}__].completionDate != null ? 'bg-info' : '' }">
 						<td>
 							<span th:text="*{orderDetails[__${stat.index}__].detailId}"></span>
 						</td>
@@ -80,6 +81,9 @@
 						</td>
 						<td>
 							<span th:text="*{orderDetails[__${stat.index}__].shippingQuantityTotal}"></span>
+						</td>
+						<td>
+							<span th:text="*{#temporals.format(orderDetails[__${stat.index}__].completionDate, 'yy/MM/dd')}"></span>
 						</td>
 						<td>
 							<span th:text="|&yen;*{#numbers.formatInteger(orderDetails[__${stat.index}__].itemHistory.unitPrice * orderDetails[__${stat.index}__].orderQuantity, 3, 'COMMA')}|"></span>

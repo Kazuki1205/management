@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	  layout:decorate="~{layouts/layout}">
+<body>
+	<div layout:fragment="contents">
+		<div class="container-fulid">
+			<div class="row">
+				<div class="col-md-3 border-end text-center">
+					<h3>検索条件</h3>
+					<hr>
+					<form th:action="@{/shipping/log}" method="get" th:object="${shippingForm}">
+						<table class="form-table table table-bordered">
+							<tr>
+								<th><label for="orderNumber">受注番号</label></th>
+								<td><input type="text" th:field="*{orderNumber}"></td>
+							</tr>
+							<tr>
+								<th><label for="detailId">明細番号</label></th>
+								<td><input type="number" th:field="*{detailId}"></td>
+							</tr>
+							<tr>
+								<th><label for="customerCode">顧客コード</label></th>
+								<td><input type="text" th:field="*{customerCode}"></td>
+							</tr>
+							<tr>
+								<th><label for="customerName">顧客名</label></th>
+								<td><input type="text" th:field="*{customerName}"></td>
+							</tr>
+							<tr>
+								<th><label for="address">発送先住所</label></th>
+								<td><input type="text" th:field="*{address}"></td>
+							</tr>
+							<tr>
+								<th><label for="itemCode">商品コード</label></th>
+								<td><input type="text" th:field="*{itemCode}"></td>
+							</tr>
+							<tr>
+								<th><label for="itemName">商品名</label></th>
+								<td><input type="text" th:field="*{itemName}"></td>
+							</tr>
+						</table>
+						<input type="submit" value="検索" />
+					</form>	
+				</div>
+				<div class="col-md-9">
+					<a th:href="@{/shipping/register}" class="h4">新規登録</a>
+					<table id="DataTables" class="text-center master-log table table-bordered">
+						<thead>
+							<tr class="border-3">
+								<th>詳細</th>
+								<th>受注番号</th>
+								<th>明細番号</th>
+								<th>顧客コード</th>
+								<th>顧客名</th>
+								<th>郵便番号</th>
+								<th>発送先住所</th>
+								<th>電話番号</th>
+								<th>商品コード</th>
+								<th>商品名</th>
+								<th>単価</th>
+								<th>出荷数</th>
+								<th>出荷金額</th>
+								<th>登録日時</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="shipping : ${shippings}" th:object="${shipping}">
+								<td>
+									<a th:href="@{/shipping/log/{id}(id=*{id})}">■</a>
+								</td>
+								<td th:text="*{order.orderNumber}"></td>
+								<td th:text="*{orderDetail.detailId}"></td>
+								<td th:text="*{order.customerHistory.code}"></td>
+								<td th:text="*{order.customerHistory.name}"></td>
+								<td th:text="*{order.customerHistory.postalCode}"></td>
+								<td th:text="|*{order.customerHistory.firstAddress} *{order.customerHistory.secondAddress} *{order.customerHistory.thirdAddress}|"></td>
+								<td th:text="*{order.customerHistory.phoneNumber}"></td>
+								<td th:text="*{orderDetail.itemHistory.code}"></td>
+								<td th:text="*{orderDetail.itemHistory.name}"></td>
+								<td th:text="|&yen;*{#numbers.formatInteger(orderDetail.itemHistory.unitPrice, 3, 'COMMA')}|"></td>
+								<td th:text="*{shippingQuantity}"></td>
+								<td th:text="|&yen;*{#numbers.formatInteger(orderDetail.itemHistory.unitPrice * shippingQuantity, 3, 'COMMA')}|"></td>
+								<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

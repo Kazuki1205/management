@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="table">
+	<table class="table table-bordered">
+		<tr>
+			<th>
+				<label for="orderNumber">受注番号検索</label>
+			</th>
+			<td>
+				<select th:field="*{selectOrderNumber}" class="select">
+					<option value="" selected>選択して下さい</option>
+					<option th:each="order : ${orders}" th:value="${order.orderNumber}" th:text="${order.orderNumber}"></option>
+				</select>
+				<button type="submit" name="search" th:formaction="@{/shipping/register}">検索</button>
+			</td>
+		</tr>
+		<tr>
+			<th>受注番号</th>
+			<td>
+				<input type="text" th:field="*{orderNumber}" class="bg-secondary" readonly />
+				<span th:if="${#fields.hasErrors('orderNumber')}" th:errors="*{orderNumber}" class="text-danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<th>顧客名</th>
+			<td>
+				<input type="text" th:field="*{customerName}" class="bg-secondary" readonly />
+			</td>
+		</tr>
+		<tr>
+			<th>発送先住所</th>
+			<td>
+				<input type="text" th:field="*{firstAddress}" class="bg-secondary" readonly />
+				<input type="text" th:field="*{secondAddress}" class="bg-secondary" readonly />
+				<input type="text" th:field="*{thirdAddress}" class="bg-secondary" readonly />
+			</td>
+		</tr>
+	</table>
+	<hr>
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>商品コード</th>
+				<th>商品名</th>
+				<th>単価</th>
+				<th>受注数</th>
+				<th>出荷済計</th>
+				<th>実在庫</th>
+				<th>出荷数</th>
+				<th>出荷金額</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="shippingDetailForm, stat : *{shippingDetailForms}">
+				<td>
+					<input type="hidden" th:field="*{shippingDetailForms[__${stat.index}__].detailId}" />
+					<input type="hidden" th:field="*{shippingDetailForms[__${stat.index}__].itemId}" />
+					<input type="text" th:field="*{shippingDetailForms[__${stat.index}__].itemCode}" class="bg-secondary" readonly />
+				</td>
+				<td>
+					<input type="text" th:field="*{shippingDetailForms[__${stat.index}__].itemName}" class="bg-secondary" readonly />
+				</td>
+				<td>
+					<input type="number" th:field="*{shippingDetailForms[__${stat.index}__].unitPrice}" class="bg-secondary" th:data-unit-price="${stat.index}" readonly />
+				</td>
+				<td>
+					<input type="number" th:field="*{shippingDetailForms[__${stat.index}__].orderQuantity}" class="bg-secondary" readonly />
+				</td>
+				<td>
+					<input type="number" th:field="*{shippingDetailForms[__${stat.index}__].shippingQuantityTotal}" class="bg-secondary" readonly />
+				</td>		
+				<td>
+					<input type="number" th:field="*{shippingDetailForms[__${stat.index}__].actualQuantity}" class="bg-secondary" readonly />
+				</td>
+				<td>
+					<input type="number" th:field="*{shippingDetailForms[__${stat.index}__].shippingQuantity}" class="ajax-shippingQuantity" th:data-shipping-quantity="${stat.index}" min=0 />
+					<span th:if="*{#fields.hasErrors('shippingDetailForms[__${stat.index}__].shippingQuantity')}" th:errors="*{shippingDetailForms[__${stat.index}__].shippingQuantity}" class="text-danger"></span>
+				</td>
+				<td>
+					<input type="text" th:field="*{shippingDetailForms[__${stat.index}__].shippingAmount}" class="bg-secondary" th:data-shipping-amount="${stat.index}" readonly />
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</html>

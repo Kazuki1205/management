@@ -173,12 +173,6 @@ $(function() {
 		// 受注数を変数に代入
 		let orderQuantity = $('[data-order-quantity=' + index + ']').val();
 		
-		// 通貨フォーマッターを設定
-		const formatter = new Intl.NumberFormat('ja', {
-			style: 'currency', 
-			currency: 'JPY'
-		});
-		
 		// セレクトボックスのvalueが「""」(選択して下さい)の場合、非同期通信は行わない。
 		if (itemIdElement.val()) {
 		
@@ -202,7 +196,7 @@ $(function() {
 				// 受注数が入力されていれば、小計を計算しフォームにセットする。無ければ空をセットする。
 				if (orderQuantity) {
 					
-					$("[data-order-amount=" + index + "]").val(formatter.format(data.unitPrice * orderQuantity));
+					$("[data-order-amount=" + index + "]").val(data.unitPrice * orderQuantity);
 				} else {
 					
 					$("[data-order-amount=" + index + "]").val('');
@@ -230,12 +224,6 @@ $(function() {
 		// 入力フォームのvalueが「""」の場合、フォームの値書き換えは行わない。
 		if ($(this).val()) {
 			
-			// 通貨フォーマッターを設定
-			const formatter = new Intl.NumberFormat('ja', {
-				style: 'currency', 
-				currency: 'JPY'
-			});
-			
 			// 受注数・単価を変数に代入
 			let orderQuantity = $(this).val();
 			let unitPrice = $('[data-unit-price=' + index + ']').val();
@@ -243,7 +231,7 @@ $(function() {
 			// 単価が入力されていれば、小計を計算しフォームにセットする。無ければ空をセットする。
 			if (unitPrice) {
 				
-				$('[data-order-amount=' + index + ']').val(formatter.format(unitPrice * orderQuantity));
+				$('[data-order-amount=' + index + ']').val(unitPrice * orderQuantity);
 			} else {
 				
 				$('[data-order-amount=' + index + ']').val('');		
@@ -253,6 +241,32 @@ $(function() {
 		} else {
 			
 			$('[data-order-amount=' + index + ']').val('');		
+		}
+	});
+});
+
+// 出荷明細の出荷数を入力した際に、出荷金額小計を計算して入力する。
+$(function() {
+	
+	$('.ajax-shippingQuantity').change(function() {
+		
+		// 変更のあった要素の出荷数を取得する。
+		let shippingQuantity = $(this).val();
+		
+		// 変更のあった要素のインデックスを取得する。
+		let index = $(this).attr('data-shipping-quantity');
+		
+		// 商品単価を取得する。
+		let unitPrice = $('[data-unit-price=' + index + ']').val();
+		
+		// 入力があれば出荷金額小計を計算し、フォームに入力する。
+		if (shippingQuantity) {
+			
+			// 商品単価 * 出荷数 = 出荷金額小計を計算し、フォームに入力する。
+			$('[data-shipping-amount=' + index + ']').val(unitPrice * shippingQuantity);
+		} else {
+			
+			$('[data-shipping-amount=' + index + ']').val();
 		}
 	});
 });

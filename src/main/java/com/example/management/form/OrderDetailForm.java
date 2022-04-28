@@ -1,5 +1,7 @@
 package com.example.management.form;
 
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
@@ -11,7 +13,7 @@ import lombok.Data;
 @Data
 public class OrderDetailForm {
 	
-	private Long detailId; // 受注明細ID
+	private Integer detailId; // 受注明細ID
 	
 	private String itemName; // 商品名
 
@@ -24,9 +26,11 @@ public class OrderDetailForm {
 	@Positive(message = "「1」以上の数値を設定して下さい。")
 	private Integer orderQuantity; // 受注数量
 	
-	private String orderAmount; // 受注小計
+	private Long orderAmount; // 受注小計
 	
 	private Integer shippingQuantityTotal = 0; // 出荷済数
+	
+	private LocalDate completionDate; // 出荷完了日
 	
 	private Short invalid; // 削除フラグ
 }

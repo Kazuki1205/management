@@ -23,9 +23,8 @@
 		</association>
 	</resultMap>
 
-
-	<!-- 引数で受け取った受注番号と受注明細IDを基に、該当レコードを取得する。 -->
-	<select id="findByPrimaryKey" resultMap="orderDetailResult">
+	<!-- 共通SQL文 -->
+	<sql id="orderDetailSelect">
 		SELECT
 			ordD.order_number          AS ordD_order_number, 
 			ordD.detail_id             AS ordD_detail_id, 
@@ -44,11 +43,43 @@
 		INNER JOIN
 			items_history iteH <!-- 商品履歴テーブル -->
 		ON
-			ordD.item_history_id = iteH.id <!-- 受注履歴IDで結合 -->
+			ordD.item_history_id = iteH.id <!-- 受注履歴IDで結合 -->	
+	</sql>
+	
+	<!-- 引数で受け取った受注番号と受注明細IDを基に、該当レコードを取得する。 -->
+	<select id="findByPrimaryKey" resultMap="orderDetailResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="orderDetailSelect"></include>
 		WHERE
 			ordD.order_number = #{orderNumber} <!-- 引数の受注番号と一致した場合 -->
 		AND
 			ordD.detail_id = #{detailId} <!-- 引数の受注IDと一致した場合 -->
+	</select>
+	
+	<!-- 引数で受け取った受注番号を基に、該当する受注明細行全てを取得する。削除済み・完成済みを除く -->
+	<select id="findByOrderNumberExcludeInvalidAndCompletion" parameterType="String" resultMap="orderDetailResult">
+	
+		<!-- SQL文をインクルード -->
+		<include refid="orderDetailSelect"></include>
+		WHERE
+			ordD.order_number = #{orderNumber} <!-- 引数の受注番号と一致した場合 -->
+		AND
+			ordD.invalid = 0 <!-- 未削除のみ -->
+		AND
+			ordD.completion_date IS NULL <!-- 未完成のみ -->
+	</select>
+	
+	<!-- 引数で受け取った受注番号と受注明細IDを基に、該当レコードの受注数を取得する。 -->
+	<select id="getOrderQuantity" resultType="Integer">
+		SELECT
+			order_quantity
+		FROM
+			orders_details <!-- 受注明細テーブル -->
+		WHERE
+			order_number = #{orderNumber} <!-- 受注番号と一致した場合 -->
+		AND
+			detail_id = #{detailId} <!-- 受注明細IDと一致した場合 -->
 	</select>
 
 	<!-- 引数で受け取った受注明細リストを全てinsertする。 -->
@@ -80,9 +111,21 @@
 			invalid = #{invalid}, 
 			updated_at = #{updatedAt}
 		WHERE
-			order_number = #{orderNumber}
+			order_number = #{orderNumber} <!-- 受注番号と一致した場合 -->
 		AND
-			detail_id = #{detailId}
+			detail_id = #{detailId} <!-- 受注明細IDと一致した場合 -->
 	</update>
 
+	<!-- 引数で受け取った受注明細クラスで、出荷完了したレコードの出荷完了日を更新する。-->
+	<update id="updateCompletion" parameterType="OrderDetail">
+		UPDATE
+			orders_details <!-- 受注明細テーブル -->
+		SET
+			completion_date = #{updatedAt},  
+			updated_at = #{updatedAt}
+		WHERE
+			order_number = #{orderNumber} <!-- 受注番号と一致した場合 -->
+		AND
+			detail_id = #{detailId} <!-- 受注明細IDと一致した場合 -->
+	</update>
 </mapper>

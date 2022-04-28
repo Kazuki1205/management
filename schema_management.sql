@@ -128,7 +128,6 @@ CREATE TABLE IF NOT EXISTS productions (
 	completion_date DATE DEFAULT NULL, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-
 	invalid SMALLINT DEFAULT 0, 
 	PRIMARY KEY (id)
 );
@@ -150,7 +149,7 @@ CREATE TABLE IF NOT EXISTS reports (
 CREATE TABLE IF NOT EXISTS stocks (
 	id BIGSERIAL NOT NULL, 
 	item_id BIGINT NOT NULL, 
-	actual_quantity INT DEFAULT 0, 
+	actual_quantity INT DEFAULT ROUND(( RANDOM() * (1 - 100) )::NUMERIC, 0) + 100, 
 	created_at TIMESTAMP NOT NULL, 
 	updated_at TIMESTAMP NOT NULL, 
 	PRIMARY KEY (id), 
@@ -183,7 +182,7 @@ CREATE TABLE IF NOT EXISTS orders (
 -- 受注明細テーブル --
 CREATE TABLE IF NOT EXISTS orders_details (
 	order_number VARCHAR(8) NOT NULL, 
-	detail_id BIGINT NOT NULL, 
+	detail_id INT NOT NULL, 
 	item_history_id BIGINT NOT NULL, 
 	order_quantity INT NOT NULL, 
 	completion_date DATE DEFAULT NULL, 
@@ -196,7 +195,7 @@ CREATE TABLE IF NOT EXISTS orders_details (
 -- 出荷テーブル --
 CREATE TABLE IF NOT EXISTS shippings (
 	id BIGSERIAL NOT NULL, 
-	order_number BIGINT NOT NULL, 
+	order_number VARCHAR(8) NOT NULL, 
 	detail_id INT NOT NULL, 
 	shipping_quantity INT NOT NULL, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 

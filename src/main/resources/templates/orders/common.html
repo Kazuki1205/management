@@ -47,6 +47,7 @@
 		 		<th>受注数</th>
 		 		<th:block th:if="${editFlag} == 1">
 		 			<th>出荷数計</th>
+		 			<th>出荷完了日</th>
 		 		</th:block>
 		 		<th>小計</th>
 		 		<th></th>
@@ -56,7 +57,7 @@
 			<tr th:each="orderDetailForm, stat : *{orderDetailForms}" th:class="*{orderDetailForms[__${stat.index}__].invalid} == 1 ? 'bg-secondary' : '' ">
 				<td>
 					<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].detailId}"/>
-					<span th:text="${stat.count}"></span>
+					<span th:text="*{orderDetailForms[__${stat.index}__].detailId}"></span>
 				</td>
 				<td>
 					<th:block th:if="${editFlag} == null">
@@ -77,12 +78,17 @@
 				</td>
 				<td>
 					<input type="number" th:field="*{orderDetailForms[__${stat.index}__].orderQuantity}" class="dom-orderQuantity" th:data-order-quantity="${stat.index}" min=1 
-						th:classappend="*{orderDetailForms[__${stat.index}__].invalid} == 1 ? 'bg-secondary' : '' " th:readonly="*{orderDetailForms[__${stat.index}__].invalid} == 1" />
+						th:classappend="*{orderDetailForms[__${stat.index}__].invalid == 1 || orderDetailForms[__${stat.index}__].completionDate != null} ? 'bg-secondary' : '' " th:readonly="*{orderDetailForms[__${stat.index}__].invalid == 1 || orderDetailForms[__${stat.index}__].completionDate != null}" />
 					<span th:if="${#fields.hasErrors('orderDetailForms[__${stat.index}__].orderQuantity')}" th:errors="*{orderDetailForms[__${stat.index}__].orderQuantity}" class="text-danger"></span>
 				</td>
 				<th:block th:if="${editFlag} == 1">
 					<td>
+						<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].shippingQuantityTotal}" />
 						<span th:text="*{orderDetailForms[__${stat.index}__].shippingQuantityTotal}"></span>
+					</td>
+					<td>
+						<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].completionDate}" />
+						<span th:text="*{#temporals.format(orderDetailForms[__${stat.index}__].completionDate, 'yy/MM/dd')}"></span>
 					</td>
 				</th:block>
 				<td>

@@ -63,7 +63,7 @@
 		WHERE
 			pro.invalid = 0 <!-- 未削除のみ -->
 		AND
-			pro.completion_date is null <!-- 完了日がnullのみ -->
+			pro.completion_date IS NULL <!-- 完了日がnullのみ -->
 		ORDER BY
 			pro.id ASC <!-- IDの昇順 -->
 	</select>
@@ -127,7 +127,7 @@
 		AND
 			pro.invalid = 0 <!-- 未削除のみ -->
 		AND
-			pro.completion_date is null <!-- 完了日がnullのみ -->
+			pro.completion_date IS NULL <!-- 完了日がnullのみ -->
 	</select>
 	
 	<!-- 製作テーブルをIDの降順に並び替えた上で、最初の行の製作番号(通し番号の最大)を取得する。 -->

@@ -5,6 +5,17 @@
 	
 <mapper namespace="com.example.management.mapper.StockMapper">
 
+	
+	<!-- 引数で受け取った商品IDを基に、実在庫を返す。 -->
+	<select id="getActualQuantity" parameterType="Long" resultType="Integer">
+		SELECT
+			actual_quantity
+		FROM
+			stocks <!-- 在庫テーブル -->
+		WHERE
+			item_id = #{itemId}
+	</select>
+
 	<!-- 引数の入庫クラスの入庫数を、商品IDと合致したレコードの実在庫に加算する。 -->
 	<update id="updateStoring" parameterType="Storing">
 		UPDATE
@@ -15,5 +26,17 @@
 		WHERE
 			item_id = #{production.item.id} <!-- 引数の商品IDと一致した場合 -->
 	</update>
+
+	<!-- 引数の出荷クラスの出荷数を、商品IDと合致したレコードの実在庫から減算する。 -->
+	<update id="updateShipping" parameterType="Shipping">
+		UPDATE
+			stocks <!-- 在庫テーブル -->
+		SET
+			actual_quantity = actual_quantity - #{shippingQuantity}, 
+			updated_at = #{updatedAt}
+		WHERE
+			item_id = #{orderDetail.itemHistory.itemId} <!-- 引数の商品IDと一致した場合 -->
+	</update>
+	
 
 </mapper>

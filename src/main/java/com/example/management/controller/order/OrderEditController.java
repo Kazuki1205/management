@@ -1,6 +1,5 @@
 package com.example.management.controller.order;
 
-import java.text.NumberFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import com.example.management.mapper.CustomerMapper;
 import com.example.management.mapper.ItemMapper;
 import com.example.management.mapper.OrderDetailMapper;
 import com.example.management.mapper.OrderMapper;
+import com.example.management.mapper.ShippingMapper;
 import com.example.management.model.Customer;
 import com.example.management.model.Employee;
 import com.example.management.model.Item;
@@ -52,6 +52,9 @@ public class OrderEditController {
 	
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private ShippingMapper shippingMapper;
 
 	/**
 	 * 各ハンドラメソッド実行前に呼び出されるメソッド
@@ -129,7 +132,7 @@ public class OrderEditController {
 					   RedirectAttributes redirectAttributes, Model model) {
 		
 		// 受注テーブルからパス変数の受注IDを基に情報を取得する。
-		Order order = orderMapper.findByIdExcludeInvalid(orderId);
+		Order order = orderMapper.findByIdExcludeInvalidAndCompletion(orderId);
 		
 		// 編集画面に遷移しようとした社員IDと、受注入力時の社員IDが異なる場合、編集不可とし受注履歴画面へリダイレクト。
 		if (employee.getId() == order.getEmployeeHistory().getEmployeeId()) {
@@ -177,11 +180,8 @@ public class OrderEditController {
 		// 受注小計を計算する。
 		Long orderAmount = orderDetailForm.getUnitPrice() * orderQuantity;
 		
-		// 通貨フォーマットを用意。
-		NumberFormat nf = NumberFormat.getCurrencyInstance();
-		
-		// 通貨型の文字列をセット。
-		orderDetailForm.setOrderAmount(nf.format(orderAmount));
+		// 受注小計をセット。
+		orderDetailForm.setOrderAmount(orderAmount);
 
 		model.addAttribute("orderForm", orderForm);
 		
@@ -209,17 +209,46 @@ public class OrderEditController {
 		if (bindingResult.hasErrors()) {
 			
 			model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "登録に失敗しました。"));
-			
-			return "orders/edit";
 		} else {
 			
-			// DBへinsert処理
-			orderService.update(orderForm);
+			// 受注明細フォームを取り出す。
+			List<OrderDetailForm> orderDetailForms = orderForm.getOrderDetailForms();
 			
-			redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "更新に成功しました。"));
+			// エラーフラグを用意。
+			Short errorFlag = 0;
 			
-			return "redirect:/order/log";
+			// for内で受注明細フォームを回す。「出荷済計 > 受注数」の様に、出荷数が上回る場合はエラーメッセージを表示。
+			for (OrderDetailForm orderDetailForm : orderDetailForms) {
+				
+				// 受注数を取得。
+				Integer orderQuantity = orderDetailForm.getOrderQuantity();
+				
+				// 出荷済計を取得。
+				Integer shippingQuantityTotal = shippingMapper.sumOfShippingQuantityTotal(orderForm.getOrderNumber(), orderDetailForm.getDetailId()).orElse(0);
+				
+				// 「出荷済計 > 受注数」に該当した場合エラーフラグを立てる。
+				if (shippingQuantityTotal > orderQuantity) {
+					
+					errorFlag = 1;
+				}
+			}
+			
+			// ↑のfor内でエラーが発生しなかった場合に、DBへupdate処理。
+			if (errorFlag != 1) {
+			
+				// DBへupdate処理
+				orderService.update(orderForm);
+				
+				redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-info", "更新に成功しました。"));
+				
+				return "redirect:/order/log";
+			} else {
+				
+				model.addAttribute("messageMap", commonService.getMessageMap("alert-danger", "既に出荷済の数量未満の受注数が入力されています。"));
+			}
 		}
+		
+		return "orders/edit";
 	}
 	
 	/**
@@ -235,7 +264,7 @@ public class OrderEditController {
 	public String delete(@ModelAttribute("orderForm") OrderForm orderForm, RedirectAttributes redirectAttributes) {
 		
 		// フォームで受け取った受注IDを受注クラスにセットする。
-		Order order = orderMapper.findByIdExcludeInvalid(orderForm.getId());
+		Order order = orderMapper.findByIdExcludeInvalidAndCompletion(orderForm.getId());
 		
 		// DBへの削除(論理)処理
 		orderService.delete(order);

@@ -21,13 +21,13 @@ public interface OrderMapper {
 	
 	/**
 	 * IDを基に受注テーブルから合致したレコードを取得する。
-	 * 削除済みを除く
+	 * 削除済み・出荷完了済みを除く
 	 * 
 	 * @param id 受注ID
 	 * 
 	 * @return Order 受注クラス
 	 */
-	public Order findByIdExcludeInvalid(Long id);
+	public Order findByIdExcludeInvalidAndCompletion(Long id);
 	
 	/**
 	 * 受注番号を基に受注テーブルから合致したレコードを取得する。
@@ -37,6 +37,16 @@ public interface OrderMapper {
 	 * @return Order 受注クラス
 	 */
 	public Order findByOrderNumber(String orderNumber);
+	
+	/**
+	 * 受注番号を基に受注テーブルから合致したレコードを取得する。
+	 * 削除済み・出荷完了済みを除く
+	 * 
+	 * @param orderNumber 受注番号
+	 * 
+	 * @return Order 受注クラス
+	 */
+	public Order findByOrderNumberExcludeInvalidAndCompletion(String orderNumber);
 
 	/**
 	 * 受注テーブルのレコードを、引数のあいまい検索で取得する。
@@ -49,6 +59,14 @@ public interface OrderMapper {
 	 * @return List<Order> リスト型の受注クラス
 	 */
 	public List<Order> findByConditions(String orderNumber, String customerCode, String customerName, Long departmentId, String employeeName);
+	
+	/**
+	 * 受注テーブルの全レコードを取得するメソッド。
+	 * 削除済み・出荷完了済を除く。
+	 * 
+	 * @return List<Order> リスト型の受注クラス
+	 */
+	public List<Order> findAllExcludeInvalidAndCompletion();
 	
 	/**
 	 * 受注テーブルの全レコード数を取得する。
@@ -77,4 +95,11 @@ public interface OrderMapper {
 	 * @param order 受注クラス
 	 */
 	public void updateInvalid(Order order);
+	
+	/**
+	 * 引数の受注クラスを基に、該当レコードの出荷完了日を更新する。
+	 * 
+	 * @param order 受注クラス
+	 */
+	public void updateCompletion(Order order);
 }

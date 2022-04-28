@@ -16,6 +16,7 @@ import com.example.management.mapper.EmployeeHistoryMapper;
 import com.example.management.mapper.ItemHistoryMapper;
 import com.example.management.mapper.OrderDetailMapper;
 import com.example.management.mapper.OrderMapper;
+import com.example.management.mapper.ShippingMapper;
 import com.example.management.model.Order;
 import com.example.management.model.OrderDetail;
 
@@ -42,6 +43,9 @@ public class OrderService {
 	
 	@Autowired
 	private OrderDetailMapper orderDetailMapper;
+	
+	@Autowired
+	private ShippingMapper shippingMapper;
 
 	/**
 	 * 受注テーブルの全レコード数をInteger型で取得し、
@@ -122,6 +126,8 @@ public class OrderService {
 	/**
 	 * 受注明細フォームに入力された値を受注明細テーブルに反映させる。
 	 * 明細行全てが削除される場合、受注テーブルの該当行も削除(論理)する。
+	 * 明細行が「受注数 = 出荷数」となった場合、受注明細テーブルの該当行の出荷完了日を更新する。
+	 * 全ての明細行が出荷完了となった場合、受注テーブルの該当行の出荷完了日を更新する。
 	 * 
 	 * @param orderForm 受注フォーム
 	 */
@@ -134,6 +140,9 @@ public class OrderService {
 		// for内で全ての行が削除されているかを判別するフラグ。
 		Short removeAllFlag = 1;
 		
+		// for内で全ての行が出荷完了かどうかを判別するフラグ。
+		Short completionFlag = 1;
+		
 		// for内で受注明細フォームから受注明細クラスへマッピングする。
 		for (OrderDetailForm orderDetailForm : orderDetailForms) {
 			
@@ -142,23 +151,33 @@ public class OrderService {
 			
 			// 受注フォームの受注番号をセットする。
 			orderDetail.setOrderNumber(orderForm.getOrderNumber());
-			
-			// 現在のDBの情報を取得
-			OrderDetail tempOrderDetail = orderDetailMapper.findByPrimaryKey(orderForm.getOrderNumber(), orderDetailForm.getDetailId());
-			
-			// 現在のDBの受注数・削除フラグが、フォームに入力された状態と全く一緒であれば、更新処理は行わない。一方でも変更があれば更新処理。
-			if (tempOrderDetail.getOrderQuantity() != orderDetailForm.getOrderQuantity() || 
-				tempOrderDetail.getInvalid() != orderDetailForm.getInvalid()) {
-				
-				// 受注明細クラスを渡し、DBをupdateする。
-				orderDetailMapper.update(orderDetail);		
-			}
-			
+		
+			// 受注明細クラスを渡し、DBをupdateする。
+			orderDetailMapper.update(orderDetail);
+
 			// 削除されていなければ、全削除フラグを「0」にする。
 			if (orderDetail.getInvalid() == 0) {
 				
 				removeAllFlag = 0;
 			}
+			
+			// 出荷済計を取得。
+			Integer shippingQuantityTotal = shippingMapper.sumOfShippingQuantityTotal(orderForm.getOrderNumber(), orderDetailForm.getDetailId()).orElse(0);
+			
+			// フォームの受注数を取得。
+			Integer orderQuantity = orderDetailForm.getOrderQuantity();
+			
+			// 「出荷数計 = 受注数」になった場合、出荷完了とする。
+			if (shippingQuantityTotal == orderQuantity) {
+				
+				// 出荷完了日を更新。
+				orderDetailMapper.updateCompletion(orderDetail);
+			} else {
+				
+				// 全明細行が出荷完了ではない為、フラグを0にする。
+				completionFlag = 0;
+			}
+			
 		}
 		
 		// 明細行が全削除されていれば、受注テーブルの該当行自体も削除(論理)とする。
@@ -171,6 +190,18 @@ public class OrderService {
 			
 			// 受注テーブルへの更新処理。(論理削除)
 			orderMapper.updateInvalid(order);
+		}
+		
+		// 明細行が全完了されていれば、受注テーブルの該当行自体も出荷完了とする。
+		if (completionFlag == 1) {
+			
+			Order order = new Order();
+			
+			// 該当行を識別するためのIDをセット。
+			order.setId(orderForm.getId());
+			
+			// 受注テーブルへの更新処理。(出荷完了日更新)
+			orderMapper.updateCompletion(order);
 		}
 	}
 	
@@ -232,11 +263,11 @@ public class OrderService {
 			// 受注小計を計算する。
 			Long orderAmount = unitPrice * orderDetail.getOrderQuantity();
 			
-			// 通貨フォーマットを用意。
-			NumberFormat nf = NumberFormat.getCurrencyInstance();
+			// 受注小計をセット。
+			orderDetailForm.setOrderAmount(orderAmount);
 			
-			// 通貨型の文字列をセット。
-			orderDetailForm.setOrderAmount(nf.format(orderAmount));
+			// 出荷完了日をセット
+			orderDetailForm.setCompletionDate(orderDetail.getCompletionDate());
 			
 			// フォームを格納
 			orderDetailForms.add(orderDetailForm);

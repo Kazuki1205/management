@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.management.mapper.ShippingMapper">
+
+	<!-- SQL結果に対応した出荷クラス -->
+	<resultMap id="shippingResult" type="Shipping">
+		<id property="id" column="shi_id" />
+		<result property="shippingQuantity" column="shi_shipping_quantity" />
+		<result property="shippingAmount" column="shi_shipping_amount" />
+		<result property="createdAt" column="shi_created_at" />
+		<association property="order" javaType="Order">
+			<id property="id" column="ord_id" />
+			<result property="orderNumber" column="ord_order_number" />
+			<association property="customerHistory" javaType="CustomerHistory">
+				<id property="id" column="cus_id" />
+				<result property="customerId" column="cus_customer_id" />
+				<result property="code" column="cus_code" />
+				<result property="name" column="cus_name" />
+				<result property="postalCode" column="cus_postal_code" />
+				<result property="firstAddress" column="cus_first_address" />
+				<result property="secondAddress" column="cus_second_address" />
+				<result property="thirdAddress" column="cus_third_address" />
+				<result property="phoneNumber" column="cus_phone_number" />
+			</association>
+		</association>
+		<association property="orderDetail" javaType="OrderDetail">
+			<id property="orderNumber" column="ordD_order_number" />
+			<id property="detailId" column="ordD_detail_id" />
+			<result property="orderQuantity" column="ordD_order_quantity" />
+			<result property="completionDate" column="ordD_completion_date" />
+			<result property="invalid" column="ordD_invalid" />
+			<association property="itemHistory" javaType="ItemHistory">
+				<id property="id" column="ite_id" />
+				<result property="itemId" column="ite_item_id" />
+				<result property="code" column="ite_code" />
+				<result property="name" column="ite_name" />
+				<result property="unitPrice" column="ite_unit_price" />
+			</association>
+		</association>
+	</resultMap>
+
+	<!-- 共通SQL文 -->
+	<sql id="shippingSelect">
+		SELECT
+			shi.id                     AS shi_id, 
+			shi.shipping_quantity      AS shi_shipping_quantity, 
+			shi.created_at             AS shi_created_at, 
+			ord.o_id                   AS ord_id, 
+			ord.o_order_number         AS ord_order_number, 
+			ord.c_id                   AS cus_id, 
+			ord.c_customer_id          AS cus_customer_id, 
+			ord.c_code                 AS cus_code, 
+			ord.c_name                 AS cus_name, 
+			ord.c_postal_code          AS cus_postal_code, 
+			ord.c_first_address        AS cus_first_address, 
+			ord.c_second_address       AS cus_second_address, 
+			ord.c_third_address        AS cus_third_address, 
+			ord.c_phone_number         AS cus_phone_number, 
+			ordD.o_order_number        AS ordD_order_number, 
+			ordD.o_detail_id           AS ordD_detail_id, 
+			ordD.o_order_quantity      AS ordD_order_quantity, 
+			ordD.o_completion_date     AS ordD_completion_date, 
+			ordD.o_invalid             AS ordD_invalid, 
+			ordD.i_id                  AS ite_id, 
+			ordD.i_item_id             AS ite_item_id, 
+			ordD.i_code                AS ite_code, 
+			ordD.i_name                AS ite_name, 
+			ordD.i_unit_price          AS ite_unit_price
+		FROM
+			shippings shi<!-- 出荷テーブル -->
+		INNER JOIN (
+			SELECT
+				o.id                   AS o_id, 
+				o.order_number         AS o_order_number, 
+				c.id                   AS c_id, 
+				c.customer_id          AS c_customer_id, 
+				c.code                 AS c_code, 
+				c.name                 AS c_name, 
+				c.postal_code          AS c_postal_code, 
+				c.first_address        AS c_first_address, 
+				c.second_address       AS c_second_address, 
+				c.third_address        AS c_third_address, 
+				c.phone_number         AS c_phone_number
+			FROM
+				orders o <!-- 受注テーブル -->
+			INNER JOIN
+				customers_history c <!-- 顧客履歴テーブル -->
+			ON
+				o.customer_history_id = c.id <!-- 顧客履歴IDで結合 -->
+		) ord <!-- サブクエリの受注テーブル -->
+		ON
+			shi.order_number = ord.o_order_number <!-- 出荷テーブルとサブクエリの受注テーブルを受注番号で結合 -->
+		INNER JOIN (
+			SELECT
+				o.order_number         AS o_order_number, 
+				o.detail_id            AS o_detail_id, 
+				o.order_quantity       AS o_order_quantity, 
+				o.completion_date      AS o_completion_date, 
+				o.invalid              AS o_invalid, 
+				i.id                   AS i_id, 
+				i.item_id              AS i_item_id, 
+				i.code                 AS i_code, 
+				i.name                 AS i_name, 
+				i.unit_price           AS i_unit_price
+			FROM
+				orders_details o <!-- 受注明細テーブル -->
+			INNER JOIN
+				items_history i <!-- 商品履歴テーブル -->
+			ON
+				o.item_history_id = i.id <!-- 商品履歴IDで結合 -->
+		) ordD
+		ON
+			shi.order_number = ordD.o_order_number <!-- 受注番号で結合 -->
+		AND
+			shi.detail_id = ordD.o_detail_id <!-- 明細番号で結合 -->
+	</sql>
+	
+	<!-- 引数で受け取った顧客コード・顧客名・住所・商品コード・商品名を基に、あいまい検索を掛ける -->
+	<select id="findByConditions" resultMap="shippingResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="shippingSelect"></include>
+		<where>
+			<if test="orderNumber != null">
+				ord.o_order_number LIKE '%${orderNumber}%'
+			</if>
+			<if test="detailId != null">
+				AND ordD.o_detail_id = #{detailId}
+			</if>
+			<if test="customerCode != null">
+				AND ord.c_code LIKE '%${customerCode}%'
+			</if>
+			<if test="customerName != null">
+				AND ord.c_name LIKE '%${customerName}%'
+			</if>
+			<if test="address != null">
+				AND (
+					ord.c_first_address LIKE '%${address}%'
+				OR
+					ord.c_second_address LIKE '%${address}%'
+				OR
+					ord.c_third_address LIKE '%${address}%'
+				)
+			</if>
+			<if test="itemCode != null">
+				AND ordD.i_code LIKE '%${itemCode}%'
+			</if>
+			<if test="itemName != null">
+				AND ordD.i_name LIKE '%${itemName}%'
+			</if>
+		</where>
+	</select>
+	
+	<!-- 引数で受け取った出荷IDを基に、該当レコードを取得する。 -->
+	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="shippingResult">
+		
+		<!-- SQL文をインクルード -->
+		<include refid="shippingSelect"></include>
+		WHERE
+			shi.id = #{id}
+	</select>
+	
+	<!-- 引数で受け取った受注番号・受注明細IDでグループ化し、集計した出荷数を返す。 -->
+	<select id="sumOfShippingQuantityTotal" resultType="Integer">
+		SELECT
+			SUM(shipping_quantity)
+		FROM
+			shippings <!-- 出荷テーブル -->
+		WHERE
+			order_number = #{orderNumber} <!-- 引数の受注番号と一致した場合 -->
+		AND
+			detail_id = #{detailId} <!-- 引数の受注明細IDと一致した場合 -->
+		GROUP BY
+			order_number, detail_id <!-- 受注番号・受注明細IDでグループ化 -->
+	</select>
+	
+	<!-- 引数で受け取った出荷クラスを基に、レコードを1件挿入する。 -->
+	<insert id="create" parameterType="Shipping">
+		INSERT INTO
+			shippings ( <!-- 出荷テーブル -->
+				order_number, 
+				detail_id, 
+				shipping_quantity
+			)
+		VALUES (
+			#{orderDetail.orderNumber}, 
+			#{orderDetail.detailId}, 
+			#{shippingQuantity}
+		)
+	</insert>
+
+</mapper>

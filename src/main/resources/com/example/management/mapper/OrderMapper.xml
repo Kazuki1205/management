@@ -41,6 +41,7 @@
 			<id property="orderNumber" column="ordD_order_number" />
 			<id property="detailId" column="ordD_detail_id" />
 			<result property="orderQuantity" column="ordD_order_quantity" />
+			<result property="shippingQuantityTotal" column="shipping_quantity_total" />
 			<result property="completionDate" column="ordD_completion_date" />
 			<result property="createdAt" column="ordD_created_at" />
 			<result property="updatedAt" column="ordD_updated_at" />
@@ -58,42 +59,43 @@
 	<!-- 共通SQL文 -->
 	<sql id="orderSelect">
 		SELECT
-			ord.id                      AS ord_id, 
-			ord.order_number            AS ord_order_number, 
-			ord.completion_date         AS ord_completion_date, 
-			ord.created_at              AS ord_created_at, 
-			ord.updated_at              AS ord_updated_at, 
-			ord.invalid                 AS ord_invalid, 
-			cus.id                      AS cus_id, 
-			cus.customer_id             AS cus_customer_id, 
-			cus.code                    AS cus_code, 
-			cus.name                    AS cus_name, 
-			cus.postal_code             AS cus_postal_code, 
-			cus.first_address           AS cus_first_address, 
-			cus.second_address          AS cus_second_address, 
-			cus.third_address           AS cus_third_address, 
-			cus.phone_number            AS cus_phone_number, 
-			empH.e_id                   AS empH_id, 
-			empH.e_employee_id          AS empH_employee_id, 
-			empH.e_username             AS empH_username, 
-			empH.e_name                 AS empH_name, 
-			empH.d_id                   AS dep_id, 
-			empH.d_code                 AS dep_code, 
-			empH.d_name                 AS dep_name, 
-			empH.d_invalid              AS dep_invalid, 
-			ordD.o_order_number         AS ordD_order_number, 
-			ordD.o_detail_id            AS ordD_detail_id, 
-			ordD.o_order_quantity       AS ordD_order_quantity, 
-			ordD.o_completion_date      AS ordD_completion_date, 
-			ordD.o_created_at           AS ordD_created_at, 
-			ordD.o_updated_at           AS ordD_updated_at, 
-			ordD.o_invalid              AS ordD_invalid, 
-			ordD.i_id                   AS ite_id, 
-			ordD.i_item_id              AS ite_item_id, 
-			ordD.i_code                 AS ite_code, 
-			ordD.i_name                 AS ite_name, 
-			ordD.i_unit_price           AS ite_unit_price, 
-			amount.order_amount_total   AS order_amount_total
+			ord.id                        AS ord_id, 
+			ord.order_number              AS ord_order_number, 
+			ord.completion_date           AS ord_completion_date, 
+			ord.created_at                AS ord_created_at, 
+			ord.updated_at                AS ord_updated_at, 
+			ord.invalid                   AS ord_invalid, 
+			cus.id                        AS cus_id, 
+			cus.customer_id               AS cus_customer_id, 
+			cus.code                      AS cus_code, 
+			cus.name                      AS cus_name, 
+			cus.postal_code               AS cus_postal_code, 
+			cus.first_address             AS cus_first_address, 
+			cus.second_address            AS cus_second_address, 
+			cus.third_address             AS cus_third_address, 
+			cus.phone_number              AS cus_phone_number, 
+			empH.e_id                     AS empH_id, 
+			empH.e_employee_id            AS empH_employee_id, 
+			empH.e_username               AS empH_username, 
+			empH.e_name                   AS empH_name, 
+			empH.d_id                     AS dep_id, 
+			empH.d_code                   AS dep_code, 
+			empH.d_name                   AS dep_name, 
+			empH.d_invalid                AS dep_invalid, 
+			ordD.o_order_number           AS ordD_order_number, 
+			ordD.o_detail_id              AS ordD_detail_id, 
+			ordD.o_order_quantity         AS ordD_order_quantity, 
+			ordD.o_completion_date        AS ordD_completion_date, 
+			ordD.o_created_at             AS ordD_created_at, 
+			ordD.o_updated_at             AS ordD_updated_at, 
+			ordD.o_invalid                AS ordD_invalid, 
+			ordD.i_id                     AS ite_id, 
+			ordD.i_item_id                AS ite_item_id, 
+			ordD.i_code                   AS ite_code, 
+			ordD.i_name                   AS ite_name, 
+			ordD.i_unit_price             AS ite_unit_price, 
+			ordD.shipping_quantity_total  AS shipping_quantity_total, 
+			amount.order_amount_total     AS order_amount_total
 		FROM
 			orders ord <!-- 受注テーブル -->
 		INNER JOIN
@@ -136,24 +138,42 @@
 			ord.order_number = amount.order_number <!-- 受注テーブルとサブクエリの受注明細テーブルを受注番号で結合 -->	
 		LEFT JOIN (
 			SELECT
-				o.order_number           AS o_order_number, 
-				o.detail_id              AS o_detail_id, 
-				o.order_quantity         AS o_order_quantity, 
-				o.completion_date        AS o_completion_date, 
-				o.created_at             AS o_created_at, 
-				o.updated_at             AS o_updated_at, 
-				o.invalid                AS o_invalid, 
-				i.id                     AS i_id, 
-				i.item_id                AS i_item_id, 
-				i.code                   AS i_code, 
-				i.name                   AS i_name, 
-				i.unit_price             AS i_unit_price
+				o.order_number                               AS o_order_number, 
+				o.detail_id                                  AS o_detail_id, 
+				o.order_quantity                             AS o_order_quantity, 
+			    o.completion_date                            AS o_completion_date, 
+				o.created_at                                 AS o_created_at, 
+				o.updated_at                                 AS o_updated_at, 
+				o.invalid                                    AS o_invalid, 
+				i.id                                         AS i_id, 
+				i.item_id                                    AS i_item_id, 
+				i.code                                       AS i_code, 
+				i.name                                       AS i_name, 
+				i.unit_price                                 AS i_unit_price, 
+				COALESCE(shi.shipping_quantity_total, 0)     AS shipping_quantity_total <!-- 出荷数計はnullの可能性があるため、nullであれば0に置き換える。 -->
 			FROM
 				orders_details o <!-- 受注明細テーブル -->
 			INNER JOIN
 				items_history i <!-- 商品履歴テーブル -->
 			ON
 				o.item_history_id = i.id <!-- 商品履歴IDで結合 -->
+			LEFT JOIN (
+				SELECT
+					order_number, 
+					detail_id, 
+					SUM(shipping_quantity) AS shipping_quantity_total
+				FROM
+					shippings <!-- 出荷テーブル -->
+				GROUP BY
+					order_number, detail_id <!-- 受注番号・受注明細IDでグループ化 -->
+			) shi <!-- 出荷テーブルの出荷数計を計算したサブクエリ -->
+			ON
+				o.order_number = shi.order_number
+			AND
+				o.detail_id = shi.detail_id
+			ORDER BY
+				o.order_number ASC, 
+				o.detail_id ASC
 		) ordD <!-- サブクエリの受注明細テーブル -->
 		ON
 			ord.order_number = ordD.o_order_number <!-- 受注番号で結合 -->
@@ -166,6 +186,19 @@
 		<include refid="orderSelect"></include>
 		WHERE
 			ord.order_number = #{orderNumber}
+	</select>
+	
+	<!-- 引数で受け取った受注番号を基に、該当レコードを取得する。削除済み・出荷完了済みを除く -->
+	<select id="findByOrderNumberExcludeInvalidAndCompletion" resultMap="orderResult">
+		
+		<!-- SQL文をインクルード -->
+		<include refid="orderSelect"></include>
+		WHERE
+			ord.order_number = #{orderNumber}
+		AND 
+			ord.invalid = 0
+		AND
+			ord.completion_date IS NULL	
 	</select>
 
 	<!-- 引数で受け取った製作番号・商品コード・商品名を基に、あいまい検索を掛ける -->
@@ -202,15 +235,30 @@
 			ord.id = #{id}
 	</select>
 	
-	<!-- 引数で受け取ったIDを基に、該当レコードを取得。削除済みを除く -->
-	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="orderResult">
+	<!-- 引数で受け取ったIDを基に、該当レコードを取得。削除済み・出荷完了済みを除く -->
+	<select id="findByIdExcludeInvalidAndCompletion" parameterType="Long" resultMap="orderResult">
 	
 		<!-- SQL文をインクルード -->
 		<include refid="orderSelect"></include>
 		WHERE
 			ord.id = #{id}
-		AND
+		AND 
 			ord.invalid = 0
+		AND
+			ord.completion_date IS NULL
+	</select>
+	
+	<!-- 受注テーブルの全レコードを取得する。削除済み・出荷完了済みを除く -->
+	<select id="findAllExcludeInvalidAndCompletion" resultMap="orderResult">
+	
+		<!-- SQL文をインクルード -->
+		<include refid="orderSelect"></include>
+		WHERE
+			ord.invalid = 0
+		AND
+			ord.completion_date IS NULL
+		ORDER BY
+			ord.id ASC
 	</select>
 	
 	<select id="countAll" resultType="Integer">
@@ -250,6 +298,17 @@
 			orders <!-- 受注テーブル -->
 		SET
 			invalid = 1, 
+			updated_at = #{updatedAt}
+		WHERE
+			id = #{id}
+	</update>
+	
+	<!-- 引数で受け取った受注クラスを基に、該当行の出荷完了日を更新する。 -->
+	<update id="updateCompletion" parameterType="Order">
+		UPDATE
+			orders <!-- 受注テーブル -->
+		SET
+			completion_date = #{updatedAt}, 
 			updated_at = #{updatedAt}
 		WHERE
 			id = #{id}

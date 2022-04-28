@@ -36,11 +36,9 @@ public class ReportForm {
 	@NotBlank(message = "商品名が入力されていません。")
 	private String itemName; // 商品名
 	
-	@NotNull(message = "値を入力して下さい。")
 	@PositiveOrZero(message = "「0」以上の値を入力して下さい。")
 	private Integer completionQuantity = 0; // 完了数
 	
-	@NotNull(message = "値を入力して下さい。")
 	@PositiveOrZero(message = "「0」以上の値を入力して下さい。")
 	private Integer failureQuantity = 0; // 不良数
 	

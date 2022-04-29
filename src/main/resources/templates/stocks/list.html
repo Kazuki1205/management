@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	  layout:decorate="~{layouts/layout}">
+<body>
+	<div layout:fragment="contents">
+		<div class="container-fulid">
+			<div class="row">
+				<div class="col-md-3 border-end text-center">
+					<h3>検索条件</h3>
+					<hr>
+					<form th:action="@{/stock/list}" method="get" th:object="${stockForm}">
+						<table class="form-table table table-bordered">
+							<tr>
+								<th><label for="itemCode">商品コード</label></th>
+								<td><input type="text" th:field="*{itemCode}"></td>
+							</tr>
+							<tr>
+								<th><label for="itemName">商品名</label></th>
+								<td><input type="text" th:field="*{itemName}"></td>
+							</tr>
+						</table>
+						<input type="submit" value="検索" />
+					</form>	
+				</div>
+				<div class="col-md-9">
+					<table id="DataTables" class="text-center master-list table table-bordered">
+						<thead>
+							<tr class="border-3">
+								<th>詳細</th>
+								<th>商品コード</th>
+								<th>商品名</th>
+								<th>単価</th>
+								<th>実在庫</th>
+								<th>注残数</th>
+								<th>有効数</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="stock : ${stocks}" th:object="${stock}">
+								<td>
+									<a th:href="@{/stock/list/{id}(id=*{id})}">■</a>
+								</td>
+								<td th:text="*{item.code}"></td>
+								<td th:text="*{item.name}"></td>
+								<td th:text="|&yen;*{#numbers.formatInteger(item.unitPrice, 3, 'COMMA')}|"></td>
+								<td th:text="*{actualQuantity}"></td>
+								<td th:text="*{validOrderQuantityTotal - validShippingQuantityTotal}"></td>
+								<td th:text="*{actualQuantity - (validOrderQuantityTotal - validShippingQuantityTotal)}"
+									th:class="*{actualQuantity - (validOrderQuantityTotal - validShippingQuantityTotal) < 0 ? 'text-danger' : '' }"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

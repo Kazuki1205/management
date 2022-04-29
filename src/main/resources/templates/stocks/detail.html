@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	  layout:decorate="~{layouts/layout}">
+<body>
+	<div layout:fragment="contents" th:object="${stock}">
+		<table class="table table-borderd">
+			<tr>
+				<th>商品コード</th>
+				<td th:text="*{item.code}"></td>
+			</tr>
+			<tr>
+				<th>商品名</th>
+				<td th:text="*{item.name}"></td>
+			</tr>
+			<tr>
+				<th>単価</th>
+				<td th:text="|&yen;*{#numbers.formatInteger(item.unitPrice, 3, 'COMMA')}|"></td>
+			</tr>
+			<tr>
+				<th>実在庫</th>
+				<td th:text="*{actualQuantity}"></td>
+			</tr>
+			<tr>
+				<th>注残数</th>
+				<td th:text="*{validOrderQuantityTotal - validShippingQuantityTotal}"></td>
+			</tr>
+			<tr>
+				<th>有効数</th>
+				<td th:text="*{actualQuantity - (validOrderQuantityTotal - validShippingQuantityTotal)}"
+					th:class="*{actualQuantity - (validOrderQuantityTotal - validShippingQuantityTotal) < 0 ? 'text-danger' : '' }"></td>
+			</tr>
+		</table>
+		<hr>
+		<span class="h5">受注状況</span>
+		<table class="table table-borderd">
+			<thead>
+				<tr>
+					<th>受注番号</th>
+					<th>明細番号</th>
+					<th>担当部署</th>
+					<th>担当社員</th>
+					<th>顧客名</th>
+					<th>受注時品名</th>
+					<th>受注時単価</th>
+					<th>受注数</th>
+					<th>出荷数計</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:if="*{orderDetails[0].orderNumber != null}">
+					<tr th:each="orderDetail, stat : *{orderDetails}">
+						<td th:text="*{orderDetails[__${stat.index}__].orderNumber}"></td>
+						<td th:text="*{orderDetails[__${stat.index}__].detailId}"></td>
+						<td th:text="*{orderDetails[__${stat.index}__].order.employeeHistory.department.name}"></td>
+						<td th:text="*{orderDetails[__${stat.index}__].order.employeeHistory.name}"></td>
+						<td th:text="*{orderDetails[__${stat.index}__].order.customerHistory.name}"></td>
+						<td th:text="*{orderDetails[__${stat.index}__].itemHistory.name}"></td>
+						<td th:text="|&yen;*{#numbers.formatInteger(orderDetails[__${stat.index}__].itemHistory.unitPrice, 3, 'COMMA')}|"></td>
+						<td th:text="*{orderDetails[__${stat.index}__].orderQuantity}"></td>
+						<td th:text="*{orderDetails[__${stat.index}__].shippingQuantityTotal}"></td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>	
+		<a th:href="@{/stock/list}">在庫一覧に戻る</a>
+	</div>
+</body>
+</html>

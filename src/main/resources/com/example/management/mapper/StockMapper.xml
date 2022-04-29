@@ -5,7 +5,284 @@
 	
 <mapper namespace="com.example.management.mapper.StockMapper">
 
+	<!-- SQL結果に対応した在庫クラス -->
+	<resultMap id="stockResult" type="Stock">
+		<id property="id" column="sto_id" />
+		<result property="actualQuantity" column="sto_actual_quantity" />
+		<result property="createdAt" column="sto_created_at" />
+		<result property="updatedAt" column="sto_updated_at" />
+		<result property="validOrderQuantityTotal" column="valid_order_quantity_total" />
+		<result property="validShippingQuantityTotal" column="valid_shipping_quantity_total" />
+		<association property="item" javaType="Item">
+			<id property="id" column="ite_id" />
+			<result property="code" column="ite_code" />
+			<result property="name" column="ite_name" />
+			<result property="unitPrice" column="ite_unit_price" />
+			<result property="invalid" column="ite_invalid" />
+		</association>
+		<collection property="orderDetails" ofType="OrderDetail">
+			<id property="orderNumber" column="ordD_order_number" />
+			<id property="detailId" column="ordD_detail_id" />
+			<result property="orderQuantity" column="ordD_order_quantity" />
+ 			<result property="shippingQuantityTotal" column="shipping_quantity_total" />
+			<association property="itemHistory" javaType="ItemHistory">
+				<id property="id" column="iteH_id" />
+				<result property="itemId" column="iteH_item_id" />
+				<result property="code" column="iteH_code" />
+				<result property="name" column="iteH_name" />
+				<result property="unitPrice" column="iteH_unit_price" />
+			</association>
+			<association property="order" javaType="Order">
+				<id property="id" column="ord_id" />
+				<association property="customerHistory" javaType="CustomerHistory">
+					<id property="id" column="cus_id" />
+					<result property="customerId" column="cus_customer_id" />
+					<result property="code" column="cus_code" />
+					<result property="name" column="cus_name" />
+					<result property="postalCode" column="cus_postal_code" />
+					<result property="firstAddress" column="cus_first_address" />
+					<result property="secondAddress" column="cus_second_address" />
+					<result property="thirdAddress" column="cus_third_address" />
+					<result property="phoneNumber" column="cus_phone_number" />
+				</association>
+				<association property="employeeHistory" javaType="EmployeeHistory">
+					<id property="id" column="emp_id" />
+					<result property="employeeId" column="emp_employee_id" />
+					<result property="username" column="emp_username" />
+					<result property="name" column="emp_name" />
+					<association property="department" javaType="Department">
+						<id property="id" column="dep_id" />
+						<result property="name" column="dep_name" />
+					</association>
+				</association>
+			</association>
+		</collection>
+	</resultMap>
 	
+	<!-- 共通SQL文 -->
+	<sql id="stockSelect">
+		SELECT
+			sto.id                                            AS sto_id, 
+			sto.actual_quantity                               AS sto_actual_quantity, 
+			sto.created_at                                    AS sto_created_at, 
+			sto.updated_at                                    AS sto_updated_at, 
+			ite.id                                            AS ite_id, 
+			ite.code                                          AS ite_code, 
+			ite.name                                          AS ite_name, 
+			ite.unit_price                                    AS ite_unit_price, 
+			ite.invalid                                       AS ite_invalid, 
+			ordD.order_number                                 AS ordD_order_number, 
+			ordD.detail_id                                    AS ordD_detail_id, 
+			ordD.order_quantity                               AS ordD_order_quantity, 
+			ordD.i_id                                         AS iteH_id, 
+			ordD.i_item_id                                    AS iteH_item_id, 
+			ordD.i_code                                       AS iteH_code, 
+			ordD.i_name                                       AS iteH_name, 
+			ordD.i_unit_price                                 AS iteH_unit_price, 
+			ordD.o_id                                         AS ord_id, 
+			ordD.c_id                                         AS cus_id, 
+			ordD.c_customer_id                                AS cus_customer_id, 
+			ordD.c_code                                       AS cus_code, 
+			ordD.c_name                                       AS cus_name, 
+			ordD.c_postal_code                                AS cus_postal_code, 
+			ordD.c_first_address                              AS cus_first_address, 
+			ordD.c_second_address                             AS cus_second_address, 
+			ordD.c_third_address                              AS cus_third_address,
+			ordD.c_phone_number                               AS cus_phone_number, 
+			ordD.e_id                                         AS emp_id, 
+			ordD.e_employee_id                                AS emp_employee_id, 
+			ordD.e_username                                   AS emp_username, 
+			ordD.e_name                                       AS emp_name, 
+			ordD.d_id                                         AS dep_id, 
+			ordD.d_name                                       AS dep_name, 
+ 			COALESCE(sqt.shipping_quantity_total, 0)          AS shipping_quantity_total, 
+			COALESCE(voqt.valid_order_quantity_total, 0)      AS valid_order_quantity_total, 
+			COALESCE(vsqt.valid_shipping_quantity_total, 0)   AS valid_shipping_quantity_total
+		FROM
+			stocks sto <!-- 在庫テーブル -->
+		INNER JOIN
+			items ite <!-- 商品テーブル -->
+		ON
+			sto.item_id = ite.id <!-- 商品IDで結合 -->
+		LEFT JOIN (
+			SELECT
+				i.item_id                          AS item_id, 
+				SUM(o.order_quantity)              AS valid_order_quantity_total
+			FROM
+				orders_details o <!-- 受注明細テーブル -->
+			INNER JOIN
+				items_history i <!-- 商品履歴テーブル -->
+			ON
+				o.item_history_id = i.id <!-- 商品履歴IDで結合 -->
+			WHERE
+				o.invalid = 0 <!-- 未削除のみ -->
+			AND
+				o.completion_date IS NULL <!-- 未完了のみ -->
+			GROUP BY
+				i.item_id <!-- 商品ID -->
+		) voqt <!-- 商品IDでグループ化した受注数を集計したサブクエリ。未削除・未完了のみ -->
+		ON
+			sto.item_id = voqt.item_id <!-- 商品IDで結合 -->
+		LEFT JOIN (
+			SELECT
+				o.item_id                    AS item_id, 
+				SUM(s.shipping_quantity)     AS valid_shipping_quantity_total
+			FROM
+				shippings s <!-- 出荷テーブル -->
+			INNER JOIN (
+				SELECT
+					o.order_number           AS order_number, 
+					o.detail_id              AS detail_id, 
+					i.item_id                AS item_id
+				FROM
+					orders_details o <!-- 受注明細テーブル -->
+				INNER JOIN
+					items_history i <!-- 商品履歴テーブル -->
+				ON
+					o.item_history_id = i.id <!-- 商品履歴IDで結合 -->
+				WHERE
+					o.invalid = 0 <!-- 未削除のみ -->
+				AND
+					o.completion_date IS NULL <!-- 未完了のみ -->
+			) o <!-- 受注明細テーブルと商品履歴テーブルを結合し、未削除・未完了のみで絞り込んだサブクエリ -->
+			ON
+				s.order_number = o.order_number <!-- 受注番号で結合 -->
+			AND
+				s.detail_id = o.detail_id <!-- 明細番号で結合 -->
+			GROUP BY
+				o.item_id <!-- 商品IDでグループ化 -->
+		) vsqt <!-- 商品IDでグループ化した出荷数を集計したサブクエリ。未削除・未完了のみ -->
+		ON
+			sto.item_id = vsqt.item_id <!-- 商品IDで結合 -->
+		LEFT JOIN (
+			SELECT
+				od.order_number            AS order_number, 
+				od.detail_id               AS detail_id, 
+				od.order_quantity          AS order_quantity, 
+				i.id                       AS i_id, 
+				i.item_id                  AS i_item_id, 
+				i.code                     AS i_code, 
+				i.name                     AS i_name, 
+				i.unit_price               AS i_unit_price, 
+				o.o_id                     AS o_id, 
+				o.c_id                     AS c_id, 
+				o.c_customer_id            AS c_customer_id, 
+				o.c_code                   AS c_code, 
+				o.c_name                   AS c_name, 
+				o.c_postal_code            AS c_postal_code, 
+				o.c_first_address          AS c_first_address, 
+				o.c_second_address         AS c_second_address, 
+				o.c_third_address          AS c_third_address, 
+				o.c_phone_number           AS c_phone_number, 
+				o.e_id                     AS e_id, 
+				o.e_employee_id            AS e_employee_id, 
+				o.e_username               AS e_username, 
+				o.e_name                   AS e_name, 
+				o.d_id                     AS d_id, 
+				o.d_name                   AS d_name
+			FROM
+				orders_details od <!-- 受注明細テーブル -->
+			INNER JOIN
+				items_history i <!-- 商品履歴テーブル -->
+			ON
+				od.item_history_id = i.id <!-- 商品履歴IDで結合 -->
+			INNER JOIN (
+				SELECT
+					o.id                        AS o_id, 
+					o.order_number              AS o_order_number, 
+					c.id                        AS c_id, 
+					c.customer_id               AS c_customer_id, 
+					c.code                      AS c_code, 
+					c.name                      AS c_name, 
+					c.postal_code               AS c_postal_code, 
+					c.first_address             AS c_first_address, 
+					c.second_address            AS c_second_address, 
+					c.third_address             AS c_third_address, 
+					c.phone_number              AS c_phone_number, 
+					e.e_id                      AS e_id, 
+					e.e_employee_id             AS e_employee_id, 
+					e.e_username                AS e_username, 
+					e.e_name                    AS e_name, 
+					e.d_id                      AS d_id, 
+					e.d_name                    AS d_name
+				FROM
+					orders o <!-- 受注テーブル -->
+				INNER JOIN
+					customers_history c <!-- 顧客履歴テーブル -->
+				ON
+					o.customer_history_id = c.id <!-- 顧客履歴IDで結合 -->
+				INNER JOIN (
+					SELECT
+						e.id                  AS e_id, 
+						e.employee_id         AS e_employee_id, 
+						e.username            AS e_username, 
+						e.name                AS e_name, 
+						d.id                  AS d_id, 
+						d.name                AS d_name
+					FROM
+						employees_history e <!-- 社員履歴テーブル -->
+					INNER JOIN
+						departments d <!-- 部署テーブル -->
+					ON
+						e.department_id = d.id <!-- 部署IDで結合 -->
+				) e <!-- 社員履歴テーブルと部署テーブルを結合したサブクエリ -->
+				ON
+					o.employee_history_id = e.e_id <!-- 社員履歴IDで結合 -->
+			) o <!-- 受注テーブルに↑のサブクエリを結合したサブクエリ -->
+			ON
+				od.order_number = o.o_order_number <!-- 受注番号で結合 -->
+			WHERE
+				od.invalid = 0 <!-- 未削除のみ -->
+			AND
+				od.completion_date IS NULL <!-- 未完了のみ -->
+		) ordD <!-- 受注明細テーブルに↑のサブクエリを結合したサブクエリ -->
+		ON
+			sto.item_id = ordD.i_item_id <!-- 商品IDで結合 -->
+ 		LEFT JOIN (
+			SELECT
+				order_number                 AS order_number, 
+				detail_id                    AS detail_id, 
+				SUM(shipping_quantity)       AS shipping_quantity_total
+			FROM
+				shippings <!-- 出荷テーブル -->
+			GROUP BY
+				order_number, detail_id <!-- 受注番号、明細番号でグループ化 -->
+		) sqt <!-- 出荷数を受注番号・明細番号でグループ化したサブクエリ -->
+		ON
+			ordD.order_number = sqt.order_number <!-- 受注番号で結合 -->
+		AND
+			ordD.detail_id = sqt.detail_id <!-- 明細番号で結合 -->	
+	</sql>
+
+	<!-- 引数で受け取った商品コード・商品名を基に、在庫テーブルをあいまい検索する。 -->
+	<select id="findByConditions" resultMap="stockResult">
+
+		<!-- SQL文をインクルード -->
+		<include refid="stockSelect"></include>
+		<where>
+			<if test="itemCode != null">
+				ite.code LIKE '%${itemCode}%'
+			</if>
+			<if test="itemName != null">
+				AND ite.name LIKE '%${itemName}%'
+			</if>
+		</where>
+		ORDER BY
+			sto.id ASC
+	</select>
+	
+	<!-- 引数で受け取った在庫IDを基に、該当テーブルの情報を取得する。 -->
+	<select id="findById" parameterType="Long" resultMap="stockResult">
+	
+		<!-- SQL文をインクルード -->
+		<include refid="stockSelect"></include>
+		WHERE
+			sto.id = #{id}
+		ORDER BY
+			ordD.order_number ASC, 
+			ordD.detail_id ASC
+	</select>
+
 	<!-- 引数で受け取った商品IDを基に、実在庫を返す。 -->
 	<select id="getActualQuantity" parameterType="Long" resultType="Integer">
 		SELECT

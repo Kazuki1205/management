@@ -1,12 +1,34 @@
 package com.example.management.mapper;
 
+import java.util.List;
+
 import com.example.management.model.Shipping;
+import com.example.management.model.Stock;
 import com.example.management.model.Storing;
 
 /**
  * MyBatisで使用するMapperクラス(@Mapperアノテーションは設定にて省略)
  */
 public interface StockMapper {
+	
+	/**
+	 * 引数の商品コード・商品名を基に、在庫テーブルをあいまい検索する。
+	 * 
+	 * @param itemCode 商品コード
+	 * @param itemName 商品名
+	 * 
+	 * @return List<Stock> 在庫クラスのリスト
+	 */
+	public List<Stock> findByConditions(String itemCode, String itemName);
+	
+	/**
+	 * 引数の在庫IDを基に、該当レコードを取得する。
+	 * 
+	 * @param id 在庫ID
+	 * 
+	 * @return Stock 在庫クラス
+	 */
+	public Stock findById(Long id);
 	
 	/**
 	 * 引数の商品IDと合致したレコードの実在庫を返す。

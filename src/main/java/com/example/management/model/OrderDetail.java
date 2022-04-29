@@ -15,6 +15,8 @@ public class OrderDetail {
 	
 	private Integer detailId; // 受注明細ID
 	
+	private Order order; // 受注クラス
+	
 	private ItemHistory itemHistory; // 商品履歴クラス
 	
 	private Integer orderQuantity; // 受注数

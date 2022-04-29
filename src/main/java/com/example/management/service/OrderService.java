@@ -1,6 +1,5 @@
 package com.example.management.service;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,10 +140,17 @@ public class OrderService {
 		Short removeAllFlag = 1;
 		
 		// for内で全ての行が出荷完了かどうかを判別するフラグ。
-		Short completionFlag = 1;
+		Short completionAllFlag = 1;
+		
+		// for内で全ての行が削除・出荷完了となる場合をカウントする。この数と受注明細フォームのサイズが一致した場合は、受注クラスを出荷完了とする。
+		Short flagCount = 0;
 		
 		// for内で受注明細フォームから受注明細クラスへマッピングする。
 		for (OrderDetailForm orderDetailForm : orderDetailForms) {
+			
+			// モデルマッピングの重複項目を除外。
+			modelMapper.getConfiguration().setAmbiguityIgnored(true);
+			modelMapper.typeMap(OrderDetailForm.class, OrderDetail.class).addMappings(mapper -> mapper.skip(OrderDetail::setOrder));
 			
 			// モデルマッパーによる値の詰め替え
 			OrderDetail orderDetail = modelMapper.map(orderDetailForm, OrderDetail.class);
@@ -159,6 +165,9 @@ public class OrderService {
 			if (orderDetail.getInvalid() == 0) {
 				
 				removeAllFlag = 0;
+			} else {
+				
+				flagCount ++;
 			}
 			
 			// 出荷済計を取得。
@@ -172,10 +181,12 @@ public class OrderService {
 				
 				// 出荷完了日を更新。
 				orderDetailMapper.updateCompletion(orderDetail);
+				
+				flagCount++;
 			} else {
 				
 				// 全明細行が出荷完了ではない為、フラグを0にする。
-				completionFlag = 0;
+				completionAllFlag = 0;
 			}
 			
 		}
@@ -192,8 +203,8 @@ public class OrderService {
 			orderMapper.updateInvalid(order);
 		}
 		
-		// 明細行が全完了されていれば、受注テーブルの該当行自体も出荷完了とする。
-		if (completionFlag == 1) {
+		// 明細行が全完了されていれば、受注テーブルの該当行自体も出荷完了とする。(全ての行が削除済み・出荷完了済みのどちらかに当てはまる場合も、出荷完了とする。)
+		if (completionAllFlag == 1 | flagCount == orderDetailForms.size()) {
 			
 			Order order = new Order();
 			

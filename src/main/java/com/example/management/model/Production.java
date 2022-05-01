@@ -2,6 +2,7 @@ package com.example.management.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Data;
 
@@ -12,6 +13,8 @@ import lombok.Data;
 public class Production {
 
 	private Long id; // ID
+	
+	private List<Report> reports; // 日報クラスのリスト
 	
 	private Item item; // 商品クラス
 	

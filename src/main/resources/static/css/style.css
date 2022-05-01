@@ -17,3 +17,24 @@ ul {
 	list-style: none;
 	padding-left: 0;
 }
+
+.table-register {
+	width: 50%;
+	margin: auto;
+	table-layout: fixed;
+}
+
+.table-register th {
+	text-align: right;
+	width: 30%;
+}
+
+.table-register td {
+	text-align: left;
+	width: 70%;
+}
+
+.input-register {
+	margin-top: 30px;
+	text-align: center;
+}

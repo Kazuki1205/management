@@ -2,7 +2,6 @@ package com.example.management.controller.report;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -35,9 +34,6 @@ public class ReportEditController {
 	
 	@Autowired
 	private ReportMapper reportMapper;
-	
-	@Autowired
-	private ModelMapper modelMapper;
 	
 	@Autowired
 	private ReportService reportService;
@@ -105,7 +101,7 @@ public class ReportEditController {
 					   RedirectAttributes redirectAttributes, Model model) {
 		
 			// URLから取得したIDを基に、日報テーブルから該当レコードを取得する。
-			Report report = reportMapper.findByIdExcludeInvalid(id);
+			Report report = reportMapper.findByIdExcludeInvalidAndCompletion(id);
 			
 			// 該当レコードを登録した社員IDではない社員が編集ボタンを押した場合、履歴テンプレートへリダイレクト
 			if (employee.getId() == report.getEmployeeHistory().getEmployeeId()) {

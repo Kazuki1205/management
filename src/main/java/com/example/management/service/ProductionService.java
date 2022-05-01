@@ -1,6 +1,8 @@
 package com.example.management.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import com.example.management.mapper.ProductionMapper;
 import com.example.management.mapper.ReportMapper;
 import com.example.management.mapper.StoringMapper;
 import com.example.management.model.Production;
+import com.example.management.model.Report;
 
 /**
  * 製作のロジッククラス
@@ -155,5 +158,44 @@ public class ProductionService {
 		production.setItem(itemMapper.findById(productionForm.getItemId()));
 			
 		return production;
+	}
+	
+	/**
+	 * 引数で受け取った製作クラスのリスト内の
+	 * 日報クラスのリストを、テンプレートで各現場工程順に表示される様にする。
+	 * 
+	 * @param productions 製作クラスのリスト
+	 * 
+	 * @return List<Production> 整形済みの製作クラスのリスト
+	 */
+	public List<Production> adjustProductions(List<Production> productions) {
+		
+		// for内で製作クラスリストを回す。
+		for (Production production : productions) {
+			
+			// 整形後の日報クラスのリスト。最終的にこの変数を製作クラスにsetする。
+			List<Report> tempReport = new ArrayList<>(7);
+			
+			// 全てに空の日報クラスを代入する。
+			for (int i = 0; i < 7; i++) {
+				
+				tempReport.add(new Report());
+			}
+			
+			// for内で製作クラス内の日報クラスを回す。
+			for (Report report : production.getReports()) {
+				
+				// 部署IDを取得
+				Long departmentId = report.getDepartmentId();
+				
+				// 部署テーブルの主キーを基に、、「部署ID2～8(切削～梱包)」を、用意したリスト「index0～6」にセット。
+				tempReport.set((int)(departmentId - 2), report);
+			}
+			
+			// 整形後の日報リストをセットする。
+			production.setReports(tempReport);
+		}
+		
+		return productions;
 	}
 }

@@ -11,6 +11,8 @@
 		<result property="lotNumber" column="pro_lot_number" />
 		<result property="lotQuantity" column="pro_lot_quantity" />
 		<result property="scheduledCompletionDate" column="pro_scheduled_completion_date" />
+		<result property="failureQuantityTotal" column="failure_quantity_total" />
+		<result property="storingQuantityTotal" column="storing_quantity_total" />
 		<result property="createdAt" column="pro_created_at" />
 		<result property="updatedAt" column="pro_updated_at" />
 		<result property="completionDate" column="pro_completion_date" />
@@ -20,28 +22,80 @@
 			<result property="code" column="ite_code" />
 			<result property="name" column="ite_name" />
 		</association>
+		<collection property="reports" ofType="Report">
+			<id property="productionId" column="rep_production_id" />
+			<id property="departmentId" column="rep_department_id" />
+			<result property="departmentCompletionQuantityTotal" column="department_completion_quantity_total" />
+			<result property="departmentFailureQuantityTotal" column="department_failure_quantity_total" />
+			<result property="updatedAtLatest" column="updated_at_latest" />
+		</collection>
 	</resultMap>
 	
 	<!-- 共通SQL文 -->
 	<sql id="productionSelect">
 		SELECT
-			pro.id                          AS pro_id, 
-			pro.lot_number                  AS pro_lot_number, 
-			pro.lot_quantity                AS pro_lot_quantity, 
-			pro.scheduled_completion_date   AS pro_scheduled_completion_date, 
-			pro.created_at                  AS pro_created_at, 
-			pro.updated_at                  AS pro_updated_at, 
-			pro.completion_date             AS pro_completion_date, 
-			pro.invalid                     AS pro_invalid, 
-			ite.id                          AS ite_id, 
-			ite.code                        AS ite_code, 
-			ite.name                        AS ite_name
+			pro.id                                                 AS pro_id, 
+			pro.lot_number                                         AS pro_lot_number, 
+			pro.lot_quantity                                       AS pro_lot_quantity, 
+			pro.scheduled_completion_date                          AS pro_scheduled_completion_date, 
+			pro.created_at                                         AS pro_created_at, 
+			pro.updated_at                                         AS pro_updated_at, 
+			pro.completion_date                                    AS pro_completion_date, 
+			pro.invalid                                            AS pro_invalid, 
+			ite.id                                                 AS ite_id, 
+			ite.code                                               AS ite_code, 
+			ite.name                                               AS ite_name, 
+			rep.production_id                                      AS rep_production_id, 
+			rep.department_id                                      AS rep_department_id, 
+			COALESCE(rep.failure_quantity_total, 0)                AS failure_quantity_total,
+			COALESCE(rep.department_completion_quantity_total, 0)  AS department_completion_quantity_total,
+			COALESCE(rep.department_failure_quantity_total, 0)     AS department_failure_quantity_total,	
+			rep.updated_at_latest                                  AS updated_at_latest,      
+			COALESCE(sqt.storing_quantity_total, 0)                AS storing_quantity_total
+			
 		FROM
 			productions pro <!-- 製作テーブル -->
 		INNER JOIN
 			items ite <!-- 商品テーブル -->
 		ON
 			pro.item_id = ite.id <!-- 商品IDで結合 -->
+		LEFT JOIN (
+			SELECT DISTINCT <!-- 重複を除外する。 -->
+				r.production_id                                                                AS production_id,
+				e.department_id                                                                AS department_id,  
+				SUM(r.failure_quantity) OVER(PARTITION BY r.production_id)                     AS failure_quantity_total, 
+				SUM(r.completion_quantity) OVER(PARTITION BY r.production_id, e.department_id) AS department_completion_quantity_total, 
+				SUM(r.failure_quantity) OVER(PARTITION BY r.production_id, e.department_id)    AS department_failure_quantity_total, 
+				MAX(r.updated_at) OVER(PARTITION BY r.production_id, e.department_id)          AS updated_at_latest
+			FROM
+				reports r <!-- 日報テーブル -->
+			INNER JOIN (
+				SELECT
+					e.id                    AS id, 
+					e.department_id         AS department_id
+				FROM
+					employees_history e <!-- 社員履歴テーブル -->
+				INNER JOIN
+					departments d <!-- 部署テーブル -->
+				ON
+					e.department_id = d.id <!-- 部署IDで結合 -->
+			) e <!-- 社員履歴テーブルと部署テーブルを結合したサブクエリ -->
+			ON
+				r.employee_history_id = e.id <!-- 社員履歴IDで結合 -->
+		) rep <!-- 不良数計を製作IDでグループ化、部署毎の完成数計、不良数計、最終更新日を製作ID・部署IDでグループ化し集計したもののサブクエリ -->
+		ON
+			pro.id = rep.production_id <!-- 製作IDで結合 -->
+		LEFT JOIN (
+			SELECT
+				s.production_id             AS production_id, 
+				SUM(s.storing_quantity)     AS storing_quantity_total
+			FROM
+				storings s <!-- 入庫テーブル -->
+			GROUP BY
+				s.production_id <!-- 製作IDでグループ化 -->
+		) sqt <!-- 入庫数計を製作IDでグループ化し集計したもののサブクエリ -->
+		ON
+			pro.id = sqt.production_id <!-- 製作IDで結合 -->
 	</sql>
 	
 	<!-- 全てのレコードを取得※製作テーブルの削除済みを除く -->
@@ -83,6 +137,26 @@
 			<if test="itemName != null">
 				AND ite.name LIKE '%${itemName}%' <!-- 引数の商品名がnullでない場合、あいまい検索 -->
 			</if>
+		</where>
+	</select>
+	
+	<!-- 引数で受け取った製作番号・商品コード・商品名を基に、あいまい検索を掛ける。削除済み・完了済みを除く -->
+	<select id="findByConditionsExcludeInvalidAndCompletion" resultMap="productionResult">
+	
+		<!-- SQL文をインクルード -->
+		<include refid="productionSelect"></include>
+		<where>
+			<if test="lotNumber != null">
+				pro.lot_number LIKE '%${lotNumber}%' <!-- 引数の製作番号がnullでない場合、あいまい検索 -->
+			</if>
+			<if test="itemCode != null">
+				AND ite.code LIKE '%${itemCode}%' <!-- 引数の商品コードがnullでない場合、あいまい検索 -->
+			</if>
+			<if test="itemName != null">
+				AND ite.name LIKE '%${itemName}%' <!-- 引数の商品名がnullでない場合、あいまい検索 -->
+			</if>
+				AND pro.invalid = 0 <!-- 未削除のみ -->
+				AND pro.completion_date IS NULL <!-- 未完了のみ -->
 		</where>
 	</select>
 	

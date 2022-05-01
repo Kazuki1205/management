@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" 
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <div layout:fragment="table">
-	<table class="table table-bordered">
+	<table class="table table-bordered table-register">
 		<tr>
 			<th>
 				<label for="code">顧客コード</label>
@@ -31,7 +31,7 @@
 				<label for="postalCode">郵便番号(ハイフンも可)</label>
 			</th>
 			<td>
-				<input type="text" th:field="*{postalCode}" maxlength="8" onKeyUp="AjaxZip3.zip2addr(this, '', 'firstAddress', 'secondAddress');" />
+				<input type="text" th:field="*{postalCode}" maxlength="8" id="ajaxzip3" />
 				<span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="text-danger"></span>
 			</td>
 		</tr>
@@ -40,8 +40,8 @@
 				<label for="firstAddress">都道府県</label>
 			</th>
 			<td>
-				<input type="text" th:field="*{firstAddress}" />
-				<span th:if="${#fields.hasErrors('firstAddress')}" th:errors="*{firstAddress}" class="text-danger"></span>
+				<input type="text" th:field="*{firstAddress}" class="bg-secondary" readonly />
+				<span th:if="${#fields.hasErrors('firstAddress')}" th:errors="*{firstAddress}" class="text-danger" ></span>
 			</td>
 		</tr>
 		<tr>
@@ -49,8 +49,8 @@
 				<label for="secondAddress">市区町村</label>
 			</th>
 			<td>
-				<input type="text" th:field="*{secondAddress}" />
-				<span th:if="${#fields.hasErrors('secondAddress')}" th:errors="*{secondAddress}" class="text-danger"></span>
+				<input type="text" th:field="*{secondAddress}" class="bg-secondary" readonly />
+				<span th:if="${#fields.hasErrors('secondAddress')}" th:errors="*{secondAddress}" class="text-danger" ></span>
 			</td>
 		</tr>
 		<tr>

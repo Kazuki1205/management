@@ -140,8 +140,8 @@
 			rep.id = #{id} <!-- 引数の日報IDと一致した場合 -->
 	</select>
 	
-	<!-- 引数で受け取った日報IDを基に、該当レコードを取得※日報レコード・製作レコードが削除されているものを除く。 -->
-	<select id="findByIdExcludeInvalid" parameterType="Long" resultMap="reportResult">
+	<!-- 引数で受け取った日報IDを基に、該当レコードを取得※日報テーブル・製作テーブルが削除されているものを除く。 -->
+	<select id="findByIdExcludeInvalidAndCompletion" parameterType="Long" resultMap="reportResult">
 
 		<!-- SQL文をインクルード -->
 		<include refid="reportSelect"></include>
@@ -149,6 +149,8 @@
 			rep.id = #{id} <!-- 引数の日報IDと一致した場合 -->
 		AND
 			rep.invalid = 0 <!-- 未削除のみ -->
+		AND
+			pro.p_completion_date IS NULL <!-- 製作テーブルの製作未完了のみ -->
 	</select>
 	
 	<!-- 日報テーブルを、製作IDと部署IDでグループ化し、完了数を集計する。 引数の製作IDと部署IDと合致したレコードの合計値を取得する。-->

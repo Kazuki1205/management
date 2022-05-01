@@ -5,22 +5,28 @@
 
 <body>
 	<div layout:fragment="contents">
+		<a th:href="@{/employee/list}">社員マスタに戻る</a>
 		<form method="post" th:action="@{/employee/edit/update}" th:object="${employeeForm}">
 			<input type="hidden" th:field="*{id}" />
 		
 			<div layout:replace="~{employees/common :: table}"></div>
 			
-			<input type="submit" value="更新" id="form" />
+			<div class="input-register">
+				<input type="submit" value="更新" id="form" />
+			</div>
 		</form>
 		<form method="post" th:action="@{/employee/edit/delete}" th:object="${employeeForm}">
 			<input type="hidden" th:field="*{id}" />
-			<input type="submit" value="削除" id="form-delete" />
+			<div class="input-register">
+				<input type="submit" value="削除" id="form-delete" />
+			</div>
 		</form>
 		<form method="post" th:action="@{/employee/edit/password}" th:object="${employeeForm}">
 			<input type="hidden" th:field="*{id}" />
-			<input type="submit" value="パスワードを変更" />
+			<div class="input-register">
+				<input type="submit" value="パスワードを変更" />
+			</div>
 		</form>
-		<a th:href="@{/employee/list}">社員マスタに戻る</a>
 	</div>
 </body>
 </html>

@@ -34,13 +34,13 @@ public interface ReportMapper {
 	
 	/**
 	 * IDを基に日報テーブルから合致したレコードを取得する。
-	 * 削除済みを除く
+	 * 削除済みを除く、製作テーブルの製作完了済を除く。
 	 * 
 	 * @param id ID
 	 * 
 	 * @return Report 日報クラス
 	 */
-	public Report findByIdExcludeInvalid(Long id);
+	public Report findByIdExcludeInvalidAndCompletion(Long id);
 	
 	
 	/**

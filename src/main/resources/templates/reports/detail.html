@@ -47,7 +47,7 @@
 			</tr>
 			<tr>
 				<th>製作状況</th>
-				<td th:text="*{production.invalid} == 0 ? '製作中' : '製作中止'" />
+				<td th:text="*{production.completionDate != null ? '製作完了' : production.invalid == 1 ? '製作中止' : '製作中' }"></td>
 			</tr>
 			<tr>
 				<th>削除区分</th>

@@ -37,6 +37,18 @@ public interface ProductionMapper {
 	public List<Production> findByConditions(String lotNumber, String itemCode, String itemName);
 	
 	/**
+	 * 製作テーブルのレコードを、引数のあいまい検索で取得する。
+	 * 削除済み・完了済みを除く
+	 * 
+	 * @param lotNumber 製作番号
+	 * @param itemCode 商品コード
+	 * @param itemName 商品名
+	 * 
+	 * @return List<Production> リスト型の製作クラス
+	 */
+	public List<Production> findByConditionsExcludeInvalidAndCompletion(String lotNumber, String itemCode, String itemName);
+	
+	/**
 	 * 製作番号を基に製作テーブルから合致したレコードを取得する。
 	 * 
 	 * @param lotNumber 製作番号

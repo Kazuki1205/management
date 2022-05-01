@@ -22,6 +22,14 @@
 				<td th:text="*{lotQuantity}" />
 			</tr>
 			<tr>
+				<th>不良数計</th>
+				<td th:text="*{failureQuantityTotal}" />
+			</tr>
+			<tr>
+				<th>入庫数計</th>
+				<td th:text="*{storingQuantityTotal}" />
+			</tr>
+			<tr>
 				<th>完成予定日</th>
 				<td th:text="*{#temporals.format(scheduledCompletionDate, 'yy/MM/dd')}" />
 			</tr>

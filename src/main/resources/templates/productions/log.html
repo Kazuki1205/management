@@ -38,6 +38,8 @@
 								<th>商品コード</th>
 								<th>商品名</th>
 								<th>製作数</th>
+								<th>不良数計</th>
+								<th>入庫数計</th>
 								<th>完成予定日</th>
 								<th>完成日</th>
 								<th>登録日時</th>
@@ -60,6 +62,8 @@
 								<td th:text="*{item.code}"></td>
 								<td th:text="*{item.name}"></td>
 								<td th:text="*{lotQuantity}"></td>
+								<td th:text="*{failureQuantityTotal}"></td>
+								<td th:text="*{storingQuantityTotal}"></td>
 								<td th:text="*{#temporals.format(scheduledCompletionDate, 'yy/MM/dd')}"></td>
 								<td th:text="*{completionDate != null ? #temporals.format(completionDate, 'yy/MM/dd') : '' }" />
 								<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>

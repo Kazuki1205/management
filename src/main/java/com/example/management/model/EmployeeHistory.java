@@ -18,7 +18,7 @@ public class EmployeeHistory {
 	
 	private String name; // 社員名
 	
-	private Department department; // 部署ID
+	private Department department; // 部署クラス
 	
 	private LocalDateTime updatedAt; // 更新日時
 

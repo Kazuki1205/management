@@ -4,13 +4,15 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
+		<a th:href="@{/department/list}">部署マスタに戻る</a>
 		<form method="post" th:action="@{/department/register/new}" th:object="${departmentForm}">
 		
 			<div layout:replace="~{departments/common :: table}"></div>
 			
-			<input type="submit" value="新規登録" id="form" />
+			<div class="input-register">
+				<input type="submit" value="新規登録" id="form" />
+			</div>
 		</form>
-		<a th:href="@{/department/list}">部署マスタに戻る</a>
 	</div>
 </body>
 </html>

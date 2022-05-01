@@ -68,7 +68,7 @@
 									<a th:href="@{/report/log/{id}(id=*{id})}">■</a>
 								</td>
 								<td>
-									<th:block th:if="*{invalid == 0 && production.invalid == 0}">
+									<th:block th:if="*{invalid == 0 && production.invalid == 0 && production.completionDate == null}">
 										<a th:href="@{/report/edit/{id}(id=*{id})}">●</a>
 									</th:block>
 								</td>

@@ -20,7 +20,7 @@ public class ItemForm {
 	
 	private String code; // 商品コード
 	
-	@Pattern(regexp = "^[^\\p{javaWhitespace}]+", message = "空白文字は使用できません。")
+	@Pattern(groups = ValidGroup1.class, regexp = "^[^\\p{javaWhitespace}]+", message = "空白文字は使用できません。")
 	@Size(min = 1, max = 32)
 	private String name; // 品名	
 	

@@ -104,6 +104,29 @@ $(function(){
     });
 });
 
+// AjaxZip3を用いた、郵便番号検索。
+$(function() {
+	$('#ajaxzip3').change(function() {
+	
+	    AjaxZip3.zip2addr(this,'','firstAddress','secondAddress', '', '', false);
+	
+	    //成功時に実行する処理、町名番地をフォーカスする。
+	    AjaxZip3.onSuccess = function() {
+	        $('#thirdAddress').focus();
+	    };
+	    
+	    //失敗時に実行する処理、都道府県・市区町村を空にし、アラートメッセージを表示。
+	    AjaxZip3.onFailure = function() {
+		
+			alert('郵便番号に該当する住所が見つかりません');
+	        $('#firstAddress').val('');
+	        $('#secondAddress').val('');
+	    };
+	        
+	    return false;
+	});
+});
+
 // セレクトボックスに検索機能を追加するライブラリ
 $(document).ready(function() {
 	

@@ -51,7 +51,7 @@ public class StoringRegisterController {
 	@ModelAttribute(name = "navTitle")
 	public String setNavTitle() {
 		
-		return "日報入力(新規登録)";
+		return "入庫入力(新規登録)";
 	}
 	
 	/**

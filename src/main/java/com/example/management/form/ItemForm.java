@@ -20,11 +20,11 @@ public class ItemForm {
 	
 	private String code; // 商品コード
 	
-	@Pattern(groups = ValidGroup1.class, regexp = "^[^\\p{javaWhitespace}]+", message = "空白文字は使用できません。")
+	@Pattern(regexp = "^[^\\p{javaWhitespace}]+", message = "空白文字は使用できません。")
 	@Size(min = 1, max = 32)
 	private String name; // 品名	
 	
-	@NotNull(groups = ValidGroup1.class, message="入力して下さい。")
-	@PositiveOrZero(groups = ValidGroup2.class, message = "「0」以上の数値を設定して下さい。")
+	@NotNull(message="入力して下さい。")
+	@PositiveOrZero(message = "「0」以上の数値を設定して下さい。")
 	private Long unitPrice; // 単価
 }

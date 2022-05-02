@@ -148,6 +148,9 @@ public class OrderService {
 		// for内で受注明細フォームから受注明細クラスへマッピングする。
 		for (OrderDetailForm orderDetailForm : orderDetailForms) {
 			
+			// 削除済・出荷完了済の両方合致する場合に、flagCountのインクリメントが重複されない様にする為のチェック変数。
+			Short flagCountCheck = 0;
+			
 			// モデルマッピングの重複項目を除外。
 			modelMapper.getConfiguration().setAmbiguityIgnored(true);
 			modelMapper.typeMap(OrderDetailForm.class, OrderDetail.class).addMappings(mapper -> mapper.skip(OrderDetail::setOrder));
@@ -168,6 +171,8 @@ public class OrderService {
 			} else {
 				
 				flagCount ++;
+				
+				flagCountCheck = 1;
 			}
 			
 			// 出荷済計を取得。
@@ -182,7 +187,11 @@ public class OrderService {
 				// 出荷完了日を更新。
 				orderDetailMapper.updateCompletion(orderDetail);
 				
-				flagCount++;
+				// 削除済みに反応して、カウンタを既にインクリメントしている場合は、カウンタを加算しない。
+				if (flagCountCheck != 1) {
+					
+					flagCount++;
+				}
 			} else {
 				
 				// 全明細行が出荷完了ではない為、フラグを0にする。

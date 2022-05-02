@@ -64,8 +64,6 @@ public class ProgressListController {
 		// 製作クラス内の日報クラスリストを、テンプレート表示用に整形して渡す。
 		model.addAttribute("productions", productionService.adjustProductions(productions));
 		
-		System.out.println("テスト" + model.getAttribute("productions"));
-		
 		return "progresses/list";
 	}
 }

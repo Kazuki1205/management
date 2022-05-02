@@ -96,7 +96,7 @@ public class ItemEditController {
 	 * @return　商品編集テンプレート/商品リストへリダイレクト
 	 */
 	@PostMapping("/item/edit/update")
-	public String update(@Validated(ValidOrder.class) @ModelAttribute("itemForm") ItemForm itemForm, 
+	public String update(@Validated @ModelAttribute("itemForm") ItemForm itemForm, 
 						 BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 		
 		// 商品フォームのバリデーションチェックに引っかかった場合、エラーメッセージを表示。

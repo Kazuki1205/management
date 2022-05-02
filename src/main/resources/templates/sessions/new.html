@@ -4,13 +4,31 @@
 	  layout:decorate="~{layouts/layout}">
 
 <body>
-	<div layout:fragment="contents"></h1>
-		<form method="post" th:action=@{/login}>
-			<label for="username">社員ID</label><input type="text" id="username" name="username" />
-			<label for="password">パスワード</label><input type="password" id="password" name="password" />
-			<input type="submit" value="ログイン" />
-		</form>
+	<div layout:fragment="contents">
 		<a th:href="@{/}">トップページ</a> 
+		<form method="post" th:action=@{/login}>
+			<table class="table table-borderd table-login">
+				<tr>
+					<th>
+						<label for="username">社員ID</label>
+					</th>
+					<td>
+						<input type="text" id="username" name="username" />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="password">パスワード</label>
+					</th>
+					<td>
+						<input type="password" id="password" name="password" />
+					</td>
+				</tr>
+			</table>
+			<div class="input-register">
+				<input type="submit" value="ログイン" />
+			</div>
+		</form>
 	</div>
 </body>
 </html>

@@ -4,13 +4,15 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
+		<a th:href="@{/storing/log}">入庫履歴に戻る</a>
 		<form method="post" th:action="@{/storing/register/new}" th:object="${storingForm}">
 		
 			<div layout:replace="~{storings/common :: table}"></div>
 			
-			<input type="submit" value="新規登録" id="form" />
+			<div class="input-register">
+				<input type="submit" value="新規登録" id="form" />
+			</div>
 		</form>
-		<a th:href="@{/storing/log}">入庫履歴に戻る</a>
 	</div>
 </body>
 </html>

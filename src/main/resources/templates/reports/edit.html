@@ -5,18 +5,22 @@
 
 <body>
 	<div layout:fragment="contents">
+		<a th:href="@{/report/log}">日報履歴に戻る</a>
 		<form method="post" th:action="@{/report/edit/update}" th:object="${reportForm}">
 			<input type="hidden" th:field="*{id}" />
 		
 			<div layout:replace="~{reports/common :: table}"></div>
 			
-			<input type="submit" value="更新" id="form" />
+			<div class="input-register">
+				<input type="submit" value="更新" id="form" />
+			</div>
 		</form>
 		<form method="post" th:action="@{/report/edit/delete}" th:object="${reportForm}">
 			<input type="hidden" th:field="*{id}" />
-			<input type="submit" value="削除" id="form-delete" />
+			<div class="input-register">
+				<input type="submit" value="削除" id="form-delete" />
+			</div>
 		</form>
-		<a th:href="@{/report/log}">日報履歴に戻る</a>
 	</div>
 </body>
 </html>

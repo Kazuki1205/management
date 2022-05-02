@@ -68,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	.antMatchers("/production/register**", "/production/edit**", "/shipping/register**").hasAnyRole("ADMIN", "OFFICE")
         	
         	// ADMIN・FIELD権限のみ許可
-        	.antMatchers("/report/register**", "/report/edit**").hasAnyRole("FIELD")
+        	.antMatchers("/report/register**", "/report/edit**").hasAnyRole("ADMIN", "FIELD")
         	
         	// ADMIN・SALE権限のみ許可
         	.antMatchers("/order/register**", "/order/edit**").hasAnyRole("ADMIN", "SALE")

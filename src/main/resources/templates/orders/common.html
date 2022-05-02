@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" 
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <div layout:fragment="table">
-	<table class="table table-bordered">
+	<table class="table table-bordered table-register">
 		<tr>
 			<th>
 				<label for="orderNumber">受注番号</label>
@@ -38,7 +38,7 @@
 		</tr>
 	</table>
 	<hr>
-	<table class="table table-bordered">
+	<table class="table table-bordered" th:classappend="${editFlag} == null ? 'table-order-detail' : 'table-order-detail-edit' ">
 		<thead>
 		 	<tr>
 		 		<th>明細番号</th>
@@ -56,8 +56,13 @@
 		<tbody>
 			<tr th:each="orderDetailForm, stat : *{orderDetailForms}" th:class="*{orderDetailForms[__${stat.index}__].invalid} == 1 ? 'bg-secondary' : '' ">
 				<td>
-					<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].detailId}"/>
-					<span th:text="*{orderDetailForms[__${stat.index}__].detailId}"></span>
+					<th:block th:if="${editFlag} == null">
+						<span th:text="${stat.count}"></span>
+					</th:block>
+					<th:block th:if="${editFlag} == 1">
+						<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].detailId}"/>
+						<span th:text="*{orderDetailForms[__${stat.index}__].detailId}"></span>
+					</th:block>
 				</td>
 				<td>
 					<th:block th:if="${editFlag} == null">
@@ -74,7 +79,13 @@
 					</th:block>
 				</td>
 				<td>
-					<input type="number" th:field="*{orderDetailForms[__${stat.index}__].unitPrice}" class="bg-secondary" th:data-unit-price="${stat.index}" readonly />
+					<th:block th:if="${editFlag} == null">
+						<input type="number" th:field="*{orderDetailForms[__${stat.index}__].unitPrice}" class="bg-secondary" th:data-unit-price="${stat.index}" readonly />
+					</th:block>
+					<th:block th:if="${editFlag} == 1">
+						<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].unitPrice}" th:data-unit-price="${stat.index}" />
+						<span th:text="*{orderDetailForms[__${stat.index}__].unitPrice}"></span>
+					</th:block>
 				</td>
 				<td>
 					<input type="number" th:field="*{orderDetailForms[__${stat.index}__].orderQuantity}" class="dom-orderQuantity" th:data-order-quantity="${stat.index}" min=1 
@@ -107,7 +118,9 @@
 		</tbody>
 	</table>
 	<th:block th:if="${editFlag} == null">
-		<button type="submit" name="add" th:formaction="@{/order/register}">追加</button>
+		<div class="input-register">
+			<button type="submit" name="add" th:formaction="@{/order/register}">追加</button>
+		</div>
 	</th:block>
 </div>
 </html>

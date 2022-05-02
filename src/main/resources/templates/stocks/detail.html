@@ -4,7 +4,8 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents" th:object="${stock}">
-		<table class="table table-borderd">
+		<a th:href="@{/stock/list}">在庫一覧に戻る</a>
+		<table class="table table-borderd table-register">
 			<tr>
 				<th>商品コード</th>
 				<td th:text="*{item.code}"></td>
@@ -32,8 +33,8 @@
 			</tr>
 		</table>
 		<hr>
-		<span class="h5">受注状況</span>
-		<table class="table table-borderd">
+		<p class="text-center h2">注残状況</p>
+		<table class="table table-borderd table-detail">
 			<thead>
 				<tr>
 					<th>受注番号</th>
@@ -63,7 +64,6 @@
 				</th:block>
 			</tbody>
 		</table>	
-		<a th:href="@{/stock/list}">在庫一覧に戻る</a>
 	</div>
 </body>
 </html>

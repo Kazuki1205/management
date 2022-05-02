@@ -4,7 +4,8 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
-		<table class="table table-borderd" th:object="${customer}">
+		<a th:href="@{/customer/list}">顧客マスタに戻る</a>
+		<table class="table table-borderd table-register" th:object="${customer}">
 			<tr>
 				<th>顧客コード</th>
 				<td th:text="*{code}" />
@@ -46,7 +47,6 @@
 				<td th:text="*{invalid} == 0 ? '' : '済' " />
 			</tr>
 		</table>
-		<a th:href="@{/customer/list}">顧客マスタに戻る</a>
 	</div>
 </body>
 </html>

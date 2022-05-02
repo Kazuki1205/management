@@ -4,14 +4,16 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
+		<a th:href="@{/shipping/log}">出荷履歴に戻る</a>
 		<form method="post" th:action="@{/shipping/register/new}" th:object="${shippingForm}">
 			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 		
 			<div layout:replace="~{shippings/common :: table}"></div>
 			
-			<button type="submit" id="form" th:formaction="@{/shipping/register/new}">新規登録</button>
+			<div class="input-register">
+				<button type="submit" id="form" th:formaction="@{/shipping/register/new}">新規登録</button>
+			</div>
 		</form>
-		<a th:href="@{/shipping/log}">出荷履歴に戻る</a>
 	</div>
 </body>
 </html>

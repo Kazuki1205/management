@@ -24,6 +24,22 @@ ul {
 	table-layout: fixed;
 }
 
+.table-login {
+	width: 50%;
+	margin: auto;
+	table-layout: fixed;
+}
+
+.table-login th {
+	text-align: right;
+	width: 50%;
+}
+
+.table-login td {
+	text-align: left;
+	width: 50%;
+}
+
 .table-register th {
 	text-align: right;
 	width: 30%;
@@ -34,7 +50,90 @@ ul {
 	width: 70%;
 }
 
+.table-detail {
+	width: 50%;
+	margin: auto;
+	text-align: center;
+}
+
 .input-register {
 	margin-top: 30px;
 	text-align: center;
+}
+
+.table-order-detail {
+	width: 80%;
+	margin: auto;
+	text-align: center;
+	table-layout: fixed;
+}
+
+.table-order-detail th:nth-of-type(1) {
+	width: 5%;
+}
+
+.table-order-detail th:nth-of-type(2) {
+	width: 30%;
+}
+
+.table-order-detail th:nth-of-type(3) {
+	width: 10%;
+}
+
+.table-order-detail th:nth-of-type(4) {
+	width: 20%;
+}
+
+.table-order-detail th:nth-of-type(5) {
+	width: 10%;
+}
+
+.table-order-detail th:nth-of-type(6) {
+	width: 5%;
+}
+
+.table-order-detail-edit {
+	width: 80%;
+	margin: auto;
+	text-align: center;
+	table-layout: fixed;
+}
+
+.table-order-detail-edit th:nth-of-type(1) {
+	width: 5%;
+}
+
+.table-order-detail-edit th:nth-of-type(2) {
+	width: 10%;
+}
+
+.table-order-detail-edit th:nth-of-type(3) {
+	width: 10%;
+}
+
+.table-order-detail-edit th:nth-of-type(4) {
+	width: 15%;
+}
+
+.table-order-detail-edit th:nth-of-type(5) {
+	width: 10%;
+}
+
+.table-order-detail-edit th:nth-of-type(6) {
+	width: 10%;
+}
+
+.table-order-detail-edit th:nth-of-type(7) {
+	width: 10%;
+}
+
+.table-order-detail-edit th:nth-of-type(8) {
+	width: 5%;
+}
+
+.table-shipping-detail {
+	width: 80%;
+	margin: auto;
+	text-align: center;
+	table-layout: fixed;
 }

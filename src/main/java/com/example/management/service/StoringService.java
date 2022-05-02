@@ -35,7 +35,6 @@ public class StoringService {
 	/**
 	 * 入庫テーブルの新規登録、製作テーブルに製番完了フラグ更新、在庫テーブルの実在庫更新
 	 * の3つの処理を行うメソッド。
-	 * 
 	 * DBへ登録
 	 * 
 	 * @param storingForm 入庫フォーム

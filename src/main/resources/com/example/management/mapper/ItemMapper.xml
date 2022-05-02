@@ -54,6 +54,8 @@
 				AND name LIKE '%${name}%' <!-- 引数の商品名がnullでない場合、あいまい検索 -->
 			</if>
 		</where>
+		ORDER BY
+			id ASC <!-- 商品IDの昇順 -->
 	</select>
 	
 	<!-- 引数で受け取ったIDを基に、該当レコードを取得 -->

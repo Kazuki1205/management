@@ -138,6 +138,8 @@
 				AND ite.name LIKE '%${itemName}%' <!-- 引数の商品名がnullでない場合、あいまい検索 -->
 			</if>
 		</where>
+		ORDER BY
+			pro.id ASC
 	</select>
 	
 	<!-- 引数で受け取った製作番号・商品コード・商品名を基に、あいまい検索を掛ける。削除済み・完了済みを除く -->

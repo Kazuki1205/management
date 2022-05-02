@@ -168,11 +168,11 @@
 					order_number, detail_id <!-- 受注番号・受注明細IDでグループ化 -->
 			) shi <!-- 出荷テーブルの出荷数計を計算したサブクエリ -->
 			ON
-				o.order_number = shi.order_number
+				o.order_number = shi.order_number <!-- 受注番号で結合 -->
 			AND
-				o.detail_id = shi.detail_id
+				o.detail_id = shi.detail_id <!-- 明細番号で結合 -->
 			ORDER BY
-				o.order_number ASC, 
+				o.order_number ASC, <!-- 受注番号、明細番号の昇順 -->
 				o.detail_id ASC
 		) ordD <!-- サブクエリの受注明細テーブル -->
 		ON
@@ -185,7 +185,7 @@
 		<!-- SQL文をインクルード -->
 		<include refid="orderSelect"></include>
 		WHERE
-			ord.order_number = #{orderNumber}
+			ord.order_number = #{orderNumber} <!-- 受注番号で結合 -->
 	</select>
 	
 	<!-- 引数で受け取った受注番号を基に、該当レコードを取得する。削除済み・出荷完了済みを除く -->
@@ -194,11 +194,11 @@
 		<!-- SQL文をインクルード -->
 		<include refid="orderSelect"></include>
 		WHERE
-			ord.order_number = #{orderNumber}
+			ord.order_number = #{orderNumber} <!-- 引数の受注番号と一致した場合 -->
 		AND 
-			ord.invalid = 0
+			ord.invalid = 0 <!-- 未削除のみ -->
 		AND
-			ord.completion_date IS NULL	
+			ord.completion_date IS NULL <!-- 未完了のみ -->
 	</select>
 
 	<!-- 引数で受け取った製作番号・商品コード・商品名を基に、あいまい検索を掛ける -->
@@ -208,22 +208,24 @@
 		<include refid="orderSelect"></include>
 		<where>
 			<if test="orderNumber != null">
-				ord.order_number LIKE '%${orderNumber}%'
+				ord.order_number LIKE '%${orderNumber}%' <!-- 引数の受注番号と一致した場合 -->
 			</if>
 			<if test="customerCode != null">
-				AND cus.code LIKE '%${customerCode}%'
+				AND cus.code LIKE '%${customerCode}%' <!-- 引数の顧客コードと一致した場合 -->
 			</if>
 			<if test="customerName != null">
-				AND cus.name LIKE '%${customerName}%'
+				AND cus.name LIKE '%${customerName}%' <!-- 引数の顧客名と一致した場合 -->
 			</if>
 			<if test="departmentId != null">
-				AND empH.d_id = #{departmentId}
+				AND empH.d_id = #{departmentId} <!-- 引数の部署IDと一致した場合 -->
 			</if>
 			<if test="employeeName != null">
-				AND empH.e_name LIKE '%${employeeName}%'
+				AND empH.e_name LIKE '%${employeeName}%' <!-- 引数の顧客名と一致した場合 -->
 			</if>
 		</where>
-			
+		ORDER BY
+			ord.id ASC, <!-- 受注IDと明細番号の昇順 -->
+			ordD.o_detail_id ASC
 	</select>
 	
 	<!-- 引数で受け取ったIDを基に、該当レコードを取得。 -->
@@ -232,7 +234,7 @@
 		<!-- SQL文をインクルード -->
 		<include refid="orderSelect"></include>
 		WHERE
-			ord.id = #{id}
+			ord.id = #{id} <!-- 引数の受注IDと一致した場合 -->
 	</select>
 	
 	<!-- 引数で受け取ったIDを基に、該当レコードを取得。削除済み・出荷完了済みを除く -->
@@ -241,11 +243,11 @@
 		<!-- SQL文をインクルード -->
 		<include refid="orderSelect"></include>
 		WHERE
-			ord.id = #{id}
+			ord.id = #{id} <!-- 引数の受注IDと一致した場合 -->
 		AND 
-			ord.invalid = 0
+			ord.invalid = 0 <!-- 未削除のみ -->
 		AND
-			ord.completion_date IS NULL
+			ord.completion_date IS NULL <!-- 未完了のみ -->
 	</select>
 	
 	<!-- 受注テーブルの全レコードを取得する。削除済み・出荷完了済みを除く -->
@@ -254,27 +256,29 @@
 		<!-- SQL文をインクルード -->
 		<include refid="orderSelect"></include>
 		WHERE
-			ord.invalid = 0
+			ord.invalid = 0 <!-- 未削除のみ -->
 		AND
-			ord.completion_date IS NULL
+			ord.completion_date IS NULL <!-- 未完了のみ -->
 		ORDER BY
-			ord.id ASC
+			ord.id ASC <!-- 受注IDの昇順 -->
 	</select>
 	
+	<!-- 受注テーブルのレコード数を取得する。 -->
 	<select id="countAll" resultType="Integer">
 		SELECT COUNT
 			(*)
 		FROM
-			orders
+			orders <!-- 受注テーブル -->
 	</select>
 	
+	<!-- 受注番号の最新番号を取得する。 -->
 	<select id="getOrderIdByLatest" resultType="Long">
 		SELECT
 			MAX(id)
 		FROM
 			orders <!-- 受注テーブル -->
 		GROUP BY
-			id
+			id <!-- 受注IDでグループ化 -->
 	</select>
 	
 	<!-- 引数で受け取った受注クラスを基にレコードを挿入する。 -->
@@ -300,7 +304,7 @@
 			invalid = 1, 
 			updated_at = #{updatedAt}
 		WHERE
-			id = #{id}
+			id = #{id} <!-- 引数の受注IDと一致した場合 -->
 	</update>
 	
 	<!-- 引数で受け取った受注クラスを基に、該当行の出荷完了日を更新する。 -->
@@ -311,7 +315,7 @@
 			completion_date = #{updatedAt}, 
 			updated_at = #{updatedAt}
 		WHERE
-			id = #{id}
+			id = #{id} <!-- 引数の受注IDと一致した場合 -->
 	</update>
 
 </mapper>

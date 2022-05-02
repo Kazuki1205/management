@@ -4,20 +4,18 @@
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <settings>
-        <!-- 検索結果のフェッチサイズを制御するためのドライバヒントを設定します。 
-        このパラメータ値はクエリ毎の設定で上書きできます。 -->
+        <!-- 検索結果のフェッチサイズを制御するためのドライバヒントを設定。 
+        このパラメータ値はクエリ毎の設定で上書き。 -->
         <setting name="jdbcTypeForNull" value="NULL"/>
         
-        <!-- 引数の JDBC タイプが未指定の場合、null 値に対して割り当てられる JDBC タイプを設定します。
-        ドライバによっては列に対する JDBC タイプの指定が必須な場合もありますが、
-        NULL, VARCHAR, OTHER などの汎用の型を指定すれば動作するものもあります。 -->
+        <!-- 引数の JDBC タイプが未指定の場合、null 値に対して割り当てられる JDBC タイプを設定。 -->
         <setting name="defaultFetchSize" value="100"/>
         
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
     
-    <!-- Java タイプに対する短縮名です。 
-    XML の中でクラスを指定する際、完全修飾名の記述を最小限で済ませることができます。 -->
+    <!-- Java タイプに対する短縮名。 
+    XML の中でクラスを指定する際、完全修飾名の記述を最小限にする。 -->
     <typeAliases>
         <package name="com.example.management.model"/>
     </typeAliases>

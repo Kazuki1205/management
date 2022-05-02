@@ -45,7 +45,7 @@
 		<!-- SQL文をインクルード -->
 		<include refid="customerSelect"></include>
 		WHERE
-			invalid = 0
+			invalid = 0 <!-- 未削除のみ -->
 	</select>
 	
 	<!-- 引数で受け取った顧客コード・顧客名・住所を基に、あいまい検索を掛ける -->
@@ -70,6 +70,8 @@
 				)
 			</if>
 		</where>
+		ORDER BY
+			id ASC <!-- 顧客IDの昇順 -->
 	</select>
 	
 	<!-- 引数で受け取ったIDを基に、該当レコードを取得する。 -->

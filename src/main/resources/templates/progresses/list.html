@@ -6,7 +6,7 @@
 	<div layout:fragment="contents">
 		<div class="container-fulid">
 			<div class="row">
-				<div class="col-md-3 border-end text-center">
+				<div class="col-md-2 border-end text-center">
 					<h3>検索条件</h3>
 					<hr>
 					<form th:action="@{/progress/list}" method="get" th:object="${progressForm}">
@@ -27,7 +27,7 @@
 						<input type="submit" value="検索" />
 					</form>	
 				</div>
-				<div class="col-md-9">
+				<div class="col-md-10">
 					<table id="DataTables" class="text-center master-list table table-bordered">
 						<thead>
 							<tr class="border-3">

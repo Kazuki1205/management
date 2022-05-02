@@ -4,7 +4,8 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
-		<table class="table table-borderd" th:object="${shipping}">
+		<a th:href="@{/shipping/log}">出荷履歴に戻る</a>
+		<table class="table table-borderd table-register" th:object="${shipping}">
 			<tr>
 				<th>受注番号</th>
 				<td th:text="*{order.orderNumber}"></td>
@@ -58,7 +59,6 @@
 				<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>
 			</tr>
 		</table>
-		<a th:href="@{/shipping/log}">出荷履歴に戻る</a>
 	</div>
 </body>
 </html>

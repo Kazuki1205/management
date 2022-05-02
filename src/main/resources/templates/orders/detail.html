@@ -4,8 +4,9 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
+		<a th:href="@{/order/log}">受注履歴に戻る</a>
 		<th:block th:object="${order}">
-			<table class="table table-borderd">
+			<table class="table table-borderd table-register">
 				<tr>
 					<th>受注番号</th>
 					<td th:text="*{orderNumber}" />
@@ -48,7 +49,8 @@
 				</tr>		
 			</table>
 			<hr>
-			<table class="table table-borderd">
+			<p class="text-center h2">受注明細一覧</p>
+			<table class="table table-borderd table-detail">
 				<thead>
 					<tr>
 						<th>明細番号</th>
@@ -95,7 +97,6 @@
 				</tbody>
 			</table>
 		</th:block>
-		<a th:href="@{/order/log}">受注履歴に戻る</a>
 	</div>
 </body>
 </html>

@@ -182,14 +182,21 @@ public class ProductionService {
 				tempReport.add(new Report());
 			}
 			
-			// for内で製作クラス内の日報クラスを回す。
-			for (Report report : production.getReports()) {
-				
-				// 部署IDを取得
-				Long departmentId = report.getDepartmentId();
-				
-				// 部署テーブルの主キーを基に、、「部署ID2～8(切削～梱包)」を、用意したリスト「index0～6」にセット。
-				tempReport.set((int)(departmentId - 2), report);
+			// 製作クラスから日報リストを取得する。
+			List<Report> reports = production.getReports();
+			
+			// 製作番号に対して日報がない場合は、for内の処理を飛ばす。
+			if (reports.get(0).getProductionId() != null) {
+			
+				// for内で製作クラス内の日報クラスを回す。
+				for (Report report : reports) {
+					
+					// 部署IDを取得
+					Long departmentId = report.getDepartmentId();
+					
+					// 部署テーブルの主キーを基に、、「部署ID2～8(切削～梱包)」を、用意したリスト「index0～6」にセット。
+					tempReport.set((int)(departmentId - 2), report);
+				}
 			}
 			
 			// 整形後の日報リストをセットする。

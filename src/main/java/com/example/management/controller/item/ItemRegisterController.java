@@ -74,7 +74,7 @@ public class ItemRegisterController {
 	 * @return 商品新規登録テンプレート/リダイレクト
 	 */
 	@PostMapping("/item/register/new")
-	public String create(@Validated(ValidOrder.class) @ModelAttribute("itemForm") ItemForm itemForm, 
+	public String create(@Validated @ModelAttribute("itemForm") ItemForm itemForm, 
 						 BindingResult bindingResult, 
 						 RedirectAttributes redirectAttributes, 
 						 Model model) {

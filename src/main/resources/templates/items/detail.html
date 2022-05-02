@@ -4,7 +4,8 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
-		<table class="table table-borderd" th:object="${item}">
+		<a th:href="@{/item/list}">商品マスタに戻る</a>
+		<table class="table table-borderd table-register" th:object="${item}">
 			<tr>
 				<th>商品コード</th>
 				<td th:text="*{code}" />
@@ -30,7 +31,6 @@
 				<td th:text="*{invalid} == 0 ? '' : '済'" />
 			</tr>
 		</table>
-		<a th:href="@{/item/list}">商品マスタに戻る</a>
 	</div>
 </body>
 </html>

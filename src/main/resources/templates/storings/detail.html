@@ -4,7 +4,8 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
-		<table class="table table-borderd" th:object="${storing}">
+		<a th:href="@{/storing/log}">入庫履歴に戻る</a>
+		<table class="table table-borderd table-register" th:object="${storing}">
 			<tr>
 				<th>製作番号</th>
 				<td th:text="*{production.lotNumber}" />
@@ -30,7 +31,6 @@
 				<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}" />
 			</tr>
 		</table>
-		<a th:href="@{/storing/log}">入庫履歴に戻る</a>
 	</div>
 </body>
 </html>

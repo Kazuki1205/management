@@ -429,7 +429,7 @@ INSERT INTO departments (code, name) VALUES
 	
 -- 社員データ --
 INSERT INTO employees (username, password, name, department_id, authority) VALUES 
-	('0001', '$2a$10$FTvFiXdJvVsngfi5gdwjZ.NRo9vz.FZ61LcDHUOogQddwJWwgGdJK', 'admin', 1, 'ROLE_ADMIN'),
+	('0001', '$2a$10$FTvFiXdJvVsngfi5gdwjZ.NRo9vz.FZ61LcDHUOogQddwJWwgGdJK', 'admin', 2, 'ROLE_ADMIN'),
 	('0002', '$2a$10$4q2IFjpQhI/fCJlVdTXtVO/dirmor6FajB2h1CteSAXrJ.diNucoC', '社員A', 1, 'ROLE_OFFICE'),
    	('0003', '$2a$10$aOd3FYnQGWgzDvfNHZimxOURCpYyYK/9lkFUoyqGsiA60xQ8cmVvu', '社員B', 2, 'ROLE_FIELD'),
     ('0004', '$2a$10$FgS1bDHplMGNG2VWtibej.yg6l.HHZrgmY6N1ZLK0zVU9EA5koq6i', '社員C', 3, 'ROLE_FIELD'),

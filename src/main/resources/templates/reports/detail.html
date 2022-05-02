@@ -4,7 +4,8 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
-		<table class="table table-borderd" th:object="${report}">
+		<a th:href="@{/report/log}">日報履歴に戻る</a>
+		<table class="table table-borderd table-register" th:object="${report}">
 			<tr>
 				<th>製作番号</th>
 				<td th:text="*{production.lotNumber}" />
@@ -54,7 +55,6 @@
 				<td th:text="*{invalid} == 0 ? '' : '済'" />
 			</tr>		
 		</table>
-		<a th:href="@{/report/log}">日報履歴に戻る</a>
 	</div>
 </body>
 </html>

@@ -4,7 +4,8 @@
 	  layout:decorate="~{layouts/layout}">
 <body>
 	<div layout:fragment="contents">
-		<table class="table table-borderd" th:object="${department}">
+		<a th:href="@{/department/list}">部署マスタに戻る</a>
+		<table class="table table-borderd table-register" th:object="${department}">
 			<tr>
 				<th>部署コード</th>
 				<td th:text="*{code}" />
@@ -32,7 +33,7 @@
 		</table>
 		<hr>
 		<p class="text-center h2">所属社員一覧</p>
-		<table class="table table-borderd">
+		<table class="table table-borderd table-detail">
 			<thead>
 				<tr>
 					<th>社員ID</th>
@@ -46,7 +47,6 @@
 				</tr>
 			</tbody>
 		</table>
-		<a th:href="@{/department/list}">部署マスタに戻る</a>
 	</div>
 </body>
 </html>

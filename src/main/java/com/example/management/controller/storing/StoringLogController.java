@@ -22,6 +22,19 @@ public class StoringLogController {
 	
 	@Autowired
 	private StoringMapper storingMapper;
+	
+	/**
+	 * 各ハンドラメソッド実行前に呼び出されるメソッド
+	 * ナビゲーションバーの名前を設定する。
+	 * ※modelに自動的にaddAttributeされる。
+	 * 
+	 * @return ナビゲーションバータイトル
+	 */
+	@ModelAttribute(name = "navTitle")
+	public String setNavTitle() {
+
+		return "入庫履歴";
+	}
 
 	/**
 	 * 入庫履歴一覧を表示

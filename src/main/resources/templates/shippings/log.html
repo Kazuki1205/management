@@ -6,7 +6,7 @@
 	<div layout:fragment="contents">
 		<div class="container-fulid">
 			<div class="row">
-				<div class="col-md-3 border-end text-center">
+				<div class="col-md-2 border-end text-center">
 					<h3>検索条件</h3>
 					<hr>
 					<form th:action="@{/shipping/log}" method="get" th:object="${shippingForm}">
@@ -43,7 +43,7 @@
 						<input type="submit" value="検索" />
 					</form>	
 				</div>
-				<div class="col-md-9">
+				<div class="col-md-10">
 					<a th:href="@{/shipping/register}" class="h4">新規登録</a>
 					<table id="DataTables" class="text-center master-log table table-bordered">
 						<thead>

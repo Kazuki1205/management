@@ -261,14 +261,14 @@
 		<include refid="stockSelect"></include>
 		<where>
 			<if test="itemCode != null">
-				ite.code LIKE '%${itemCode}%'
+				ite.code LIKE '%${itemCode}%' <!-- 引数の商品コードと一致した場合 -->
 			</if>
 			<if test="itemName != null">
-				AND ite.name LIKE '%${itemName}%'
+				AND ite.name LIKE '%${itemName}%' <!-- 引数の商品名と一致した場合 -->
 			</if>
 		</where>
 		ORDER BY
-			sto.id ASC
+			sto.id ASC <!-- 在庫IDの昇順 -->
 	</select>
 	
 	<!-- 引数で受け取った在庫IDを基に、該当テーブルの情報を取得する。 -->
@@ -277,9 +277,9 @@
 		<!-- SQL文をインクルード -->
 		<include refid="stockSelect"></include>
 		WHERE
-			sto.id = #{id}
+			sto.id = #{id} <!-- 引数の在庫IDと一致した場合 -->
 		ORDER BY
-			ordD.order_number ASC, 
+			ordD.order_number ASC, <!-- 受注番号と明細番号の昇順 -->
 			ordD.detail_id ASC
 	</select>
 
@@ -290,7 +290,7 @@
 		FROM
 			stocks <!-- 在庫テーブル -->
 		WHERE
-			item_id = #{itemId}
+			item_id = #{itemId} <!-- 引数の商品IDと一致した場合 -->
 	</select>
 
 	<!-- 引数の入庫クラスの入庫数を、商品IDと合致したレコードの実在庫に加算する。 -->

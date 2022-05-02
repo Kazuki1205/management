@@ -65,7 +65,6 @@ ul {
 	width: 80%;
 	margin: auto;
 	text-align: center;
-	table-layout: fixed;
 }
 
 .table-order-detail th:nth-of-type(1) {
@@ -96,7 +95,6 @@ ul {
 	width: 80%;
 	margin: auto;
 	text-align: center;
-	table-layout: fixed;
 }
 
 .table-order-detail-edit th:nth-of-type(1) {
@@ -135,5 +133,4 @@ ul {
 	width: 80%;
 	margin: auto;
 	text-align: center;
-	table-layout: fixed;
 }

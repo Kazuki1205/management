@@ -21,5 +21,4 @@ public class EmployeeHistory {
 	private Department department; // 部署クラス
 	
 	private LocalDateTime updatedAt; // 更新日時
-
 }

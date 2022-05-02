@@ -19,7 +19,7 @@ public class MapperAspect {
 	
 	/**
 	 * com.example.management.mapperパッケージの
-	 * update/deleteメソッドの実行前に処理。各メソッドへ引数を渡す。
+	 * update*, delete*メソッドの実行前に処理。各メソッド第1引数(モデルクラス)のupdateAtに現在日時をセットする。
 	 * 
 	 * @throws Throwable 例外のスーパークラス 
 	 */

@@ -125,33 +125,35 @@
 		<include refid="shippingSelect"></include>
 		<where>
 			<if test="orderNumber != null">
-				ord.o_order_number LIKE '%${orderNumber}%'
+				ord.o_order_number LIKE '%${orderNumber}%' <!-- 引数の受注番号と一致した場合 -->
 			</if>
 			<if test="detailId != null">
-				AND ordD.o_detail_id = #{detailId}
+				AND ordD.o_detail_id = #{detailId} <!-- 引数の明細番号と一致した場合 -->
 			</if>
 			<if test="customerCode != null">
-				AND ord.c_code LIKE '%${customerCode}%'
+				AND ord.c_code LIKE '%${customerCode}%' <!-- 引数の顧客コードと一致した場合 -->
 			</if>
 			<if test="customerName != null">
-				AND ord.c_name LIKE '%${customerName}%'
+				AND ord.c_name LIKE '%${customerName}%' <!-- 引数の顧客名と一致した場合 -->
 			</if>
 			<if test="address != null">
 				AND (
-					ord.c_first_address LIKE '%${address}%'
+					ord.c_first_address LIKE '%${address}%' <!-- 引数の住所と一致した場合 -->
 				OR
-					ord.c_second_address LIKE '%${address}%'
+					ord.c_second_address LIKE '%${address}%' <!-- 引数の住所と一致した場合 -->
 				OR
-					ord.c_third_address LIKE '%${address}%'
+					ord.c_third_address LIKE '%${address}%' <!-- 引数の住所と一致した場合 -->
 				)
 			</if>
 			<if test="itemCode != null">
-				AND ordD.i_code LIKE '%${itemCode}%'
+				AND ordD.i_code LIKE '%${itemCode}%' <!-- 引数の商品コードと一致した場合 -->
 			</if>
 			<if test="itemName != null">
-				AND ordD.i_name LIKE '%${itemName}%'
+				AND ordD.i_name LIKE '%${itemName}%' <!-- 引数の商品名と一致した場合 -->
 			</if>
 		</where>
+		ORDER BY
+			shi.id ASC <!-- 出荷IDの昇順 -->
 	</select>
 	
 	<!-- 引数で受け取った出荷IDを基に、該当レコードを取得する。 -->
@@ -160,7 +162,7 @@
 		<!-- SQL文をインクルード -->
 		<include refid="shippingSelect"></include>
 		WHERE
-			shi.id = #{id}
+			shi.id = #{id} <!-- 引数の出荷IDと一致した場合 -->
 	</select>
 	
 	<!-- 引数で受け取った受注番号・受注明細IDでグループ化し、集計した出荷数を返す。 -->

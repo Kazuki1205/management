@@ -128,7 +128,7 @@
 			</if>
 		</where>
 		ORDER BY
-			rep.updated_at ASC
+			rep.id ASC <!-- 日報IDの昇順 -->
 	</select>
 	
 	<!-- 引数で受け取った日報IDを基に、該当レコードを取得 -->

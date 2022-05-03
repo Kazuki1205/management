@@ -1,6 +1,7 @@
 package com.example.management.controller.customer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.CustomerForm;
 import com.example.management.mapper.CustomerMapper;
+import com.example.management.model.Employee;
 import com.example.management.service.CommonService;
 import com.example.management.service.CustomerService;
 import com.example.management.validation.ValidOrder;
@@ -46,7 +48,7 @@ public class CustomerRegisterController {
 	
 	/**
 	 * 顧客マスタ登録画面を表示
-	 * 
+
 	 * @param itemForm 顧客フォーム ※@ModelAttributeにより、無ければnewされる。
 	 * @param model テンプレートへ渡す情報
 	 * 

@@ -28,7 +28,9 @@
 					</form>	
 				</div>
 				<div class="col-md-10">
-					<a th:href="@{/storing/register}" class="h4">新規登録</a>
+					<th:block sec:authorize="hasRole('ADMIN') or hasRole('OFFICE')">
+						<a th:href="@{/storing/register}" class="h4">入庫入力</a>
+					</th:block>
 					<table id="DataTables" class="text-center master-log table table-bordered">
 						<thead>
 							<tr class="border-3">
@@ -37,8 +39,7 @@
 								<th>商品コード</th>
 								<th>商品名</th>
 								<th>入庫数</th>
-								<th>登録日時</th>
-								<th>更新日時</th>
+								<th>入庫入力日時</th>
 								<th>備考</th>
 							</tr>
 						</thead>
@@ -52,7 +53,6 @@
 								<td th:text="*{production.item.name}"></td>
 								<td th:text="*{storingQuantity}"></td>
 								<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>
-								<td th:text="*{#temporals.format(updatedAt, 'yy/MM/dd HH:mm:ss')}"></td>
 								<td th:text="*{production.completionDate != null ? '製作完了' : production.invalid == 1 ? '製作中止' : '製作中' }"></td>
 							</tr>
 						</tbody>

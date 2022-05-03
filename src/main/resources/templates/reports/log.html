@@ -41,12 +41,16 @@
 					</form>	
 				</div>
 				<div class="col-md-10">
-					<a th:href="@{/report/register}" class="h4">新規登録</a>
+					<th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_FIELD')">
+						<a th:href="@{/report/register}" class="h4">日報入力</a>
+					</th:block>
 					<table id="DataTables" class="text-center master-log table table-bordered">
 						<thead>
 							<tr class="border-3">
 								<th>詳細</th>
-								<th>編集</th>
+								<th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_FIELD')">
+									<th>編集</th>
+								</th:block>
 								<th>製作番号</th>
 								<th>商品コード</th>
 								<th>商品名</th>
@@ -55,7 +59,7 @@
 								<th>不良数</th>
 								<th>部署名</th>
 								<th>社員名</th>
-								<th>登録日時</th>
+								<th>日報入力日時</th>
 								<th>更新日時</th>
 								<th>削除区分</th>
 								<th>備考</th>
@@ -67,11 +71,13 @@
 								<td>
 									<a th:href="@{/report/log/{id}(id=*{id})}">■</a>
 								</td>
-								<td>
-									<th:block th:if="*{invalid == 0 && production.invalid == 0 && production.completionDate == null}">
-										<a th:href="@{/report/edit/{id}(id=*{id})}">●</a>
-									</th:block>
-								</td>
+								<th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_FIELD')">
+									<td>
+										<th:block th:if="*{invalid == 0 && production.invalid == 0 && production.completionDate == null}">
+											<a th:href="@{/report/edit/{id}(id=*{id})}">●</a>
+										</th:block>
+									</td>
+								</th:block>
 								<td th:text="*{production.lotNumber}"></td>
 								<td th:text="*{production.item.code}"></td>
 								<td th:text="*{production.item.name}"></td>

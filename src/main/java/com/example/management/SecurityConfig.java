@@ -65,13 +65,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	.antMatchers("/employee/**", "/department/**").hasRole("ADMIN")
         	
         	// ADMIN・OFFICE権限のみ許可
-        	.antMatchers("/production/register**", "/production/edit**", "/shipping/register**").hasAnyRole("ADMIN", "OFFICE")
+        	.antMatchers("/item/register**", "/item/edit/**", 
+        			     "/customer/register**", "/customer/edit/**", 
+        				 "/production/register**", "/production/edit/**", 
+        				 "/storing/register", 
+        				 "/shipping/register**").hasAnyRole("ADMIN", "OFFICE")
         	
         	// ADMIN・FIELD権限のみ許可
-        	.antMatchers("/report/register**", "/report/edit**").hasAnyRole("ADMIN", "FIELD")
+        	.antMatchers("/report/register**", "/report/edit/**").hasAnyRole("ADMIN", "FIELD")
         	
         	// ADMIN・SALE権限のみ許可
-        	.antMatchers("/order/register**", "/order/edit**").hasAnyRole("ADMIN", "SALE")
+        	.antMatchers("/order/register**", "/order/edit/**").hasAnyRole("ADMIN", "SALE")
         	
         	// 指定したURL形式のみ全て許可。
         	.antMatchers("/", "/login", "/login-failure", "/logout-complete", "/ajax/**").permitAll()

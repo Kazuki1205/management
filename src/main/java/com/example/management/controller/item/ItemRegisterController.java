@@ -1,6 +1,7 @@
 package com.example.management.controller.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.ItemForm;
 import com.example.management.mapper.ItemMapper;
+import com.example.management.model.Employee;
 import com.example.management.service.CommonService;
 import com.example.management.service.ItemService;
 import com.example.management.validation.ValidOrder;

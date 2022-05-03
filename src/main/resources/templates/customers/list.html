@@ -28,12 +28,16 @@
 					</form>	
 				</div>
 				<div class="col-md-10">
-					<a th:href="@{/customer/register}" class="h4">新規登録</a>
+					<th:block sec:authorize="hasRole('ADMIN') or hasRole('OFFICE')">
+						<a th:href="@{/customer/register}" class="h4">新規登録</a>
+					</th:block>
 					<table id="DataTables" class="text-center master-list table table-bordered">
 						<thead>
 							<tr class="border-3">
 								<th>詳細</th>
-								<th>編集</th>
+								<th:block sec:authorize="hasRole('ADMIN') or hasRole('OFFICE')">
+									<th>編集</th>
+								</th:block>
 								<th>顧客コード</th>
 								<th>顧客名</th>
 								<th>郵便番号</th>
@@ -52,11 +56,13 @@
 								<td>
 									<a th:href="@{/customer/list/{id}(id=*{id})}">■</a>
 								</td>
-								<td>
-									<th:block th:if="*{invalid} == 0">
-										<a th:href="@{/customer/edit/{id}(id=*{id})}">●</a>
-									</th:block>
-								</td>
+								<th:block sec:authorize="hasRole('ADMIN') or hasRole('OFFICE')">
+									<td>
+										<th:block th:if="*{invalid} == 0">
+											<a th:href="@{/customer/edit/{id}(id=*{id})}">●</a>
+										</th:block>
+									</td>
+								</th:block>
 								<td th:text="*{code}"></td>
 								<td th:text="*{name}"></td>
 								<td th:text="*{postalCode}"></td>

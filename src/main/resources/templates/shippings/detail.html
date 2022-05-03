@@ -55,7 +55,7 @@
 				<td th:text="|&yen;*{#numbers.formatInteger(orderDetail.itemHistory.unitPrice * shippingQuantity, 3, 'COMMA')}|"></td>
 			</tr>
 			<tr>
-				<th>登録日時</th>
+				<th>出荷手配日時</th>
 				<td th:text="*{#temporals.format(createdAt, 'yy/MM/dd HH:mm:ss')}"></td>
 			</tr>
 		</table>

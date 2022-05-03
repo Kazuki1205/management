@@ -55,7 +55,7 @@
 									<a th:href="@{/employee/list/{id}(id=*{id})}">■</a>
 								</td>
 								<td>
-									<th:block th:if="*{invalid} == 0">
+									<th:block th:if="*{invalid == 0 && id != 1}">
 										<a th:href="@{/employee/edit/{id}(id=*{id})}">●</a>
 									</th:block>
 								</td>

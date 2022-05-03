@@ -132,6 +132,8 @@ CREATE TABLE IF NOT EXISTS productions (
 	PRIMARY KEY (id)
 );
 
+ALTER TABLE productions ADD CONSTRAINT FK_productions_items FOREIGN KEY (item_id) REFERENCES items;
+
 -- 日報テーブル --
 CREATE TABLE IF NOT EXISTS reports (
 	id BIGSERIAL NOT NULL, 
@@ -145,6 +147,9 @@ CREATE TABLE IF NOT EXISTS reports (
 	PRIMARY KEY (id)
 );
 
+ALTER TABLE reports ADD CONSTRAINT FK_reports_productions FOREIGN KEY (production_id) REFERENCES productions;
+ALTER TABLE reports ADD CONSTRAINT FK_reports_employees_history FOREIGN KEY (employee_history_id) REFERENCES employees_history;
+
 -- 在庫テーブル --
 CREATE TABLE IF NOT EXISTS stocks (
 	id BIGSERIAL NOT NULL, 
@@ -156,15 +161,18 @@ CREATE TABLE IF NOT EXISTS stocks (
 	CONSTRAINT quantity_check CHECK(actual_quantity >= 0)
 );
 
+ALTER TABLE stocks ADD CONSTRAINT FK_stocks_items FOREIGN KEY (item_id) REFERENCES items;
+
 -- 入庫テーブル --
 CREATE TABLE IF NOT EXISTS storings (
 	id BIGSERIAL NOT NULL, 
 	production_id BIGINT NOT NULL, 
 	storing_quantity INT NOT NULL, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	PRIMARY KEY (id)
 );
+
+ALTER TABLE storings ADD CONSTRAINT FK_storings_productions FOREIGN KEY (production_id) REFERENCES productions;
 
 -- 受注テーブル --
 CREATE TABLE IF NOT EXISTS orders (
@@ -176,8 +184,11 @@ CREATE TABLE IF NOT EXISTS orders (
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	invalid SMALLINT DEFAULT 0, 
-	PRIMARY KEY (id)
+	PRIMARY KEY (order_number)
 );
+
+ALTER TABLE orders ADD CONSTRAINT FK_orders_customers_history FOREIGN KEY (customer_history_id) REFERENCES customers_history;
+ALTER TABLE orders ADD CONSTRAINT FK_orders_employees_history FOREIGN KEY (employee_history_id) REFERENCES employees_history;
 
 -- 受注明細テーブル --
 CREATE TABLE IF NOT EXISTS orders_details (
@@ -192,6 +203,9 @@ CREATE TABLE IF NOT EXISTS orders_details (
 	PRIMARY KEY (order_number, detail_id)
 );
 
+ALTER TABLE orders_details ADD CONSTRAINT FK_orders_details_orders FOREIGN KEY (order_number) REFERENCES orders;
+ALTER TABLE orders_details ADD CONSTRAINT FK_orders_details_items_history FOREIGN KEY (item_history_id) REFERENCES items_history;
+
 -- 出荷テーブル --
 CREATE TABLE IF NOT EXISTS shippings (
 	id BIGSERIAL NOT NULL, 
@@ -201,6 +215,8 @@ CREATE TABLE IF NOT EXISTS shippings (
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	PRIMARY KEY (id)
 );
+
+ALTER TABLE shippings ADD CONSTRAINT FK_shippings_orders_details FOREIGN KEY (order_number, detail_id) REFERENCES orders_details;
 
 ---- 関数・トリガー設定 ----
 -- 社員履歴テーブル作成関数 --
@@ -758,7 +774,6 @@ INSERT INTO orders_details (order_number, detail_id, item_history_id, order_quan
 	('00000015',4,13,13), 
 	('00000015',5,27,4);
 
-	
 -- 権限付与 --
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO management;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO management;

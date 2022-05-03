@@ -91,21 +91,32 @@ public class EmployeeEditController {
 	/**
 	 * 社員マスタ一覧から選んだID情報を基に
 	 * employeeFormに詰め直して編集画面を表示する
+	 * 社員ID「0001」、admin管理者情報は編集不可とする。
 	 * 
 	 * @param id ID
+	 * @param redirectAttributes リダイレクト先へ渡す情報
 	 * @param model テンプレートへ渡す情報
 	 * 
-	 * @return 社員編集テンプレート
+	 * @return 社員編集テンプレート/社員マスタへリダイレクト
 	 */
 	@GetMapping("/employee/edit/{id}")
-	public String edit(@PathVariable("id") Long id, Model model) {
+	public String edit(@PathVariable("id") Long id, RedirectAttributes redirectAttributes, Model model) {
 		
-		// ID情報を基にDBから社員テーブルを検索し社員クラスとして取得、社員フォームへ詰め替える。
-		EmployeeForm employeeForm = modelMapper.map(employeeMapper.findByIdExcludeInvalid(id), EmployeeForm.class);
+		// admin管理者を編集しようとした場合、エラーメッセージを表示。社員マスタへリダイレクト
+		if (id != 1) {
 		
-		model.addAttribute("employeeForm", employeeForm);
-		
-		return "employees/edit";
+			// ID情報を基にDBから社員テーブルを検索し社員クラスとして取得、社員フォームへ詰め替える。
+			EmployeeForm employeeForm = modelMapper.map(employeeMapper.findByIdExcludeInvalid(id), EmployeeForm.class);
+			
+			model.addAttribute("employeeForm", employeeForm);
+			
+			return "employees/edit";
+		} else {
+			
+			redirectAttributes.addFlashAttribute("messageMap", commonService.getMessageMap("alert-danger", "ADMIN管理者の編集は出来ません。"));
+			
+			return "redirect:/employee/list";
+		}
 	}
 	
 	/**

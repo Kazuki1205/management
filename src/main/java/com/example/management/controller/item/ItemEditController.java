@@ -2,6 +2,7 @@ package com.example.management.controller.item;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.management.form.ItemForm;
 import com.example.management.mapper.ItemMapper;
+import com.example.management.model.Employee;
 import com.example.management.service.CommonService;
 import com.example.management.service.ItemService;
 import com.example.management.validation.ValidOrder;
@@ -48,6 +50,21 @@ public class ItemEditController {
 			
 		return "商品マスタ(更新/削除)";
 	}
+	
+	/**
+	 * 各ハンドラメソッド実行前に呼び出されるメソッド
+	 * 入力フォームを値に置き換える。
+	 * ※modelに自動的にaddAttributeされる。
+	 * 
+	 * @return 編集フラグ
+	 */
+	@ModelAttribute(name = "editFlag")
+	public Integer setEditFlag() {
+		
+		Integer editFlag = 1;
+		
+		return editFlag;
+	}
 
 	/**
 	 * 商品マスタ一覧から選んだID情報を基に
@@ -67,21 +84,6 @@ public class ItemEditController {
 		model.addAttribute("itemForm", itemForm);
 		
 		return "items/edit";
-	}
-	
-	/**
-	 * 各ハンドラメソッド実行前に呼び出されるメソッド
-	 * 入力フォームを値に置き換える。
-	 * ※modelに自動的にaddAttributeされる。
-	 * 
-	 * @return 編集フラグ
-	 */
-	@ModelAttribute(name = "editFlag")
-	public Integer setEditFlag() {
-		
-		Integer editFlag = 1;
-		
-		return editFlag;
 	}
 	
 	/**

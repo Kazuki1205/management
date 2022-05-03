@@ -31,7 +31,6 @@
 			sto.id                    AS sto_id, 
 			sto.storing_quantity      AS sto_storing_quantity, 
 			sto.created_at            AS sto_created_at, 
-			sto.updated_at            AS sto_updated_at, 
 			pro.p_id                  AS pro_id, 
 			pro.p_lot_number          AS pro_lot_number, 
 			pro.p_lot_quantity        AS pro_lot_quantity, 

@@ -28,54 +28,74 @@
 					</form>	
 				</div>
 				<div class="col-md-10">
-					<table id="DataTables" class="text-center master-list table table-bordered">
+					<table id="DataTables" class="text-center align-middle master-list table table-bordered table-progress">
 						<thead>
 							<tr class="border-3">
-								<th rowspan="2">製作番号</th>
-								<th rowspan="2">商品コード</th>
-								<th rowspan="2">商品名</th>
-								<th rowspan="2">製作数</th>
-								<th colspan="3">旋盤</th>
-								<th colspan="3">切削</th>
-								<th colspan="3">焼入</th>
-								<th colspan="3">研磨</th>
-								<th colspan="3">検査</th>
-								<th colspan="3">組立</th>
-								<th colspan="3">梱包</th>
-								<th rowspan="2">入庫数計</th>
-								<th rowspan="2">不良数計</th>
-								<th rowspan="2">完成予定日</th>
+								<th rowspan=2>製作番号</th>
+								<th rowspan=2>商品コード</th>
+								<th rowspan=2>商品名</th>
+								<th rowspan=2>製作数</th>
+								<th rowspan=2></th>
+								<th colspan=7>部署</th>
+								<th rowspan=2>不良数計</th>
+								<th rowspan=2>入庫数計</th>
+								<th rowspan=2>完成予定日</th>
 							</tr>
 							<tr>
-								<th:block th:each="i : ${#numbers.sequence(0, 6)}">
-									<th>完了数</th>
-									<th>不良数</th>
-									<th>更新日</th>
-								</th:block>
+								<th>旋盤</th>
+								<th>切削</th>
+								<th>焼入</th>
+								<th>研磨</th>
+								<th>検査</th>
+								<th>組立</th>
+								<th>梱包</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="production : ${productions}" th:object="${production}">
-								<td th:text="*{lotNumber}"></td>
-								<td th:text="*{item.code}"></td>
-								<td th:text="*{item.name}"></td>
-								<td th:text="*{lotQuantity}"></td>
-								<th:block th:each="report, stat : *{reports}">
-									<th:block th:if="*{reports[__${stat.index}__].productionId} != null">
-										<td th:text="*{reports[__${stat.index}__].departmentCompletionQuantityTotal}" class="bg-info"></td>
-										<td th:text="*{reports[__${stat.index}__].departmentFailureQuantityTotal}" class="bg-info"></td>
-										<td th:text="*{#temporals.format(reports[__${stat.index}__].updatedAtLatest, 'MM/dd')}" class="bg-info"></td>
+							<th:block th:each="production : ${productions}" th:object="${production}">
+								<tr th:each="i : ${#numbers.sequence(0, 2)}">
+									<th:block th:if="${i} == 0">
+										<td rowspan=3 th:text="*{lotNumber}"></td>
+										<td rowspan=3 th:text="*{item.code}"></td>
+										<td rowspan=3 th:text="*{item.name}"></td>
+										<td rowspan=3 th:text="*{lotQuantity}"></td>
+										<td>完了数</td>
+										<th:block th:each="report, stat : *{reports}">
+											<th:block th:if="*{reports[__${stat.index}__].productionId} != null">
+												<td th:text="*{reports[__${stat.index}__].departmentCompletionQuantityTotal}" class="bg-info"></td>
+											</th:block>
+											<th:block th:if="*{reports[__${stat.index}__].productionId} == null">
+												<td>-</td>
+											</th:block>
+										</th:block>
+										<td rowspan=3 th:text="*{failureQuantityTotal}"></td>
+										<td rowspan=3 th:text="*{storingQuantityTotal}"></td>
+										<td rowspan=3 th:text="*{scheduledCompletionDate}"></td>
 									</th:block>
-									<th:block th:if="*{reports[__${stat.index}__].productionId} == null">
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
+									<th:block th:if="${i} == 1">
+										<td>不良数</td>
+										<th:block th:each="report, stat : *{reports}">
+											<th:block th:if="*{reports[__${stat.index}__].productionId} != null">
+ 												<td th:text="*{reports[__${stat.index}__].departmentFailureQuantityTotal}" class="bg-info"></td>
+											</th:block>
+											<th:block th:if="*{reports[__${stat.index}__].productionId} == null">
+												<td>-</td>
+											</th:block>
+										</th:block>
 									</th:block>
+									<th:block th:if="${i} == 2">
+										<td>更新日</td>
+										<th:block th:each="report, stat : *{reports}">
+											<th:block th:if="*{reports[__${stat.index}__].productionId} != null">
+												<td th:text="*{#temporals.format(reports[__${stat.index}__].updatedAtLatest, 'MM/dd')}" class="bg-info"></td>
+											</th:block>
+											<th:block th:if="*{reports[__${stat.index}__].productionId} == null">
+												<td>-</td>
+											</th:block>
+										</th:block>
+									</tr>
 								</th:block>
-								<td th:text="*{storingQuantityTotal}"></td>
-								<td th:text="*{failureQuantityTotal}"></td>
-								<td th:text="*{scheduledCompletionDate}"></td>
-							</tr>
+							</th:block>
 						</tbody>
 					</table>
 				</div>

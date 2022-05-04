@@ -160,6 +160,8 @@
 				AND pro.invalid = 0 <!-- 未削除のみ -->
 				AND pro.completion_date IS NULL <!-- 未完了のみ -->
 		</where>
+		ORDER BY
+			pro.id ASC <!-- 製作番号の昇順 -->
 	</select>
 	
 	<!-- 引数で受け取った製作番号を基に、該当レコードを取得する。 -->

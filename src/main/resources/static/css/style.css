@@ -134,3 +134,13 @@ ul {
 	margin: auto;
 	text-align: center;
 }
+
+.table-progress {
+	position: relative;
+}
+
+.table-progress thead {
+	background: white;
+	position: sticky;
+	top: 50px;
+}

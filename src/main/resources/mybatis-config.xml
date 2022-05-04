@@ -17,6 +17,20 @@
     <!-- Java タイプに対する短縮名。 
     XML の中でクラスを指定する際、完全修飾名の記述を最小限にする。 -->
     <typeAliases>
-        <package name="com.example.management.model"/>
+<!--         <package name="com.example.management.model"/> -->
+		<typeAlias type="com.example.management.model.Customer" />
+		<typeAlias type="com.example.management.model.CustomerHistory" />
+		<typeAlias type="com.example.management.model.Department" />
+		<typeAlias type="com.example.management.model.Employee" />
+		<typeAlias type="com.example.management.model.EmployeeHistory" />
+		<typeAlias type="com.example.management.model.Item" />
+		<typeAlias type="com.example.management.model.ItemHistory" />
+		<typeAlias type="com.example.management.model.Order" />
+		<typeAlias type="com.example.management.model.OrderDetail" />
+		<typeAlias type="com.example.management.model.Production" />
+		<typeAlias type="com.example.management.model.Report" />
+		<typeAlias type="com.example.management.model.Shipping" />
+		<typeAlias type="com.example.management.model.Stock" />
+		<typeAlias type="com.example.management.model.Storing" />
     </typeAliases>
 </configuration>

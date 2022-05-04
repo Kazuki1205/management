@@ -13,7 +13,7 @@
 
 # 関連ページ
 
- - 公開ページ()
+ - 公開ページ [生産管理アプリ](https://kazuki-management.herokuapp.com)
  - ドキュメント [Google ドライブ](https://drive.google.com/drive/folders/1UM5l2s60kpXwQvEMlaBEF_Qpnela4M_U?usp=sharing)
  
 # テストアカウント

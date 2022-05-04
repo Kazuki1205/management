@@ -17,12 +17,6 @@
 					<td>
 						<ul>
 							<li class="h5">
-								<a th:href="@{/item/list}">商品マスタ</a>
-							</li>
-							<li class="h5">
-								<a th:href="@{/customer/list}">顧客マスタ</a>
-							</li>
-							<li class="h5">
 								<th:block sec:authorize="hasRole('ADMIN')">
 									<a th:href="@{/employee/list}">社員マスタ</a>
 								</th:block>
@@ -31,6 +25,12 @@
 								<th:block sec:authorize="hasRole('ADMIN')">
 									<a th:href="@{/department/list}">部署マスタ</a>
 								</th:block>
+							</li>
+							<li class="h5">
+								<a th:href="@{/item/list}">商品マスタ</a>
+							</li>
+							<li class="h5">
+								<a th:href="@{/customer/list}">顧客マスタ</a>
 							</li>
 						</ul>
 					</td>

@@ -20,7 +20,7 @@ public class PagesController {
 	@ModelAttribute(name = "navTitle")
 	public String setNavTitle() {
 		
-		return "生産管理システム";
+		return "生産管理アプリ";
 	}
 
 	/**

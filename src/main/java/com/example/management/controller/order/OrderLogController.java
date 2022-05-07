@@ -17,7 +17,7 @@ import com.example.management.model.Department;
 import com.example.management.model.Order;
 
 /**
- * 受注の履歴コントローラー
+ * 受注の履歴画面コントローラー
  */
 @Controller
 public class OrderLogController {

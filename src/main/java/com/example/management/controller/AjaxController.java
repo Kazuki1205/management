@@ -17,8 +17,7 @@ import com.example.management.model.Production;
 import com.example.management.service.CommonService;
 
 /**
- * 各フォームの値を非同期で書き換えるコントローラー
- * 戻り値はすべてJson形式で返す。
+ * Ajaxコントローラー
  */
 @RestController
 public class AjaxController {

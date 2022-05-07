@@ -24,7 +24,7 @@ import com.example.management.service.CommonService;
 import com.example.management.service.ReportService;
 
 /**
- * 日報の編集コントローラー
+ * 日報の編集画面コントローラー
  */
 @Controller
 public class ReportEditController {
@@ -153,8 +153,7 @@ public class ReportEditController {
 	
 	/**
 	 * 日報情報をDBから削除するメソッド(論理削除)
-	 * 
-	 * @param employee セキュリティ認証されている社員情報
+
 	 * @param reportForm 日報フォーム
 	 * @param redirectAttributes リダイレクト先へ渡す情報
 	 * 

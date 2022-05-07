@@ -17,6 +17,9 @@ import com.example.management.mapper.DepartmentMapper;
 import com.example.management.service.CommonService;
 import com.example.management.service.DepartmentService;
 
+/**
+ * 部署マスタの編集画面コントローラー
+ */
 @Controller
 public class DepartmentEditController {
 	

@@ -30,7 +30,7 @@ import com.example.management.service.CommonService;
 import com.example.management.service.OrderService;
 
 /**
- * 受注の編集コントローラー
+ * 受注の編集画面コントローラー
  */
 @Controller
 public class OrderEditController {
@@ -120,7 +120,6 @@ public class OrderEditController {
 	 * 
 	 * @param employee 社員クラス
 	 * @param orderId 受注ID
-	 * @param orderForm 受注フォーム
 	 * @param redirectAttributes リダイレクト先へ渡す情報
 	 * @param model　テンプレート先へ渡す情報
 	 * 

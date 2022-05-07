@@ -49,7 +49,7 @@ public class CustomerRegisterController {
 	/**
 	 * 顧客マスタ登録画面を表示
 
-	 * @param itemForm 顧客フォーム ※@ModelAttributeにより、無ければnewされる。
+	 * @param customerForm 顧客フォーム ※@ModelAttributeにより、無ければnewされる。
 	 * @param model テンプレートへ渡す情報
 	 * 
 	 * @return 顧客新規登録テンプレート

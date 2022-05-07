@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Item</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/google-code-prettify@1.0.5/bin/prettify.min.css">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint lang-java">
+public class Item implements Serializable{
+
+    private long id; //ID
+    private String code; //商品コード
+    private String name; //品名
+    private long unitPrice; //単価
+    private String createdAt; //作成日時
+    private String updatedAt; //更新日時
+    private short invalid; //削除フラグ
+
+    public long getId(){
+        return id;
+    }
+
+    public void setId(long id){
+        this.id = id;
+    }
+
+    public String getCode(){
+        return code;
+    }
+
+    public void setCode(String code){
+        this.code = code;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public long getUnitPrice(){
+        return unitPrice;
+    }
+
+    public void setUnitPrice(long unitPrice){
+        this.unitPrice = unitPrice;
+    }
+
+    public String getCreatedAt(){
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt){
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt(){
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt){
+        this.updatedAt = updatedAt;
+    }
+
+    public short getInvalid(){
+        return invalid;
+    }
+
+    public void setInvalid(short invalid){
+        this.invalid = invalid;
+    }
+
+}
+</pre>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/google-code-prettify@1.0.5/bin/prettify.min.js"></script>
+</body>
+</html>

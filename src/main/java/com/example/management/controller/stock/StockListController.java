@@ -15,7 +15,7 @@ import com.example.management.mapper.StockMapper;
 import com.example.management.model.Stock;
 
 /**
- * 在庫一覧画面コントローラー
+ * 在庫の一覧画面コントローラー
  */
 @Controller
 public class StockListController {

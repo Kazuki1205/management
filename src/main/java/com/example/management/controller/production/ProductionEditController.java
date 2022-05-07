@@ -23,7 +23,7 @@ import com.example.management.service.ProductionService;
 import com.example.management.validation.ValidOrder;
 
 /**
- * 製作の編集コントローラー
+ * 製作の編集画面コントローラー
  */
 @Controller
 public class ProductionEditController {

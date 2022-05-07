@@ -70,7 +70,7 @@ public class ItemRegisterController {
 	 * 
 	 * @param itemForm 商品フォーム
 	 * @param bindingResult 商品フォームのバリデーション結果
-	 * @param redirectAttirbutes リダイレクト先へ渡す情報
+	 * @param redirectAttributes リダイレクト先へ渡す情報
 	 * @param model テンプレートへ渡す情報
 	 * 
 	 * @return 商品新規登録テンプレート/リダイレクト

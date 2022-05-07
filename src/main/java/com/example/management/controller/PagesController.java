@@ -26,8 +26,6 @@ public class PagesController {
 	/**
 	 * 最初に表示されるページ。
 	 * 
-	 * @param テンプレートから受け取る情報
-	 * 
 	 * @return トップページテンプレート
 	 */
 	@RequestMapping("/")

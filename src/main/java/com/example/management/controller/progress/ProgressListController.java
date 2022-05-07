@@ -15,7 +15,7 @@ import com.example.management.model.Production;
 import com.example.management.service.ProductionService;
 
 /**
- * 進捗一覧コントローラー
+ * 進捗の一覧画面コントローラー
  */
 @Controller
 public class ProgressListController {

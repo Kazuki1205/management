@@ -21,7 +21,7 @@ import com.example.management.service.ItemService;
 import com.example.management.validation.ValidOrder;
 
 /**
- * 商品マスタの編集コントローラー
+ * 商品マスタの編集画面コントローラー
  */
 @Controller
 public class ItemEditController {

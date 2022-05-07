@@ -40,7 +40,7 @@ public class ShippingLogController {
 	 * 出荷履歴一覧を表示
 	 * 
 	 * @param orderNumber 受注番号
-	 * @param detailid 受注明細ID
+	 * @param detailId 受注明細ID
 	 * @param customerCode 顧客コード
 	 * @param customerName 顧客名
 	 * @param address 住所

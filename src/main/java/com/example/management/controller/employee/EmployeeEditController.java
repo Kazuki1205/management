@@ -25,7 +25,7 @@ import com.example.management.service.EmployeeService;
 import com.example.management.validation.ValidOrder;
 
 /**
- * 社員マスタの編集コントローラー
+ * 社員マスタの編集画面コントローラー
  */
 @Controller
 public class EmployeeEditController {

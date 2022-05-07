@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Production</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/google-code-prettify@1.0.5/bin/prettify.min.css">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface Production : NSObject
+
+//ID
+@property (nonatomic, strong) long id;
+//日報クラスのリスト
+@property (nonatomic, strong) Report[] reports;
+//商品クラス
+@property (nonatomic, strong) Item item;
+//製作番号
+@property (nonatomic, assign) NSString lotNumber;
+//製作数
+@property (nonatomic, strong) NSInteger lotQuantity;
+//完成予定日
+@property (nonatomic, assign) NSString scheduledCompletionDate;
+//完成日
+@property (nonatomic, assign) NSString completionDate;
+//入力者の所属する部署毎の、該当製番に対する完了数計
+@property (nonatomic, strong) NSInteger departmentCompletionQuantityTotal;
+//該当製番に対する不良数計
+@property (nonatomic, strong) NSInteger failureQuantityTotal;
+//該当製番に対する入庫数計
+@property (nonatomic, strong) NSInteger storingQuantityTotal;
+//登録日時
+@property (nonatomic, assign) NSString createdAt;
+//更新日時
+@property (nonatomic, assign) NSString updatedAt;
+//削除フラグ
+@property (nonatomic, strong) short invalid;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface Report : NSObject
+
+//ID
+@property (nonatomic, strong) long id;
+//製作ID
+@property (nonatomic, strong) long productionId;
+//部署ID
+@property (nonatomic, strong) long departmentId;
+//製作クラス
+@property (nonatomic, strong) Production production;
+//社員履歴クラス
+@property (nonatomic, strong) EmployeeHistory employeeHistory;
+//完了数
+@property (nonatomic, strong) NSInteger completionQuantity;
+//不良数
+@property (nonatomic, strong) NSInteger failureQuantity;
+//部署毎の、該当製番に対する完了数計
+@property (nonatomic, strong) NSInteger departmentCompletionQuantityTotal;
+//部署毎の、該当製番に対する不良数計
+@property (nonatomic, strong) NSInteger departmentFailureQuantityTotal;
+//登録日時
+@property (nonatomic, assign) NSString createdAt;
+//更新日時
+@property (nonatomic, assign) NSString updatedAt;
+//最終更新日時
+@property (nonatomic, assign) NSString updatedAtLatest;
+//削除フラグ
+@property (nonatomic, strong) short invalid;
+
+
+@end
+</xmp>
+</pre>
+
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface EmployeeHistory : NSObject
+
+//ID
+@property (nonatomic, strong) long id;
+//ID(社員テーブルの主キー)
+@property (nonatomic, strong) long employeeId;
+//社員ID
+@property (nonatomic, assign) NSString username;
+//社員名
+@property (nonatomic, assign) NSString name;
+//部署クラス
+@property (nonatomic, strong) Department department;
+//更新日時
+@property (nonatomic, assign) NSString updatedAt;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface Department : NSObject
+
+//ID
+@property (nonatomic, strong) long id;
+//部署コード
+@property (nonatomic, assign) NSString code;
+//部署名
+@property (nonatomic, assign) NSString name;
+//所属社員
+@property (nonatomic, strong) Employee[] employees;
+//作成日時
+@property (nonatomic, assign) NSString createdAt;
+//更新日時
+@property (nonatomic, assign) NSString updatedAt;
+//削除フラグ
+@property (nonatomic, strong) short invalid;
+
+
+@end
+</xmp>
+</pre>
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface Employee : NSObject
+
+//ID
+@property (nonatomic, strong) long id;
+//社員ID
+@property (nonatomic, assign) NSString username;
+//パスワード
+@property (nonatomic, assign) NSString password;
+//社員名
+@property (nonatomic, assign) NSString name;
+//部署クラス
+@property (nonatomic, strong) Department department;
+//権限
+@property (nonatomic, assign) NSString authority;
+//作成日時
+@property (nonatomic, assign) NSString createdAt;
+//更新日時
+@property (nonatomic, assign) NSString updatedAt;
+//削除フラグ
+@property (nonatomic, strong) short invalid;
+
+
+@end
+</xmp>
+</pre>
+
+
+<pre class="prettyprint">
+<xmp>
+#import <Foundation/Foundation>;
+
+@interface Item : NSObject
+
+//ID
+@property (nonatomic, strong) long id;
+//商品コード
+@property (nonatomic, assign) NSString code;
+//品名
+@property (nonatomic, assign) NSString name;
+//単価
+@property (nonatomic, strong) long unitPrice;
+//作成日時
+@property (nonatomic, assign) NSString createdAt;
+//更新日時
+@property (nonatomic, assign) NSString updatedAt;
+//削除フラグ
+@property (nonatomic, strong) short invalid;
+
+
+@end
+</xmp>
+</pre>
+
+
+<script src="https://cdn.jsdelivr.net/npm/google-code-prettify@1.0.5/bin/prettify.min.js"></script>
+</body>
+</html>

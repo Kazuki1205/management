@@ -22,7 +22,7 @@ import com.example.management.service.CustomerService;
 import com.example.management.validation.ValidOrder;
 
 /**
- * 顧客マスタの編集コントローラー
+ * 顧客マスタの編集画面コントローラー
  */
 @Controller
 public class CustomerEditController {

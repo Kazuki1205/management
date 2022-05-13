@@ -20,7 +20,7 @@
 				<label for="itemCode">商品コード</label>
 			</th>
 			<td>
-				<input type="text" th:field="*{itemCode}" class="bg-secondary" id="ajax-itemCode" readonly />
+				<input type="text" th:field="*{itemCode}" class="bg-gray" id="ajax-itemCode" readonly />
 				<span th:if="${#fields.hasErrors('itemCode')}" th:errors="*{itemCode}" class="text-danger"></span>
 			</td>
 		</tr>
@@ -29,7 +29,7 @@
 				<label for="itemName">商品名</label>
 			</th>
 			<td>
-				<input type="text" th:field="*{itemName}" class="bg-secondary" id="ajax-itemName" readonly />
+				<input type="text" th:field="*{itemName}" class="bg-gray" id="ajax-itemName" readonly />
 				<span th:if="${#fields.hasErrors('itemName')}" th:errors="*{itemName}" class="text-danger"></span>
 			</td>
 		</tr>
@@ -38,7 +38,7 @@
 				<label for="lotQuantity">製作数</label>
 			</th>
 			<td>
-				<input type="number" th:field="*{lotQuantity}" class="bg-secondary" id="ajax-lotQuantity" readonly />
+				<input type="number" th:field="*{lotQuantity}" class="bg-gray" id="ajax-lotQuantity" readonly />
 				<span th:if="${#fields.hasErrors('lotQuantity')}" th:errors="*{lotQuantity}" class="text-danger"></span>
 			</td>
 		</tr>
@@ -47,7 +47,7 @@
 				<label for="storingQuantityTotal">入庫済数</label>
 			</th>
 			<td>
-				<input type="number" th:field="*{storingQuantityTotal}" class="bg-secondary" id="ajax-storingQuantityTotal" readonly />
+				<input type="number" th:field="*{storingQuantityTotal}" class="bg-gray" id="ajax-storingQuantityTotal" readonly />
 				<span th:if="${#fields.hasErrors('storingQuantityTotal')}" th:errors="*{storingQuantityTotal}" class="text-danger"></span>
 			</td>
 		</tr>
@@ -56,7 +56,7 @@
 				<label for="failureQuantityTotal">不良数計</label>
 			</th>
 			<td>
-				<input type="number" th:field="*{failureQuantityTotal}" class="bg-secondary" id="ajax-failureQuantityTotal" readonly />
+				<input type="number" th:field="*{failureQuantityTotal}" class="bg-gray" id="ajax-failureQuantityTotal" readonly />
 				<span th:if="${#fields.hasErrors('failureQuantityTotal')}" th:errors="*{failureQuantityTotal}" class="text-danger"></span>
 			</td>
 		</tr>

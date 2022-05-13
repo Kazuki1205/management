@@ -67,7 +67,7 @@
 						</thead>
 						<tbody>
 							<tr th:each="report : ${reports}" th:object="${report}" 
-								th:class="*{invalid == 1 ? 'bg-secondary' : '' }">
+								th:class="*{invalid == 1 ? 'bg-gray' : '' }">
 								<td>
 									<a th:href="@{/report/log/{id}(id=*{id})}">■</a>
 								</td>

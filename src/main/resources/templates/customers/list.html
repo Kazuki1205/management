@@ -52,7 +52,7 @@
 						</thead>
 						<tbody>
 							<tr th:each="customer : ${customers}" th:object="${customer}" 
-								th:class="*{invalid} == 1 ? 'bg-secondary' : '' ">
+								th:class="*{invalid} == 1 ? 'bg-gray' : '' ">
 								<td>
 									<a th:href="@{/customer/list/{id}(id=*{id})}">■</a>
 								</td>

@@ -28,7 +28,7 @@
 			</th>
 			<td>
 				<th:block th:if="${editFlag} == null">
-					<input type="text" th:field="*{itemCode}" class="bg-secondary" id="ajax-itemCode" readonly />
+					<input type="text" th:field="*{itemCode}" class="bg-gray" id="ajax-itemCode" readonly />
 					<span th:if="${#fields.hasErrors('itemCode')}" th:errors="*{itemCode}" class="text-danger"></span>
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
@@ -43,7 +43,7 @@
 			</th>
 			<td>
 				<th:block th:if="${editFlag} == null">
-					<input type="text" th:field="*{itemName}" class="bg-secondary" id="ajax-itemName" readonly />
+					<input type="text" th:field="*{itemName}" class="bg-gray" id="ajax-itemName" readonly />
 					<span th:if="${#fields.hasErrors('itemName')}" th:errors="*{itemName}" class="text-danger"></span>
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
@@ -58,7 +58,7 @@
 			</th>
 			<td>
 				<th:block th:if="${editFlag} == null">
-					<input type="number" th:field="*{lotQuantity}" class="bg-secondary" id="ajax-lotQuantity" readonly />
+					<input type="number" th:field="*{lotQuantity}" class="bg-gray" id="ajax-lotQuantity" readonly />
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
 					<input type="hidden" th:field="*{lotQuantity}" />
@@ -72,7 +72,7 @@
 			</th>
 			<td>
 				<th:block th:if="${editFlag} == null">
-					<input type="number" th:field="*{departmentCompletionQuantityTotal}" class="bg-secondary" id="ajax-departmentCompletionQuantityTotal" readonly />
+					<input type="number" th:field="*{departmentCompletionQuantityTotal}" class="bg-gray" id="ajax-departmentCompletionQuantityTotal" readonly />
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
 					<input type="hidden" th:field="*{departmentCompletionQuantityTotal}" />
@@ -86,7 +86,7 @@
 			</th>
 			<td>
 				<th:block th:if="${editFlag} == null">
-					<input type="number" th:field="*{failureQuantityTotal}" class="bg-secondary" id="ajax-failureQuantityTotal" readonly />
+					<input type="number" th:field="*{failureQuantityTotal}" class="bg-gray" id="ajax-failureQuantityTotal" readonly />
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
 					<input type="hidden" th:field="*{failureQuantityTotal}" />

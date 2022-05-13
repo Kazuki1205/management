@@ -53,7 +53,7 @@
 						</thead>
 						<tbody>
 							<tr th:each="production : ${productions}" th:object="${production}" 
-								th:class="*{invalid == 1 ? 'bg-secondary' : completionDate != null ? 'bg-info' : '' }">
+								th:class="*{invalid == 1 ? 'bg-gray' : completionDate != null ? 'bg-info' : '' }">
 								<td>
 									<a th:href="@{/production/log/{id}(id=*{id})}">■</a>
 								</td>

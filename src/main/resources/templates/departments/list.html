@@ -40,7 +40,7 @@
 						</thead>
 						<tbody>
 							<tr th:each="department : ${departments}" th:object="${department}" 
-								th:class="*{invalid} == 1 ? 'bg-secondary' : '' ">
+								th:class="*{invalid} == 1 ? 'bg-gray' : '' ">
 								<td>
 									<a th:href="@{/department/list/{id}(id=*{id})}">■</a>
 								</td>

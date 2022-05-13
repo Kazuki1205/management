@@ -65,7 +65,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="orderDetail, stat : *{orderDetails}" th:classappend="*{orderDetails[__${stat.index}__].invalid == 1 ? 'bg-secondary' : orderDetails[__${stat.index}__].completionDate != null ? 'bg-info' : '' }">
+					<tr th:each="orderDetail, stat : *{orderDetails}" th:classappend="*{orderDetails[__${stat.index}__].invalid == 1 ? 'bg-gray' : orderDetails[__${stat.index}__].completionDate != null ? 'bg-info' : '' }">
 						<td>
 							<span th:text="*{orderDetails[__${stat.index}__].detailId}"></span>
 						</td>

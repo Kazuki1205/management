@@ -9,7 +9,7 @@
 			</th>
 			<td>
 				<th:block th:if="${editFlag} == null">
-					<input type="text" th:field="*{lotNumber}" class="bg-secondary" readonly />
+					<input type="text" th:field="*{lotNumber}" class="bg-gray" readonly />
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
 					<input type="hidden" th:field="*{lotNumber}" />

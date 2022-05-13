@@ -44,7 +44,7 @@
 						</thead>
 						<tbody>
 							<tr th:each="item : ${items}" th:object="${item}" 
-								th:class="*{invalid} == 1 ? 'bg-secondary' : '' ">
+								th:class="*{invalid} == 1 ? 'bg-gray' : '' ">
 								<td>
 									<a th:href="@{/item/list/{id}(id=*{id})}">■</a>
 								</td>

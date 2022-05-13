@@ -144,3 +144,7 @@ ul {
 	position: sticky;
 	top: 50px;
 }
+
+.bg-gray {
+	background-color: #c0c0c0;
+}

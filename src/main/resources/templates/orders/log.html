@@ -65,7 +65,7 @@
 						</thead>
 						<tbody>
 							<tr th:each="order : ${orders}" th:object="${order}" 
-								th:class="*{invalid == 1 ? 'bg-secondary' : completionDate != null ? 'bg-info' : '' }">
+								th:class="*{invalid == 1 ? 'bg-gray' : completionDate != null ? 'bg-info' : '' }">
 								<td>
 									<a th:href="@{/order/log/{id}(id=*{id})}">■</a>
 								</td>

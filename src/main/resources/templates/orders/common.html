@@ -9,7 +9,7 @@
 			</th>
 			<td>
 				<th:block th:if="${editFlag} == null">
-					<input type="text" th:field="*{orderNumber}" class="bg-secondary" readonly />
+					<input type="text" th:field="*{orderNumber}" class="bg-gray" readonly />
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
 					<input type="hidden" th:field="*{orderNumber}" />
@@ -54,7 +54,7 @@
 		 	</tr>
 		</thead>
 		<tbody>
-			<tr th:each="orderDetailForm, stat : *{orderDetailForms}" th:class="*{orderDetailForms[__${stat.index}__].invalid} == 1 ? 'bg-secondary' : '' ">
+			<tr th:each="orderDetailForm, stat : *{orderDetailForms}" th:class="*{orderDetailForms[__${stat.index}__].invalid} == 1 ? 'bg-gray' : '' ">
 				<td>
 					<th:block th:if="${editFlag} == null">
 						<span th:text="${stat.count}"></span>
@@ -80,7 +80,7 @@
 				</td>
 				<td>
 					<th:block th:if="${editFlag} == null">
-						<input type="number" th:field="*{orderDetailForms[__${stat.index}__].unitPrice}" class="bg-secondary" th:data-unit-price="${stat.index}" readonly />
+						<input type="number" th:field="*{orderDetailForms[__${stat.index}__].unitPrice}" class="bg-gray" th:data-unit-price="${stat.index}" readonly />
 					</th:block>
 					<th:block th:if="${editFlag} == 1">
 						<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].unitPrice}" th:data-unit-price="${stat.index}" />
@@ -89,7 +89,7 @@
 				</td>
 				<td>
 					<input type="number" th:field="*{orderDetailForms[__${stat.index}__].orderQuantity}" class="dom-orderQuantity" th:data-order-quantity="${stat.index}" min=1 
-						th:classappend="*{orderDetailForms[__${stat.index}__].invalid == 1 || orderDetailForms[__${stat.index}__].completionDate != null} ? 'bg-secondary' : '' " th:readonly="*{orderDetailForms[__${stat.index}__].invalid == 1 || orderDetailForms[__${stat.index}__].completionDate != null}" />
+						th:classappend="*{orderDetailForms[__${stat.index}__].invalid == 1 || orderDetailForms[__${stat.index}__].completionDate != null} ? 'bg-gray' : '' " th:readonly="*{orderDetailForms[__${stat.index}__].invalid == 1 || orderDetailForms[__${stat.index}__].completionDate != null}" />
 					<span th:if="${#fields.hasErrors('orderDetailForms[__${stat.index}__].orderQuantity')}" th:errors="*{orderDetailForms[__${stat.index}__].orderQuantity}" class="text-danger"></span>
 				</td>
 				<th:block th:if="${editFlag} == 1">
@@ -103,7 +103,7 @@
 					</td>
 				</th:block>
 				<td>
-					<input type="text" th:field="*{orderDetailForms[__${stat.index}__].orderAmount}" class="bg-secondary" th:data-order-amount="${stat.index}" readonly />
+					<input type="text" th:field="*{orderDetailForms[__${stat.index}__].orderAmount}" class="bg-gray" th:data-order-amount="${stat.index}" readonly />
 				</td>
 				<td>
 					<input type="hidden" th:field="*{orderDetailForms[__${stat.index}__].invalid}" />

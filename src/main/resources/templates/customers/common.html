@@ -9,7 +9,7 @@
 			</th>
 			<td>
 				<th:block th:if="${editFlag} == null">
-					<input type="text" th:field="*{code}" class="bg-secondary" readonly />
+					<input type="text" th:field="*{code}" class="bg-gray" readonly />
 				</th:block>
 				<th:block th:if="${editFlag} == 1">
 					<input type="hidden" th:field="*{code}" />
@@ -40,7 +40,7 @@
 				<label for="firstAddress">都道府県</label>
 			</th>
 			<td>
-				<input type="text" th:field="*{firstAddress}" class="bg-secondary" readonly />
+				<input type="text" th:field="*{firstAddress}" class="bg-gray" readonly />
 				<span th:if="${#fields.hasErrors('firstAddress')}" th:errors="*{firstAddress}" class="text-danger" ></span>
 			</td>
 		</tr>
@@ -49,7 +49,7 @@
 				<label for="secondAddress">市区町村</label>
 			</th>
 			<td>
-				<input type="text" th:field="*{secondAddress}" class="bg-secondary" readonly />
+				<input type="text" th:field="*{secondAddress}" class="bg-gray" readonly />
 				<span th:if="${#fields.hasErrors('secondAddress')}" th:errors="*{secondAddress}" class="text-danger" ></span>
 			</td>
 		</tr>

@@ -1,7 +1,5 @@
 package com.example.management;
 
-import java.nio.file.Paths;
-
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -12,10 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 
-import io.github.yedaxia.apidocs.Docs;
-import io.github.yedaxia.apidocs.DocsConfig;
-import io.github.yedaxia.apidocs.plugin.markdown.MarkdownDocPlugin;
-
 @SpringBootApplication
 @MapperScan("com.example.management.mapper")
 public class ManagementApplication {
@@ -23,31 +17,31 @@ public class ManagementApplication {
 	public static void main(String[] args) {
 		
 		SpringApplication.run(ManagementApplication.class, args);
-		
-		// ディレクトリを取得・apiバージョンを設定
-		String userDirectory = System.getProperty("user.dir");
-		
-		// JApiDoccの設定
-		DocsConfig config = new DocsConfig();
-		
-		// プロジェクトのrootパスを設定
-		config.setProjectPath(userDirectory);
-		
-		// プロジェクト名を設定
-		config.setProjectName(Paths.get(userDirectory).getFileName().toString());
-		
-		// プロジェクトのバージョンを設定
-		config.setApiVersion("v1.0");
-		
-		// apiドキュメントの出力ディレクトリを設定
-		config.setDocsPath(userDirectory);
-		
-		// 自動出力
-		config.setAutoGenerate(Boolean.TRUE);
-		
-		// htmlファイルを出力
-		config.addPlugin(new MarkdownDocPlugin());
-		Docs.buildHtmlDocs(config);
+//		
+//		// ディレクトリを取得・apiバージョンを設定
+//		String userDirectory = System.getProperty("user.dir");
+//		
+//		// JApiDocsの設定
+//		DocsConfig config = new DocsConfig();
+//		
+//		// プロジェクトのrootパスを設定
+//		config.setProjectPath(userDirectory);
+//		
+//		// プロジェクト名を設定
+//		config.setProjectName(Paths.get(userDirectory).getFileName().toString());
+//		
+//		// プロジェクトのバージョンを設定
+//		config.setApiVersion("v1.0");
+//		
+//		// apiドキュメントの出力ディレクトリを設定
+//		config.setDocsPath(userDirectory);
+//		
+//		// 自動出力
+//		config.setAutoGenerate(Boolean.TRUE);
+//		
+//		// htmlファイルを出力
+//		config.addPlugin(new MarkdownDocPlugin());
+//		Docs.buildHtmlDocs(config);
 	}
 
 	// MyBatisの設定
